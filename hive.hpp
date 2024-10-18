@@ -5,6 +5,7 @@
 #include <ostream>
 #include <unordered_map>
 #include <string>
+#include <utility> // pour pair 
 
 using namespace std;
 
@@ -57,9 +58,8 @@ public:
     int getLigne() const {return r;}
 
     // Opérateur d’égalité
-    bool operator==(const Position& other) const {
-        return q == other.q && r == other.r;
-    }
+    bool operator==(const Position& other) const {return q == other.q && r == other.r;}
+    Position** Position::get_adjacent_coordinates() const;
 };
 
 #endif
