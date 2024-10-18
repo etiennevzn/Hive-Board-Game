@@ -19,3 +19,13 @@ Position** Position::get_adjacent_coordinates() const {
 
     return adjacent;
 }
+
+bool Position::isAdjacent(const Position& other) const{
+    Position** adjacent = get_adjacent_coordinates();
+    for(unsigned int i = 0; i<6; i++){
+        if(*adjacent[i] == other){
+            return true;
+        }
+    }
+    return false;
+}

@@ -44,6 +44,8 @@ public:
 
 class Piece{
 
+public:
+
 };
 
 class Position{
@@ -59,7 +61,8 @@ public:
 
     // Opérateur d’égalité
     bool operator==(const Position& other) const {return q == other.q && r == other.r;}
-    Position** Position::get_adjacent_coordinates() const;
+    Position** Position::get_adjacent_coordinates() const; //à voir si le le type de retour est bon
+    bool isAdjacent(const Position& other) const;
 };
 
 #endif
