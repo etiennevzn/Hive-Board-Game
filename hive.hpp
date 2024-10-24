@@ -9,6 +9,15 @@
 
 using namespace std;
 
+
+class Plateau{
+    //unordered_map<Position, vector<Piece*>> plateau;
+    //à voir si l'on peut recopier un objet de la classe Plateau
+    Plateau(const Plateau& p);
+    Plateau& operator=(const Plateau& other); 
+public:
+
+};
 class Partie{
 /* 
 Probablement design pattern singleton. 
@@ -33,14 +42,7 @@ public :
 
 };
 
-class Plateau{
-    unordered_map<Position, vector<Piece*>> plateau;
-    //à voir si l'on peut recopier un objet de la classe Plateau
-    Plateau(const Plateau& p);
-    Plateau& operator=(const Plateau& other); 
-public:
 
-};
 
 class Piece{
 
@@ -61,7 +63,7 @@ public:
 
     // Opérateur d’égalité
     bool operator==(const Position& other) const {return q == other.q && r == other.r;}
-    Position** Position::get_adjacent_coordinates() const; //à voir si le le type de retour est bon
+    Position** get_adjacent_coordinates() const; //à voir si le le type de retour est bon
     bool isAdjacent(const Position& other) const;
 };
 
