@@ -32,6 +32,15 @@ public:
     bool isAdjacent(const Position& other) const;
 };
 
+namespace std {
+    template <>
+    struct hash<Position> {
+        size_t operator()(const Position& pos) const {
+            return hash<int>()(pos.getColonne()) ^ hash<int>()(pos.getLigne());
+        }
+    };
+}
+
 class Piece {
 
     Position pos;
@@ -44,6 +53,8 @@ public:
     Position getPosition() const { return pos; }
     Couleur getCouleur() const { return couleur; }
     void setPosition(const Position& newPos) { pos = newPos; }
+    virtual string getType() const = 0;
+    virtual char getInitial() const = 0;
 };
 
 
@@ -60,6 +71,8 @@ public:
         // Implémenter la logique de glissement ici
         return true; // Placeholder
     }
+    string getType() const override { return "Reine"; }
+    char getInitial() const override {return 'R';}
 };
 
 class Scarabee : public Piece {
@@ -69,6 +82,8 @@ public:
         // Implémenter la logique de mouvement pour le Scarabée
         return true; // Placeholder
     }
+    string getType() const override { return "Scarabee"; }
+    char getInitial() const override {return 'S';}
 };
 
 class Araignee : public Piece {
@@ -78,6 +93,8 @@ public:
         // Implémenter la logique de mouvement pour l'Araignée
         return true; // Placeholder
     }
+    string getType() const override { return "Araignee"; }
+    char getInitial() const override {return 'A';}
 };
 
 class Sauterelle : public Piece {
@@ -87,6 +104,8 @@ public:
         // Implémenter la logique de mouvement pour la Sauterelle
         return true; // Placeholder
     }
+    string getType() const override { return "Sauterelle"; }
+    char getInitial() const override {return 'H';}
 };
 
 class Fourmi : public Piece {
@@ -96,6 +115,8 @@ public:
         // Implémenter la logique de mouvement pour la Fourmi
         return true; // Placeholder
     }
+    string getType() const override { return "Fourmi"; }
+    char getInitial() const override {return 'F';}
 };
 
 
@@ -106,9 +127,35 @@ class Plateau{
     Plateau(const Plateau& p);
     Plateau& operator=(const Plateau& other); 
 public:
-    Plateau();
+    Plateau()=default;
     void addPiece(Piece* piece, Position pos) {
         plateau[pos].push_back(piece);
+    }
+
+    void print_board() {
+        // Determine the bounds of the board
+        int minQ = INT_MAX, maxQ = INT_MIN, minR = INT_MAX, maxR = INT_MIN;
+        for (const auto& entry : plateau) {
+            const Position& pos = entry.first;
+            minQ = min(minQ, pos.getColonne());
+            maxQ = max(maxQ, pos.getColonne());
+            minR = min(minR, pos.getLigne());
+            maxR = max(maxR, pos.getLigne());
+        }
+
+        // Print the board
+        for (int r = minR; r <= maxR; ++r) {
+            for (int q = minQ; q <= maxQ; ++q) {
+                Position pos(q, r);
+                if (plateau.find(pos) != plateau.end() && !plateau[pos].empty()) {
+                    cout << plateau[pos].back()->getInitial()<<(plateau[pos].back()->getCouleur() == Noir ?"N":"B");
+                } else {
+                    cout << ".";
+                }
+                cout << " ";
+            }
+            cout << endl;
+        }
     }
 
     
