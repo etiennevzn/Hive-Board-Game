@@ -106,11 +106,14 @@ class Plateau{
     Plateau(const Plateau& p);
     Plateau& operator=(const Plateau& other); 
 public:
+    Plateau();
     void addPiece(Piece* piece, Position pos) {
         plateau[pos].push_back(piece);
     }
-};
 
+    
+
+};
 
 class Joueur{
     string nom;
