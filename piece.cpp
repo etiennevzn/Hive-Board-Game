@@ -1,4 +1,4 @@
-#include "hive.hpp"
+#include "piece.hpp"
 
 Position** Position::get_adjacent_coordinates() const {
     //Directions pour les lignes paires et impaires

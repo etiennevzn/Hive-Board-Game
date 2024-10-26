@@ -1,9 +1,11 @@
-#include "hive.cpp"
+#include "piece.hpp"
+#include "plateau.hpp"
 #include <iostream>
+
 int main(){
 
     cout<<"Début du jeu"<<endl;
-    
+
     Plateau plateau;
 
     Reine reine1(Position(2, 4), Noir);
