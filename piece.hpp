@@ -5,6 +5,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -27,8 +28,8 @@ public:
 
     // Opérateur d’égalité
     bool operator==(const Position& other) const {return q == other.q && r == other.r;}
-    Position** get_adjacent_coordinates() const; //à voir si le le type de retour est bon
-    bool isAdjacent(const Position& other) const;
+    //Position** get_adjacent_coordinates() const; //à voir si le le type de retour est bon
+    //bool isAdjacent(const Position& other) const;
 };
 
 namespace std {
@@ -62,9 +63,7 @@ public:
     Reine(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override {
         // La Reine peut se déplacer d'une seule case
-        if (!getPosition().isAdjacent(to)) {
-            return false;
-        }
+        
         // Vérifier que la Reine glisse d'une case à une autre
         // La Reine ne peut pas sauter par-dessus d'autres pièces
         // Implémenter la logique de glissement ici

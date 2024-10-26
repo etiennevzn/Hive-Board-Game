@@ -1,12 +1,16 @@
-#include "piece.hpp"
-#include "plateau.hpp"
+#include "piece.cpp"
+#include "plateau.cpp"
+#include "joueur.cpp"
 #include <iostream>
+
 
 int main(){
 
-    cout<<"Début du jeu"<<endl;
+    cout<<"Début du jeu\n"<<endl;
 
     Plateau plateau;
+    Joueur j1(Noir);
+    Joueur j2(Blanc);
 
     Reine reine1(Position(2, 4), Noir);
     Reine reine2(Position(1, 1), Blanc);
@@ -22,12 +26,12 @@ int main(){
     plateau.addPiece(&sauterelle1, sauterelle1.getPosition());
     plateau.addPiece(&fourmi1, fourmi1.getPosition());
    
-   plateau.print_board();
+    plateau.print_board();
 
-    
-    cout<<"Fin du jeu"<<endl;
+    j1.print_piece_left();
+
+    cout<<"\nFin du jeu"<<endl;
 
     return 0;
 }
 
-/*test*/

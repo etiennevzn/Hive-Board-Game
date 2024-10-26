@@ -1,5 +1,5 @@
 #include "piece.hpp"
-
+/*
 Position** Position::get_adjacent_coordinates() const {
     //Directions pour les lignes paires et impaires
     int offset_impaires[6][2] = {{-1, 0},{0, -1},{1, -1},{1, 0},{1, 1},{0, 1}};
@@ -29,3 +29,5 @@ bool Position::isAdjacent(const Position& other) const{
     }
     return false;
 }
+
+*/
