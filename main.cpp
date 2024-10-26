@@ -1,18 +1,19 @@
 #include "piece.cpp"
 #include "plateau.cpp"
 #include "joueur.cpp"
+#include "partie.cpp"
 #include <iostream>
 
 
 int main(){
 
-    cout<<"Début du jeu\n"<<endl;
+    cout<<"Dt du jeu\n"<<endl;
 
     Plateau plateau;
     Joueur j1(Noir);
     Joueur j2(Blanc);
-
-    Reine reine1(Position(2, 4), Noir);
+    Partie partie(j1, j2,plateau);    
+   /* Reine reine1(Position(2, 4), Noir);
     Reine reine2(Position(1, 1), Blanc);
     Scarabee scarabee1(Position(2, 6), Noir);
     Araignee araignee1(Position(1, 3), Blanc);
@@ -26,11 +27,11 @@ int main(){
     plateau.addPiece(&sauterelle1, sauterelle1.getPosition());
     plateau.addPiece(&fourmi1, fourmi1.getPosition());
    
-    plateau.print_board();
+    plateau.print_board();*/
 
     j1.print_piece_left();
-
-    cout<<"\nFin du jeu"<<endl;
+    partie.jouer();
+    cout<<"\nFin dddu jeu"<<endl;
 
     return 0;
 }

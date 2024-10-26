@@ -2,18 +2,23 @@
 #define PLATEAU_HPP
 
 #include <vector>
+
 #include <iostream>
 #include "piece.hpp"
 
 class Plateau{
     unordered_map<Position, vector<Piece*>> plateau;
     //à voir si l'on peut recopier un objet de la classe Plateau
-    Plateau(const Plateau& p);
-    Plateau& operator=(const Plateau& other); 
+    
 public:
     Plateau()=default;
+     
     void addPiece(Piece* piece, Position pos) {
         plateau[pos].push_back(piece);
+    }
+    
+    bool isPositionOccupied(Position pos) const {
+        return plateau.find(pos) != plateau.end() && !plateau.at(pos).empty();
     }
 
     void print_board() {
