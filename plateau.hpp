@@ -5,6 +5,11 @@
 
 #include <iostream>
 #include "piece.hpp"
+#include <unordered_set>
+#include <stdexcept>
+#include <limits>
+
+
 
 class Plateau{
     unordered_map<Position, vector<Piece*>> plateau;
@@ -12,18 +17,57 @@ class Plateau{
     
 public:
     Plateau()=default;
-     
+    unordered_map<Position, vector<Piece*>> getPlateau() const{return plateau;}
     void addPiece(Piece* piece, Position pos) {
         plateau[pos].push_back(piece);
+        piece->getPosition() = pos;
     }
     
+    
     bool isPositionOccupied(Position pos) const {
-        return plateau.find(pos) != plateau.end() && !plateau.at(pos).empty();
+        auto it = plateau.find(pos);
+        return it != plateau.end() && !it->second.empty();
     }
 
-    void print_board() {
+     bool deplacerPiece(Position from, Position to, Couleur couleur) {
+        if (!isReinePlaced(couleur)) {
+            std::cout << "La reine doit être posée avant de déplacer une autre pièce." << std::endl;
+            return false;
+        }
+
+        if (isPositionOccupied(from)) {
+            try {
+                Piece* piece = plateau.at(from).back();
+                if (piece->getCouleur() == couleur && piece->isValidMove(to, plateau)) {
+                    plateau[from].pop_back();
+                    piece->setPosition(to);
+                    plateau[to].push_back(piece);
+                    return true;
+                }
+            } catch (const std::out_of_range& e) {
+                std::cerr << "Error: " << e.what() << std::endl;
+                return false;
+            }
+        }
+        return false;
+    }
+
+    bool isReinePlaced(Couleur couleur) const {
+        for (const auto& entry : plateau) {
+            const vector<Piece*>& pieces = entry.second;
+            for (const Piece* piece : pieces) {
+                if (piece->getType() == "Reine" && piece->getCouleur() == couleur) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void print_board() const {
         // Determine the bounds of the board
-        int minQ = INT_MAX, maxQ = INT_MIN, minR = INT_MAX, maxR = INT_MIN;
+        int minQ = numeric_limits<int>::max(), maxQ = numeric_limits<int>::min();
+        int minR = numeric_limits<int>::max(), maxR = numeric_limits<int>::min();
         for (const auto& entry : plateau) {
             const Position& pos = entry.first;
             minQ = min(minQ, pos.getColonne());
@@ -36,20 +80,60 @@ public:
         for (int r = minR; r <= maxR; ++r) {
             for (int q = minQ; q <= maxQ; ++q) {
                 Position pos(q, r);
-                if (plateau.find(pos) != plateau.end() && !plateau[pos].empty()) {
-                    cout << plateau[pos].back()->getInitial()<<(plateau[pos].back()->getCouleur() == Noir ?"N":"B");
-                } else {
+                try {
+                    if (plateau.at(pos).empty()) {
+                        cout << ".";
+                    } else {
+                        cout << plateau.at(pos).back()->getInitial();
+                    }
+                } catch (const out_of_range& e) {
                     cout << ".";
                 }
                 cout << " ";
             }
-            cout << endl;
+            cout << std::endl;
         }
     }
 
-    
+    void print_positions() const {
+        cout << "Positions des pièces sur le plateau:\n" << endl;
+        for (const auto& entry : plateau) {
+            const Position& pos = entry.first;
+            const vector<Piece*>& pieces = entry.second;
+            for (const Piece* piece : pieces) {
+                cout << piece->getType() << " (" << piece->getCouleur() << ") à la position (" << pos.getColonne() << ", " << pos.getLigne() << ")\n" << endl;
+            }
+        }
+    }
+
+    vector<Position> getAllAdjacentCoordinates() const {
+        unordered_set<Position, hash<Position>> allAdjacents;
+        for (const auto& entry : plateau) {
+            const Position& pos = entry.first;
+            vector<Position> adjacents = pos.getAdjacentCoordinates();
+            for (const Position& adj : adjacents) {
+                auto it = plateau.find(adj);
+                if (it == plateau.end() || it->second.empty()) {
+                    allAdjacents.insert(adj);
+                }
+            }
+        }
+        for (const Position& adj : allAdjacents){
+            cout<<"("<<adj.getColonne()<< " "<<adj.getLigne()<<")"<<endl;
+        }
+        cout<<"---------------------------\n"<<endl;
+
+        return vector<Position>(allAdjacents.begin(), allAdjacents.end());
+    }
+
+
 
 };
+
+
+    
+
+
 
 
 

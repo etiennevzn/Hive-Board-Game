@@ -26,7 +26,7 @@ public :
     
     Couleur getCouleur() const { return couleur; }
     const vector<Piece*>& getPieces() const { return pieces; }
-    bool poserPiece(char pieceType, Position pos, Plateau& plateau);
+    bool poserPiece(char pieceType, Position pos, Plateau& plateaun,int tourActuel);
     void print_piece_left();
 };
 
