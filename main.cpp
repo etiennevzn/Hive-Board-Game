@@ -13,7 +13,7 @@ int main(){
     Joueur j1(Noir);
     Joueur j2(Blanc);
         
-    Reine reine1(Position(4, 4), Noir);
+    Reine reine1(Position(6, 4), Noir);
     Reine reine2(Position(5, 6), Blanc);
     Sauterelle sauterelle1(Position(5, 5), Noir);
     Araignee araignee1(Position(5, 7), Noir);

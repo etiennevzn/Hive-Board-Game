@@ -3,8 +3,7 @@
 
 vector<Position> Position::getAdjacentCoordinates() const {
         std::vector<Position> adjacents;
-        adjacents.push_back(Position(q - 1, r));     // Left
-        adjacents.push_back(Position(q + 1, r));     // Right
+        
         adjacents.push_back(Position(q, r - 1));     // Up
         adjacents.push_back(Position(q, r + 1));     // Down
         adjacents.push_back(Position(q - 1, r + 1)); // Up-Left

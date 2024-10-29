@@ -121,18 +121,39 @@ public:
         return canMoveThreeSpaces(getPosition(), to, plateau, visited, 0);
         
     }
-    bool canMoveThreeSpaces(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau, unordered_set<Position, hash<Position>>& visited, int depth) const {
+    bool canMoveThreeSpaces(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position, hash<Position>>& visited, int depth) const {
+        // Check if we've moved exactly three steps
         if (depth == 3) {
-            return from == to;
+            return from == to; // If at depth 3, we must be at the destination
         }
 
         visited.insert(from);
         vector<Position> adjacents = from.getAdjacentCoordinates();
+
         for (const Position& adj : adjacents) {
-            if (visited.find(adj) == visited.end() && (plateau.find(adj) == plateau.end() || plateau.at(adj).empty())) {
-                if (canMoveThreeSpaces(adj, to, plateau, visited, depth + 1)) {
-                    return true;
+            // Continue only if this position is unvisited and either empty or not the final destination
+            if (visited.find(adj) == visited.end() &&
+                (plateau.find(adj) == plateau.end() || plateau.at(adj).empty())) {
+
+                // Ensure adjacency with at least one other piece
+                if (isAdjacentToPiece(adj, plateau)) {
+                    if (canMoveThreeSpaces(adj, to, plateau, visited, depth + 1)) {
+                        return true;
+                    }
                 }
+            }
+        }
+
+        return false;
+    }
+
+
+
+    bool isAdjacentToPiece(const Position& pos, const unordered_map<Position, vector<Piece*>>& plateau) const {
+        // Checks if the position has any neighboring pieces
+        for (const Position& adj : pos.getAdjacentCoordinates()) {
+            if (plateau.find(adj) != plateau.end() && !plateau.at(adj).empty()) {
+                return true; // Found an adjacent piece
             }
         }
         return false;
