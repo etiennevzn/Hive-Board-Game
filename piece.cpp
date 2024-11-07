@@ -1,6 +1,14 @@
 #include "piece.hpp"
 #include <vector>
 
+string toString(Couleur couleur) {
+    switch (couleur) {
+        case Noir: return "Noir";
+        case Blanc: return "Blanc";
+        default: return "Inconnu";
+    }
+}
+
 vector<Position> Position::getAdjacentCoordinates() const {
     std::vector<Position> adjacents;
     

@@ -7,6 +7,7 @@
 #include "plateau.hpp"
 
 using namespace std;
+
 class Joueur{
     Couleur couleur;
     vector<Piece*> pieces;

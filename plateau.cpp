@@ -12,7 +12,7 @@ bool Plateau::isPositionOccupied(Position pos) const {
 
 bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
     if (!isReinePlaced(couleur)) {
-        std::cout << "La reine doit être posée avant de déplacer une autre pièce." << std::endl;
+        std::cout << "La reine doit etre posee avant de deplacer une autre piece." << std::endl;
         return false;
     }
 
@@ -79,12 +79,12 @@ void Plateau::print_board() const {
 }
 
 void Plateau::print_positions() const {
-    cout << "Positions des pièces sur le plateau:\n" << endl;
+    cout << "Positions des pieces sur le plateau:\n" << endl;
     for (const auto& entry : plateau) {
         const Position& pos = entry.first;
         const vector<Piece*>& pieces = entry.second;
         for (const Piece* piece : pieces) {
-            cout << piece->getType() << " (" << piece->getCouleur() << ") à la position (" << pos.getColonne() << ", " << pos.getLigne() << ")\n" << endl;
+            cout << piece->getType() << " (" << (piece->getCouleur()== Noir ? "Noir" : "Blanc") << ") a la position (" << pos.getColonne() << ", " << pos.getLigne() << ")\n" << endl;
         }
     }
 }

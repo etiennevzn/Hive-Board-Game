@@ -9,7 +9,6 @@
 #include <limits>
 
 
-
 class Plateau{
     unordered_map<Position, vector<Piece*>> plateau;
     //à voir si l'on peut recopier un objet de la classe Plateau pour les constructeurs de recopie 

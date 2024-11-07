@@ -7,7 +7,7 @@
 
 int main(){
 
-    cout<<"Début dudd jeu\n"<<endl;
+    cout<<"Debut du jeu\n"<<endl;
 
     Plateau plateau;
     Joueur j1(Noir);
@@ -30,7 +30,7 @@ int main(){
     //j1.print_piece_left();
     Partie partie(j1, j2,plateau,2);
     partie.jouer();
-    cout<<"\nFin dddu jeu"<<endl;
+    cout<<"\nFin du jeu"<<endl;
 
     return 0;
 }

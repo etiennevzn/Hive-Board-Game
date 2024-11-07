@@ -1,7 +1,8 @@
 #include "joueur.hpp"
 #include "partie.hpp"
+
 void Joueur::print_piece_left(){
-    cout<< "la liste des pièces restantes est : \n"<<endl;
+    cout<< "la liste des pieces restantes est : \n"<<endl;
     for(Piece * piece : pieces){
         cout<<  piece->getType()<<" "<<endl;
     }
@@ -21,13 +22,13 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
     }
 
     if (piece == nullptr) {
-        cout<<"La pièce n'a pas été trouvée dans la liste du joueur"<< endl;
+        cout<<"La piece n'a pas ete trouvee dans la liste du joueur"<< endl;
         return false; // 
     }
 
     // Vérifier si la position est valide pour poser la pièce
     if (plateau.isPositionOccupied(pos)) {
-        cout<<"position occupée"<< endl;
+        cout<<"position occupee"<< endl;
         return false; // La position est déjà occupée
     }
 
@@ -44,7 +45,7 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
         }
 
         if (!adjacent) {
-            cout << "La pièce doit être placée adjacente à une autre pièce." << endl;
+            cout << "La piece doit être placee adjacente a une autre piece." << endl;
             return false;
         }
     }

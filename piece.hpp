@@ -17,7 +17,6 @@ enum Couleur {
     Blanc
 };
 
-
 class Position{
     int q; // Colonne
     int r; // Ligne
@@ -35,21 +34,19 @@ public:
     bool isAdjacent(const Position& other) const;
 };
 
-namespace std {
+namespace std{
     template <>
-    struct hash<Position> {
-        size_t operator()(const Position& pos) const {
-            return hash<int>()(pos.getColonne()) ^ hash<int>()(pos.getLigne());
-        }
+    struct hash<Position> { //permet d'utiliser les objets position comme clé d'une unordered map
+        size_t operator()(const Position& pos) const { return hash<int>()(pos.getColonne()) ^ hash<int>()(pos.getLigne());}
     };
 }
+
 
 class Piece {
     Position pos;
     Couleur couleur;
 public:
-    Piece(const Position& pos, Couleur couleur)
-        : pos(pos), couleur(couleur) {}
+    Piece(const Position& pos, Couleur couleur): pos(pos), couleur(couleur) {}
     virtual ~Piece() = default;
     virtual bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const = 0;
     Position getPosition() const { return pos; }

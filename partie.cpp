@@ -79,16 +79,16 @@ void Partie::jouer(){
         plateau.print_board();
         plateau.print_positions();
         cout << "Tour du joueur "  << " (" << (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << ")" << endl;
-        cout << "1. Poser une pièce" << endl;
-        cout << "2. Déplacer une pièce" << endl;
-        cout << "3. Voir les mouvements possibles pour une pièce" << endl;
+        cout << "1. Poser une piece" << endl;
+        cout << "2. Deplacer une piece" << endl;
+        cout << "3. Voir les mouvements possibles pour une piece" << endl;
         cout << "Choisissez une option: ";
         int choix;
         cin >> choix;
         switch (choix) {
                     case 1: {
                         // Poser une pièce
-                        cout << "Choisissez une pièce à poser (R: Reine, S: Scarabee, A: Araignee, H: Sauterelle, F: Fourmi): ";
+                        cout << "Choisissez une piece a poser (R: Reine, S: Scarabee, A: Araignee, H: Sauterelle, F: Fourmi): ";
                         char pieceType;
                         cin >> pieceType;
                         //si premier tour on pose juste la pîèce au milieu
@@ -106,13 +106,13 @@ void Partie::jouer(){
                         if (joueurCourant->poserPiece(pieceType, pos,plateau,tourActuel)) {
                             nextTurn();
                         } else {
-                            cout << "Impossible de poser la pièce à cette position." << endl;
+                            cout << "Impossible de poser la piece à cette position." << endl;
                         }
                         break;
                     }
                     case 2: {
                         // Déplacer une pièce
-                        cout << "Entrez la position de départ (q r): ";
+                        cout << "Entrez la position de depart (q r): ";
                         int qFrom, rFrom;
                         cin >> qFrom >> rFrom;
                         Position from(qFrom, rFrom);
@@ -129,7 +129,7 @@ void Partie::jouer(){
                     }
                     case 3: {
                         // Voir les mouvements possibles pour une pièce
-                        cout << "Entrez la position de la pièce (q r): ";
+                        cout << "Entrez la position de la piece (q r): ";
                         int q, r;
                         cin >> q >> r;
                         Position pos(q, r);
@@ -138,7 +138,7 @@ void Partie::jouer(){
                     }
                    
                     default:
-                        cout << "Choix invalide. Réessayez." << endl;
+                        cout << "Choix invalide. Reessayez." << endl;
                         break;
         }
     }
