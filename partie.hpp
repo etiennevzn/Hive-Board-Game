@@ -6,7 +6,6 @@
 #include "joueur.hpp"
 using namespace std;
 class Partie{
-
     Plateau plateau;
     int tourActuel;
     Joueur joueur1;
