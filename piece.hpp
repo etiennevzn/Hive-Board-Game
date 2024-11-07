@@ -32,16 +32,7 @@ public:
     // Opérateur d’égalité
     bool operator==(const Position& other) const {return q == other.q && r == other.r;}
     vector<Position> getAdjacentCoordinates() const;
-    
-    bool isAdjacent(const Position& other) const {
-        vector<Position> adjacents = getAdjacentCoordinates();
-        for (const Position& adj : adjacents) {
-            if (adj == other) {
-                return true;
-            }
-        }
-        return false;
-    }
+    bool isAdjacent(const Position& other) const;
 };
 
 namespace std {
@@ -54,7 +45,6 @@ namespace std {
 }
 
 class Piece {
-
     Position pos;
     Couleur couleur;
 public:
