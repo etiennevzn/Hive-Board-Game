@@ -10,15 +10,26 @@ string toString(Couleur couleur) {
 }
 
 vector<Position> Position::getAdjacentCoordinates() const {
-    std::vector<Position> adjacents;
-    
-    adjacents.push_back(Position(q, r - 1));     // Up
-    adjacents.push_back(Position(q, r + 1));     // Down
-    adjacents.push_back(Position(q - 1, r + 1)); // Up-Left
-    adjacents.push_back(Position(q + 1, r - 1)); // Down-Right
-    adjacents.push_back(Position(q + 1, r + 1)); // Up-Right
-    adjacents.push_back(Position(q - 1, r - 1)); // Down-Left
-    return adjacents;
+    // Directions pour les lignes paires et impaires
+    std::vector<std::pair<int, int>> oddDirections = {
+        {-1, 0}, {0, -1}, {1, -1},
+        {1, 0}, {1, 1}, {0, 1}
+    };
+    std::vector<std::pair<int, int>> evenDirections = {
+        {-1, 0}, {-1, -1}, {0, -1},
+        {1, 0}, {0, 1}, {-1, 1}
+    };
+
+    // Choisir les directions en fonction de la parité de r
+    const auto& directions = (r % 2 == 0) ? evenDirections : oddDirections;
+
+    // Calculer les coordonnées adjacentes
+    std::vector<Position> adjacent;
+    for (const auto& [dq, dr] : directions) {
+        adjacent.emplace_back(q + dq, r + dr);
+    }
+
+    return adjacent;
 }
 
 bool Position::isAdjacent(const Position& other) const {

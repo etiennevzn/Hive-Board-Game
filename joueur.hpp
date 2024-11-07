@@ -14,10 +14,8 @@ class Joueur{
     
     
 public :
-    Joueur(Couleur couleur)
-        :  couleur(couleur) {
-        
-        pieces.push_back(new Reine(Position(0, 0), couleur));
+    Joueur(Couleur couleur): couleur(couleur) {
+        pieces.push_back(new Reine(Position(0, 0), couleur)); //bizarre de devoir assigner des positions aux pièces quand on les créé comme ça
         pieces.push_back(new Scarabee(Position(1, 0), couleur));
         pieces.push_back(new Araignee(Position(2, 0), couleur));
         pieces.push_back(new Sauterelle(Position(3, 0), couleur));
