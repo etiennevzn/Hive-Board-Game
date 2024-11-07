@@ -7,7 +7,7 @@
 
 int main(){
 
-    cout<<"Debut du jeu\n"<<endl;
+   cout<<"Debut du jeu\n"<<endl;
 
     Plateau plateau;
     Joueur j1(Noir);
