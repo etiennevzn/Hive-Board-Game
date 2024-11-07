@@ -16,7 +16,7 @@ void Partie::dfs(Position pos, unordered_set<Position, hash<Position>>& visited)
 void Partie::afficherMouvementsPossibles(Position pos) {
     if (plateau.isPositionOccupied(pos)) {
         Piece* piece = plateau.getPlateau().at(pos).back();
-        cout << "Mouvements possibles pour la pièce " << piece->getType() << " à la position (" << pos.getColonne() << ", " << pos.getLigne() << "):" << endl;
+        cout << "Mouvements possibles pour la piece " << piece->getType() << " a la position (" << pos.getColonne() << ", " << pos.getLigne() << "):" << endl;
         vector<Position> adjacents = plateau.getAllAdjacentCoordinates();
         for (const Position& adj : adjacents) {
             if (piece->isValidMove(adj, plateau.getPlateau()) && !wouldSplitHive(pos, adj)) {
@@ -75,7 +75,7 @@ bool Partie::wouldSplitHive(Position from, Position to) {
 void Partie::jouer(){
 
     while(true){
-        cout << "Tour" <<tourActuel<<endl;
+        cout << "Tour " <<tourActuel<<endl;
         plateau.print_board();
         plateau.print_positions();
         cout << "Tour du joueur "  << " (" << (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << ")" << endl;
@@ -106,7 +106,7 @@ void Partie::jouer(){
                         if (joueurCourant->poserPiece(pieceType, pos,plateau,tourActuel)) {
                             nextTurn();
                         } else {
-                            cout << "Impossible de poser la piece à cette position." << endl;
+                            cout << "Impossible de poser la piece a cette position." << endl;
                         }
                         break;
                     }

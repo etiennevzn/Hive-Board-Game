@@ -45,7 +45,7 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
         }
 
         if (!adjacent) {
-            cout << "La piece doit être placee adjacente a une autre piece." << endl;
+            cout << "La piece doit etre placee adjacente a une autre piece." << endl;
             return false;
         }
     }
