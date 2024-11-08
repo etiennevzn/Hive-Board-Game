@@ -52,29 +52,17 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
         return false;
     }
 
-    // Vérifier si la position est valide pour poser la pièce
-    if (plateau.isPositionOccupied(pos)) {
-        cout<<"position occupee"<< endl;
-        return false; // La position est déjà occupée
-    }
-
-
-
     if (tourActuel == 0) {
         //placer à 0,0
-    }else{    // Si ce n'est pas le premier tour, vérifier si la position est adjacente à une autre pièce
-        bool adjacent = false;
-        vector<Position> adjacents = pos.getAdjacentCoordinates();
-        for (const Position& adj : adjacents) {
-            if (plateau.isPositionOccupied(adj)) {
-                adjacent = true;
-                break;
-            }
-        }
-        if (!adjacent) {
-            cout << "La piece doit etre placee adjacente a une autre piece." << endl;
+    }else if(tourActuel == 1){    // Si ce n'est pas le premier tour, vérifier si la position est adjacente à une autre pièce
+
+    }else{
+        if(get_liste_placements(plateau).size() == 0){
+            cout << "Vous ne pouvez pas placer de piece." << endl;
+            delete piece;
             return false;
         }
+        // a faire : vérifier si la position est dans la get_liste_placements, et si oui alors placer la pièce à cette position
     }
 
 
