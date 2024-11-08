@@ -11,18 +11,9 @@ using namespace std;
 class Joueur{
     Couleur couleur;
     vector<Piece*> pieces;
-    
-    
+    unordered_map<string, int> nb_pieces;
 public :
-    Joueur(Couleur couleur): couleur(couleur) {
-        pieces.push_back(new Reine(Position(0, 0), couleur)); //bizarre de devoir assigner des positions aux pièces quand on les créé comme ça
-        pieces.push_back(new Scarabee(Position(1, 0), couleur));
-        pieces.push_back(new Araignee(Position(2, 0), couleur));
-        pieces.push_back(new Sauterelle(Position(3, 0), couleur));
-        pieces.push_back(new Fourmi(Position(4, 0), couleur));
-        
-    }
-    
+    Joueur(const Couleur& c) : couleur(c), pieces() {};
     Couleur getCouleur() const { return couleur; }
     const vector<Piece*>& getPieces() const { return pieces; }
     bool poserPiece(char pieceType, Position pos, Plateau& plateaun,int tourActuel);

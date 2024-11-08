@@ -1,6 +1,7 @@
 #include "joueur.hpp"
 #include "partie.hpp"
 
+
 void Joueur::print_piece_left(){
     cout<< "la liste des pieces restantes est : \n"<<endl;
     for(Piece * piece : pieces){
