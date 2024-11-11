@@ -21,19 +21,30 @@ vector<Position> Joueur::get_liste_placements(const Plateau& plateau){ //donne t
                 for (const auto& pos_finale : adjacents_pos_libre) {
                     bool isFriendly = true;
                     if(plateau.getPlateau().find(pos_finale) != plateau.getPlateau().end()){
-                        for (const auto& piece2 : plateau.getPlateau().at(pos_finale)) {
-                            if (piece2->getCouleur() != couleur) {
-                                isFriendly = false;
+                        if(!plateau.getPlateau().at(pos_finale).empty()){
+                            for (const auto& piece2 : plateau.getPlateau().at(pos_finale)) {
+                                if (piece2->getCouleur() != couleur) {
+                                    isFriendly = false;
+                                }
                             }
                         }
                     }
                     if (isFriendly) {
                         liste_placements.push_back(pos);
                     }
-                }               
+                }
             }
         }
     }
+    /*unordered_map<Position, int> occurences;
+    for (const auto& pos : temp_result) {
+        occurences[pos]++;
+    }   
+    for (const auto& entry : occurences) {
+        if (entry.second == 6) {
+            liste_placements.push_back(entry.first);
+        }
+    } */ 
     return liste_placements;
 }
 
@@ -57,29 +68,36 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
     switch(pieceType){ //on créé la pièce avec position temporaire l'origine, qui sera changée en fonction des cas
         case 'R':
             piece = new Reine(origin, couleur);
+            break;
         case 'A':
             piece = new Araignee(origin, couleur);
+            break;
         case 'S':
             piece = new Scarabee(origin, couleur);
+            break;
         case 'F':
             piece = new Fourmi(origin, couleur);
+            break;
         case 'H':
             piece = new Sauterelle(origin, couleur);
+            break;
         case 'C':
             piece = new Coccinelle(origin, couleur);
+            break;
         case 'M':
             piece = new Moustique(origin, couleur);
+            break;
     }
 
     if (tourActuel == 0) {
         //placer à 0,0
         if(plateau.getPlateau().find(origin) != plateau.getPlateau().end()){ //si l'origine est déjà occupée (c'est pas censé être le cas normalement)
-            cout << "Erreur : la position d'origine est déjà occupée." << endl;
+            cout << "Erreur : la position d'origine est deja occupee." << endl;
             delete piece;
             return false;
         }
         if(pos != origin){ //si la position n'est pas 0,0
-            cout << "La première pièce doit être placée à l'origine" << endl;
+            cout << "La premiere piece doit etre placee a l'origine" << endl;
             delete piece;
             return false;
         }
@@ -92,7 +110,7 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
         return true;
     }else if(tourActuel == 1){ //Si ce n'est pas le premier tour, vérifier si la position est adjacente à une autre pièce
         bool isAdjacent = false;
-        if(plateau.isPositionOccupied(pos)){
+        if(!plateau.isPositionOccupied(pos)){
             for (const auto& pair : plateau.getPlateau()) { //normalement à ce stade il n'y a qu'une position occupée, l'origine, mais on parcourt tout le plateau quand même
                 if (pair.first.isAdjacent(pos)) {
                     isAdjacent = true;
@@ -100,7 +118,7 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
             }
         } //Résumé : si la position est libre et adjacente a un pièce (peut importe la couleur au premier tour), alors on peut placer la pièce
         if (!isAdjacent) {
-            cout << "La pièce doit être placée à côté d'une autre pièce." << endl;
+            cout << "La piece doit etre placee a cote d'une autre piece." << endl;
             delete piece;
             return false;
         }

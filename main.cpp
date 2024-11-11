@@ -12,25 +12,20 @@ int main(){
     Plateau plateau;
     Joueur j1(Noir);
     Joueur j2(Blanc);
-        
-    Reine reine1(Position(6, 4), Noir);
-    Reine reine2(Position(5, 6), Blanc);
-    Sauterelle sauterelle1(Position(5, 5), Noir);
-    Araignee araignee1(Position(5, 7), Noir);
-    
 
-    
-    plateau.addPiece(&reine1, reine1.getPosition());
-    plateau.addPiece(&reine2, reine2.getPosition());
-    plateau.addPiece(&sauterelle1, sauterelle1.getPosition());
-    plateau.addPiece(&araignee1, araignee1.getPosition());
-   
+    j1.poserPiece('R', Position(0,0), plateau,0);
+    j2.poserPiece('R', Position(0,1), plateau,1);
     plateau.print_board();
+    vector<Position> vec = j1.get_liste_placements(plateau);
+    for(const auto& pos : vec){
+        cout << "("<< pos.getColonne() << ", " << pos.getLigne() << ")" << endl;
+    }   
 
-    //j1.print_piece_left();
-    Partie partie(j1, j2,plateau,2);
+    /*
+    Partie partie(j1, j2,plateau,0);
     partie.jouer();
     cout<<"\nFin du jeu"<<endl;
+    */
 
     return 0;
 }

@@ -93,7 +93,6 @@ void Partie::jouer(){
                         cin >> pieceType;
                         //si premier tour on pose juste la pîèce au milieu
                         if(tourActuel==0){
-                            
                             joueurCourant->poserPiece(pieceType, Position(0, 0),plateau,tourActuel);
                             nextTurn();
                             break;
