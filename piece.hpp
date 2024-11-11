@@ -30,6 +30,7 @@ public:
 
     // Opérateur d’égalité
     bool operator==(const Position& other) const {return q == other.q && r == other.r;}
+    bool operator!=(const Position& other) const {return q != other.q || r != other.r;}
     vector<Position> getAdjacentCoordinates() const;
     bool isAdjacent(const Position& other) const;
 };
@@ -98,6 +99,22 @@ public:
     bool canSlideTo(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau, unordered_set<Position, hash<Position>>& visited) const;
     string getType() const override { return "Fourmi"; }
     char getInitial() const override {return 'F';}
+};
+
+class Moustique : public Piece {
+public:
+    Moustique(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
+    bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
+    string getType() const override { return "Moustique"; }
+    char getInitial() const override {return 'M';}
+};
+
+class Coccinelle : public Piece {
+public:
+    Coccinelle(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
+    bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
+    string getType() const override { return "Coccinelle"; }
+    char getInitial() const override {return 'C';}
 };
 
 #endif

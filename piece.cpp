@@ -171,3 +171,10 @@ bool Fourmi::canSlideTo(const Position& from, const Position& to, const unordere
     return false;
 }
 
+bool Moustique::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
+    return true;
+}
+
+bool Coccinelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
+    return true;
+}
