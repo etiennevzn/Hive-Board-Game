@@ -4,11 +4,25 @@
 
 
 void Joueur::print_piece_left(){
-    cout<< "la liste des pieces restantes est : \n"<<endl;
+    cout<< "La liste des pieces restantes est : "<<endl;
     for (const auto& pair : nb_pieces) {
-        std::cout << "Pièce " << pair.first << " : " << pair.second << " unités" << std::endl;
+        if(pair.first == "R"){
+            cout << "Reine : " << 1-pair.second << endl;
+        }else if(pair.first == "A"){
+            cout << "Araignee : " << 2-pair.second << endl;
+        }else if(pair.first == "S"){
+            cout << "Scarabee : " << 2-pair.second << endl;
+        }else if(pair.first == "F"){
+            cout << "Fourmi : " << 3-pair.second << endl;
+        }else if(pair.first == "H"){
+            cout << "Sauterelle : " << 3-pair.second << endl;
+        }else if(pair.first == "C"){
+            cout << "Coccinelle : " << 1-pair.second << endl;
+        }else if(pair.first == "M"){
+            cout << "Moustique : " << 1-pair.second << endl;
+        }          
     }
-
+    cout << "\n";
 };
 
 vector<Position> Joueur::get_liste_placements(const Plateau& plateau) {

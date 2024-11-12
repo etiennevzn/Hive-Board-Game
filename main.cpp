@@ -13,14 +13,15 @@ int main(){
     Joueur j1(Noir);
     Joueur j2(Blanc);
 
+    j1.print_piece_left();
+
     j1.poserPiece('R', Position(0,0), plateau,0);
     j2.poserPiece('R', Position(1,0), plateau,1);
-    j2.poserPiece('A', Position(2,0), plateau,2);
-    plateau.print_board();
-    vector<Position> vec = j2.get_liste_placements(plateau);
-    for(const auto& pos : vec){
-        cout << "("<< pos.getColonne() << ", " << pos.getLigne() << ")" << endl;
-    }   
+
+    j1.print_piece_left();
+    //j2.poserPiece('A', Position(15,0), plateau,2);
+    j2.poserPiece('A', Position(1,1), plateau,2);
+    plateau.print_board(3);
 
     /*
     Partie partie(j1, j2,plateau,0);

@@ -1,4 +1,6 @@
 #include "plateau.hpp"
+#include <iomanip>
+
 
 void Plateau::addPiece(Piece* piece, Position pos) {
     plateau[pos].push_back(piece);
@@ -46,7 +48,7 @@ bool Plateau::isReinePlaced(Couleur couleur) const {
     }
     return false;
 }
-
+/*
 void Plateau::print_board() const {
     // Determine the bounds of the board
     int minQ = numeric_limits<int>::max(), maxQ = numeric_limits<int>::min();
@@ -75,6 +77,32 @@ void Plateau::print_board() const {
             cout << " ";
         }
         cout << std::endl;
+    }
+}*/
+
+
+void Plateau::print_board(int size) const {
+    int board_size = size; 
+    
+    // Parcourir les lignes
+    for (int r = 0; r < board_size; ++r) {
+        // Décalage pour chaque ligne
+        cout << string(r * 3, ' ');
+        
+        // Parcourir les colonnes de chaque ligne
+        for (int q = 0; q < board_size; ++q) {
+            Position pos(q, r);
+
+            // Vérifier s'il y a une pièce à cette position
+            if (isPositionOccupied(pos)) {
+                Piece* piece = plateau.at(pos)[0]; // Obtenir la première pièce sur la position
+                piece->getCouleur() == Blanc ? cout << "[" << piece->getInitial() << ".B" << "] " : cout << "[" << piece->getInitial() << ".N" << "] "; // Affiche la pièce avec son type et couleur
+            } else {
+                cout << "[   ] "; // Case vide
+            }
+        }
+        
+        cout << endl; // Nouvelle ligne après chaque rangée
     }
 }
 
