@@ -15,41 +15,25 @@ vector<Position> Joueur::get_liste_placements(const Plateau& plateau) {
     unordered_set<Position> valid_positions; // Ensemble pour éviter les doublons
 
     for (Piece* piece : pieces) {
-        Position pos = piece->getPosition(); // Suppose que Piece a une méthode getPosition()
-        vector<Position> adj_positions = pos.getAdjacentCoordinates();
+        vector<Position> adj_positions = piece->getPosition().getAdjacentCoordinates(); //on prend les positions adjacentes aux pièces du joueur sur le plateau
 
-        for (const Position& adj : adj_positions) {
-            // Vérifier que la position adjacente est vide
-            if (!plateau.isPositionOccupied(adj)) {
-                // Vérifier si la position est adjacente à une pièce du joueur
-                bool adjacent_to_own_piece = false;
-                for (const Position& own_adj : adj.getAdjacentCoordinates()) {
-                    if (plateau.isPositionOccupied(own_adj) &&
-                        plateau.getPlateau().at(own_adj)[0]->getCouleur() == couleur) {
-                        adjacent_to_own_piece = true;
-                        break;
-                    }
-                }
-
-                // Vérifier que la position n'est pas adjacente à une pièce de l'autre joueur
+        for (const Position& adj : adj_positions) { //pour chaque position adjacente
+            if (!plateau.isPositionOccupied(adj)) { //on regarde si la position est libre
                 bool adjacent_to_opponent_piece = false;
-                for (const Position& other_adj : adj.getAdjacentCoordinates()) {
+                for (const Position& other_adj : adj.getAdjacentCoordinates()) { //on regarde si la position est adjacente à une pièce adverse
                     if (plateau.isPositionOccupied(other_adj) &&
                         plateau.getPlateau().at(other_adj)[0]->getCouleur() != couleur) {
                         adjacent_to_opponent_piece = true;
                         break;
                     }
                 }
-
-                // Si les conditions sont remplies, ajouter la position aux positions valides
-                if (adjacent_to_own_piece && !adjacent_to_opponent_piece) {
+                if (!adjacent_to_opponent_piece) { //si la position est libre et non adjacente a une pièce adverse, on peut poser une pièce dessus
                     valid_positions.insert(adj);
                 }
             }
         }
     }
-
-    return vector<Position>(valid_positions.begin(), valid_positions.end());
+    return vector<Position>(valid_positions.begin(), valid_positions.end()); //on retourne un vecteur des positions valides
 }
 
 
