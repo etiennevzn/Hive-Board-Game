@@ -11,42 +11,47 @@ void Joueur::print_piece_left(){
 
 };
 
-vector<Position> Joueur::get_liste_placements(const Plateau& plateau){ //donne toutes les cases possibles ou un joueur peut placer une piece
-    vector<Position> liste_placements;
-    for (const auto& piece : pieces) {
-        vector<Position> adjacents = piece->getPosition().getAdjacentCoordinates();
-        for (const auto& pos : adjacents) {
-            if (!plateau.isPositionOccupied(pos)) {
-                vector<Position> adjacents_pos_libre = pos.getAdjacentCoordinates();
-                for (const auto& pos_finale : adjacents_pos_libre) {
-                    bool isFriendly = true;
-                    if(plateau.getPlateau().find(pos_finale) != plateau.getPlateau().end()){
-                        if(!plateau.getPlateau().at(pos_finale).empty()){
-                            for (const auto& piece2 : plateau.getPlateau().at(pos_finale)) {
-                                if (piece2->getCouleur() != couleur) {
-                                    isFriendly = false;
-                                }
-                            }
-                        }
+vector<Position> Joueur::get_liste_placements(const Plateau& plateau) {
+    unordered_set<Position> valid_positions; // Ensemble pour éviter les doublons
+
+    for (Piece* piece : pieces) {
+        Position pos = piece->getPosition(); // Suppose que Piece a une méthode getPosition()
+        vector<Position> adj_positions = pos.getAdjacentCoordinates();
+
+        for (const Position& adj : adj_positions) {
+            // Vérifier que la position adjacente est vide
+            if (!plateau.isPositionOccupied(adj)) {
+                // Vérifier si la position est adjacente à une pièce du joueur
+                bool adjacent_to_own_piece = false;
+                for (const Position& own_adj : adj.getAdjacentCoordinates()) {
+                    if (plateau.isPositionOccupied(own_adj) &&
+                        plateau.getPlateau().at(own_adj)[0]->getCouleur() == couleur) {
+                        adjacent_to_own_piece = true;
+                        break;
                     }
-                    if (isFriendly) {
-                        liste_placements.push_back(pos);
+                }
+
+                // Vérifier que la position n'est pas adjacente à une pièce de l'autre joueur
+                bool adjacent_to_opponent_piece = false;
+                for (const Position& other_adj : adj.getAdjacentCoordinates()) {
+                    if (plateau.isPositionOccupied(other_adj) &&
+                        plateau.getPlateau().at(other_adj)[0]->getCouleur() != couleur) {
+                        adjacent_to_opponent_piece = true;
+                        break;
                     }
+                }
+
+                // Si les conditions sont remplies, ajouter la position aux positions valides
+                if (adjacent_to_own_piece && !adjacent_to_opponent_piece) {
+                    valid_positions.insert(adj);
                 }
             }
         }
     }
-    /*unordered_map<Position, int> occurences;
-    for (const auto& pos : temp_result) {
-        occurences[pos]++;
-    }   
-    for (const auto& entry : occurences) {
-        if (entry.second == 6) {
-            liste_placements.push_back(entry.first);
-        }
-    } */ 
-    return liste_placements;
+
+    return vector<Position>(valid_positions.begin(), valid_positions.end());
 }
+
 
 bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourActuel) {
     Piece* piece = nullptr;
