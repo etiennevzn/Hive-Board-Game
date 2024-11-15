@@ -2,6 +2,58 @@
 #include <iomanip>
 
 
+void Plateau::dfs(Position pos, unordered_set<Position, hash<Position>>& visited) {
+    visited.insert(pos);
+    vector<Position> adjacents = pos.getAdjacentCoordinates();
+    for (const Position& adj : adjacents) {
+        if (isPositionOccupied(adj) && visited.find(adj) == visited.end()) {
+            dfs(adj, visited);
+        }
+    }
+}
+
+bool Plateau::isHiveConnected() {
+    unordered_set<Position, hash<Position>> visited;
+    Position start(0, 0); // Initialize with valid parameters
+
+    // Find a starting position with a piece
+    for (const auto& entry : plateau) {
+        if (!entry.second.empty()) {
+            start = entry.first;
+            break;
+        }
+    }
+
+    // Perform a DFS to check connectivity
+    dfs(start, visited);
+
+    // Check if all pieces have been visited
+    for (const auto& entry : plateau) {
+        if (!entry.second.empty() && visited.find(entry.first) == visited.end()) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+
+bool Plateau::wouldSplitHive(Position from, Position to) {
+    // Temporarily remove the piece from the 'from' position
+    Piece* piece = plateau.at(from).back();
+    plateau.at(from).pop_back();
+
+    // Check if the hive is still connected
+    bool isConnected = isHiveConnected();
+
+    // Restore the piece to the 'from' position
+    plateau.at(from).push_back(piece);
+
+    return !isConnected;
+}
+
+
 void Plateau::addPiece(Piece* piece, Position pos) {
     plateau[pos].push_back(piece);
     piece->setPosition(pos);

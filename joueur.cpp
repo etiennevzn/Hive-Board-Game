@@ -168,3 +168,4 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
     delete piece;
     return false;
 }
+

@@ -2,16 +2,12 @@
 #include <iostream>
 using namespace std;
 
-
-void Partie::dfs(Position pos, unordered_set<Position, hash<Position>>& visited) {
-    visited.insert(pos);
-    vector<Position> adjacents = pos.getAdjacentCoordinates();
-    for (const Position& adj : adjacents) {
-        if (plateau.isPositionOccupied(adj) && visited.find(adj) == visited.end()) {
-            dfs(adj, visited);
-        }
-    }
+void Partie::nextTurn(){
+        tourActuel++;
+        joueurCourant = (joueurCourant == &joueur1) ? &joueur2 : &joueur1;
+        //à compléter...
 }
+
 
 void Partie::afficherMouvementsPossibles(Position pos) {
     if (plateau.isPositionOccupied(pos)) {
@@ -19,7 +15,7 @@ void Partie::afficherMouvementsPossibles(Position pos) {
         cout << "Mouvements possibles pour la piece " << piece->getType() << " a la position (" << pos.getColonne() << ", " << pos.getLigne() << "):" << endl;
         vector<Position> adjacents = plateau.getAllAdjacentCoordinates();
         for (const Position& adj : adjacents) {
-            if (piece->isValidMove(adj, plateau.getPlateau()) && !wouldSplitHive(pos, adj)) {
+            if (piece->isValidMove(adj, plateau.getPlateau()) && !plateau.wouldSplitHive(pos, adj)) {
                 cout << "(" << adj.getColonne() << ", " << adj.getLigne() << ")" << endl;
             }
         }
@@ -27,49 +23,6 @@ void Partie::afficherMouvementsPossibles(Position pos) {
         cout << "Aucune pièce à cette position." << endl;
     }
 }
-
-
-bool Partie::isHiveConnected() {
-    unordered_set<Position, hash<Position>> visited;
-    Position start(0, 0); // Initialize with valid parameters
-
-    // Find a starting position with a piece
-    for (const auto& entry : plateau.getPlateau()) {
-        if (!entry.second.empty()) {
-            start = entry.first;
-            break;
-        }
-    }
-
-    // Perform a DFS to check connectivity
-    dfs(start, visited);
-
-    // Check if all pieces have been visited
-    for (const auto& entry : plateau.getPlateau()) {
-        if (!entry.second.empty() && visited.find(entry.first) == visited.end()) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool Partie::wouldSplitHive(Position from, Position to) {
-    // Temporarily remove the piece from the 'from' position
-    Piece* piece = plateau.getPlateau().at(from).back();
-    plateau.getPlateau().at(from).pop_back();
-
-    // Check if the hive is still connected
-    bool isConnected = isHiveConnected();
-
-    // Restore the piece to the 'from' position
-    plateau.getPlateau().at(from).push_back(piece);
-
-    return !isConnected;
-}
-
-
-
 
 
 void Partie::jouer(){
