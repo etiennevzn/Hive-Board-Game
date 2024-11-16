@@ -1,35 +1,42 @@
 #include "plateau.hpp"
 #include <iomanip>
 
+bool Plateau::isPositionOccupied(Position pos) const {
+    auto it = plateau.find(pos);
+    return it != plateau.end() && !it->second.empty();
+}
 
-void Plateau::dfs(Position pos, unordered_set<Position, hash<Position>>& visited) {
+
+void Plateau::dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position>& visited) {
     visited.insert(pos);
     vector<Position> adjacents = pos.getAdjacentCoordinates();
     for (const Position& adj : adjacents) {
-        if (isPositionOccupied(adj) && visited.find(adj) == visited.end()) {
-            dfs(adj, visited);
+        auto it = tempPlateau.find(adj);
+        if (it != tempPlateau.end() && !it->second.empty() && visited.find(adj) == visited.end()) {
+            dfs(adj, tempPlateau, visited);
         }
     }
 }
 
-bool Plateau::isHiveConnected() {
-    unordered_set<Position, hash<Position>> visited;
-    Position start(0, 0); // Initialize with valid parameters
 
-    // Find a starting position with a piece
-    for (const auto& entry : plateau) {
+bool Plateau::isHiveConnected(const unordered_map<Position, vector<Piece*>>& tempPlateau){
+    unordered_set<Position> visited;
+    Position start(0,0); 
+    bool foundStart = false;
+    for (const auto& entry : tempPlateau) {
         if (!entry.second.empty()) {
-            start = entry.first;
+            start = entry.first; // Trouve la première position occupée
+            foundStart = true;
             break;
         }
     }
 
-    // Perform a DFS to check connectivity
-    dfs(start, visited);
+    if (!foundStart) return true;  // Si aucune position occupée n'existe, la ruche est connectée par défaut
 
-    // Check if all pieces have been visited
-    for (const auto& entry : plateau) {
-        if (!entry.second.empty() && visited.find(entry.first) == visited.end()) {
+    dfs(start, tempPlateau, visited); //on fait un recherche en profondeur avec tous les voisins
+
+    for (const auto& entry : tempPlateau) {
+        if (!entry.second.empty() && visited.find(entry.first) == visited.end()) { //si une position est non vide dans le plateau mais qu'elle n'est pas dans visited, cela signifie que la ruche n'est pas en 1 morceau
             return false;
         }
     }
@@ -38,30 +45,26 @@ bool Plateau::isHiveConnected() {
 }
 
 
-
 bool Plateau::wouldSplitHive(Position from, Position to) {
-    // Temporarily remove the piece from the 'from' position
-    Piece* piece = plateau.at(from).back();
-    plateau.at(from).pop_back();
 
-    // Check if the hive is still connected
-    bool isConnected = isHiveConnected();
+    if (plateau[from].empty()) { // Vérifie qu'il y a une pièce à la position d'origine 
+        throw std::runtime_error("Aucune piece a deplacer depuis cette position.");
+    } //a voir si on fait ça ou simplement un return false (car dans si il n'y a pas de pièce à déplacer ça va pas split)
 
-    // Restore the piece to the 'from' position
-    plateau.at(from).push_back(piece);
+    unordered_map<Position, vector<Piece*>> tempPlateau = plateau; //on fait une copie du plateau pour pouvoir faire des changements temporaires
 
-    return !isConnected;
+    Piece* piece = tempPlateau[from].back(); // Récupère la dernière pièce (pièce la plus en haut de l'empilement en cas d'empilement)
+
+    //simulation du déplacement
+    tempPlateau[from].pop_back();
+    tempPlateau[to].push_back(piece);
+    return !isHiveConnected(tempPlateau); //si le plateau n'est pas conecté alors on return true (ça casserait la ruche), et vice-versa
 }
 
 
 void Plateau::addPiece(Piece* piece, Position pos) {
     plateau[pos].push_back(piece);
     piece->setPosition(pos);
-}
-
-bool Plateau::isPositionOccupied(Position pos) const {
-    auto it = plateau.find(pos);
-    return it != plateau.end() && !it->second.empty();
 }
 
 bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
