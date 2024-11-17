@@ -103,40 +103,6 @@ bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
 }
 
 
-
-/*
-void Plateau::print_board() const {
-    // Determine the bounds of the board
-    int minQ = numeric_limits<int>::max(), maxQ = numeric_limits<int>::min();
-    int minR = numeric_limits<int>::max(), maxR = numeric_limits<int>::min();
-    for (const auto& entry : plateau) {
-        const Position& pos = entry.first;
-        minQ = min(minQ, pos.getColonne());
-        maxQ = max(maxQ, pos.getColonne());
-        minR = min(minR, pos.getLigne());
-        maxR = max(maxR, pos.getLigne());
-    }
-
-    // Print the board
-    for (int r = minR; r <= maxR; ++r) {
-        for (int q = minQ; q <= maxQ; ++q) {
-            Position pos(q, r);
-            try {
-                if (plateau.at(pos).empty()) {
-                    cout << ".";
-                } else {
-                    cout << plateau.at(pos).back()->getInitial();
-                }
-            } catch (const out_of_range& e) {
-                cout << ".";
-            }
-            cout << " ";
-        }
-        cout << std::endl;
-    }
-}*/
-
-
 void Plateau::print_board(int size) const {
 
     int min_q = 0, max_q = 0, min_r = 0, max_r = 0;
