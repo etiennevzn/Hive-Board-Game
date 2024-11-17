@@ -22,8 +22,8 @@ public:
     unordered_map<Position, vector<Piece*>> getPlateau()const{return plateau;}
     void addPiece(Piece* piece, Position pos);
     bool isPositionOccupied(Position pos) const;
-    bool deplacerPiece(Position from, Position to, Couleur couleur);
     bool isReinePlaced(Couleur couleur) const;
+    bool deplacerPiece(Position from, Position to, Couleur couleur);
     void print_board(int size = 5)const;
     void print_positions() const;
     vector<Position> getAllAdjacentCoordinates()const;

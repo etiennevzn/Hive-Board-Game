@@ -67,6 +67,18 @@ void Plateau::addPiece(Piece* piece, Position pos) {
     piece->setPosition(pos);
 }
 
+bool Plateau::isReinePlaced(Couleur couleur) const {
+    for (const auto& entry : plateau) {
+        const vector<Piece*>& pieces = entry.second;
+        for (const Piece* piece : pieces) {
+            if (piece->getType() == "Reine" && piece->getCouleur() == couleur) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
     if (!isReinePlaced(couleur)) {
         std::cout << "La reine doit etre posee avant de deplacer une autre piece." << std::endl;
@@ -82,8 +94,8 @@ bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
                 plateau[to].push_back(piece);
                 return true;
             }
-        } catch (const std::out_of_range& e) {
-            std::cerr << "Error: " << e.what() << std::endl;
+        } catch (const out_of_range& e) {
+            cerr << "Error: " << e.what() << std::endl;
             return false;
         }
     }
@@ -92,17 +104,6 @@ bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
 
 
 
-bool Plateau::isReinePlaced(Couleur couleur) const {
-    for (const auto& entry : plateau) {
-        const vector<Piece*>& pieces = entry.second;
-        for (const Piece* piece : pieces) {
-            if (piece->getType() == "Reine" && piece->getCouleur() == couleur) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 /*
 void Plateau::print_board() const {
     // Determine the bounds of the board
@@ -137,27 +138,32 @@ void Plateau::print_board() const {
 
 
 void Plateau::print_board(int size) const {
-    int board_size = size; 
-    
-    // Parcourir les lignes
-    for (int r = 0; r < board_size; ++r) {
-        // Décalage pour chaque ligne
-        cout << string(r * 3, ' ');
-        
-        // Parcourir les colonnes de chaque ligne
-        for (int q = 0; q < board_size; ++q) {
-            Position pos(q, r);
 
-            // Vérifier s'il y a une pièce à cette position
+    int min_q = 0, max_q = 0, min_r = 0, max_r = 0;
+    for (const auto& entry : plateau) { //on détermine les limites du plateau (les pièces les plus excentrées posées dessus)
+        if (!entry.second.empty()) { 
+            min_q = min(min_q, entry.first.getColonne());
+            max_q = max(max_q, entry.first.getColonne());
+            min_r = min(min_r, entry.first.getLigne());
+            max_r = max(max_r, entry.first.getLigne());
+        }
+    }
+    
+    for (int r = min_r; r <= max_r; ++r) { //on parcourt toutes les lignes et colonnes du plateau
+        int offset = (r % 2 == 0) ? 0 : 3; //avec notre système de coordonnées, les lignes impaires sont décalées par rapport à la ligne 0 mais pas les lignes paires
+        cout << string(offset, ' ');
+
+        for (int q = min_q; q<=max_q; ++q) {
+            Position pos(q, r);
             if (isPositionOccupied(pos)) {
-                Piece* piece = plateau.at(pos)[0]; // Obtenir la première pièce sur la position
+                Piece* piece = plateau.at(pos).back(); // on affiche la pièce la plus en haut de l'empilement (dernière pièce ajouté au vecteur)
                 piece->getCouleur() == Blanc ? cout << "[" << piece->getInitial() << ".B" << "] " : cout << "[" << piece->getInitial() << ".N" << "] "; // Affiche la pièce avec son type et couleur
             } else {
-                cout << "[   ] "; // Case vide
+                cout << "[   ] "; 
             }
         }
         
-        cout << endl; // Nouvelle ligne après chaque rangée
+        cout << endl; 
     }
 }
 

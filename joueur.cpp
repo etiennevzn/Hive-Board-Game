@@ -119,7 +119,7 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
                     isAdjacent = true;
                 }
             }
-        } //Résumé : si la position est libre et adjacente a un pièce (peut importe la couleur au premier tour), alors on peut placer la pièce
+        } //Résumé : si la position est libre et adjacente a une pièce (peut importe la couleur au premier tour), alors on peut placer la pièce
         if (!isAdjacent) {
             cout << "La piece doit etre placee a cote d'une autre piece." << endl;
             delete piece;
