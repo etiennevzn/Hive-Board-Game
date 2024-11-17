@@ -91,7 +91,7 @@ bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
             if (piece->getCouleur() == couleur && piece->isValidMove(to, plateau)) {
                 plateau[from].pop_back();
                 piece->setPosition(to);
-                plateau[to].push_back(piece);
+                plateau[to].push_back(piece); 
                 return true;
             }
         } catch (const out_of_range& e) {

@@ -46,8 +46,8 @@ bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector
     if (!getPosition().isAdjacent(to)) {
         return false;
     }
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) {
-        return false; // The destination is occupied
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
     }
     // Check if the queen can slide to the destination
     vector<Position> adjacents = getPosition().getAdjacentCoordinates();
@@ -60,14 +60,17 @@ bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector
 }
 
 bool Scarabee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
+    //pas besoin de checker si la destination est libre car il peut monter sur d'autres pièces
     if (!getPosition().isAdjacent(to)) {
         return false;
     }
-    // Scarabee can move onto other pieces
     return true;
 }
 
 bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
+    }
     // Araignee must move exactly three spaces
     if (getPosition().isAdjacent(to)) {
         return false; // Direct adjacency is not allowed
@@ -116,6 +119,9 @@ bool Araignee::isAdjacentToPiece(const Position& pos, const unordered_map<Positi
 }
 
 bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
+    }
     // Check if the destination is in a straight line
     if (getPosition().getColonne() != to.getColonne() && getPosition().getLigne() != to.getLigne() &&
         abs(getPosition().getColonne() - to.getColonne()) != abs(getPosition().getLigne() - to.getLigne())) {
@@ -145,8 +151,8 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
 }
 
 bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau) const{
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) {
-        return false; // The destination is occupied
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
     }
 
     // Check if the ant can slide to the destination
@@ -172,9 +178,15 @@ bool Fourmi::canSlideTo(const Position& from, const Position& to, const unordere
 }
 
 bool Moustique::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
+    }
     return true;
 }
 
 bool Coccinelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
+    }
     return true;
 }
