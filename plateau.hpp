@@ -24,7 +24,7 @@ public:
     bool isPositionOccupied(Position pos) const;
     bool isReinePlaced(Couleur couleur) const;
     bool deplacerPiece(Position from, Position to, Couleur couleur);
-    void print_board(int size = 5)const;
+    void print_board()const;
     void print_positions() const;
     vector<Position> getAllAdjacentCoordinates()const;
 

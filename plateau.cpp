@@ -84,26 +84,21 @@ bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
         std::cout << "La reine doit etre posee avant de deplacer une autre piece." << std::endl;
         return false;
     }
-
-    if (isPositionOccupied(from)) {
-        try {
-            Piece* piece = plateau.at(from).back();
-            if (piece->getCouleur() == couleur && piece->isValidMove(to, plateau)) {
-                plateau[from].pop_back();
-                piece->setPosition(to);
-                plateau[to].push_back(piece); 
-                return true;
-            }
-        } catch (const out_of_range& e) {
-            cerr << "Error: " << e.what() << std::endl;
-            return false;
+    if (isPositionOccupied(from)) {  
+        Piece* piece = plateau.at(from).back();
+        if (piece->getCouleur() == couleur && piece->isValidMove(to, plateau)) {
+            plateau[from].pop_back();
+            piece->setPosition(to);
+            plateau[to].push_back(piece); 
+            return true;
         }
+        return false;
     }
     return false;
 }
 
 
-void Plateau::print_board(int size) const {
+void Plateau::print_board() const {
 
     int min_q = 0, max_q = 0, min_r = 0, max_r = 0;
     for (const auto& entry : plateau) { //on détermine les limites du plateau (les pièces les plus excentrées posées dessus)
