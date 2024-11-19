@@ -9,7 +9,18 @@ string toString(Couleur couleur) {
     }
 }
 
-std::vector<Position> Position::getAdjacentCoordinates() const {
+Position::Position(int x, int y, int z){
+    q = x+(y-(y%2))/2;
+    r = y;
+}
+
+vector<int> Position::toCube()const{
+    int x = q-(r-(r%2))/2;
+    int y = r;
+    return {x,y,-x-y};
+}
+
+vector<Position> Position::getAdjacentCoordinates() const {
     // Directions pour les lignes paires et impaires
     std::vector<std::pair<int, int>> oddDirections = {
         {-1, 0}, {0, -1}, {1, -1},
@@ -41,6 +52,7 @@ bool Position::isAdjacent(const Position& other) const {
     }
     return false;
 }
+
 
 bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
     if (!getPosition().isAdjacent(to)) {
@@ -122,10 +134,12 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
         return false; 
     }
-    // Check if the destination is in a straight line
-    if (getPosition().getColonne() != to.getColonne() && getPosition().getLigne() != to.getLigne() &&
-        abs(getPosition().getColonne() - to.getColonne()) != abs(getPosition().getLigne() - to.getLigne())) {
-        return false;
+    /*Déterminer si 2 cases sont en "ligne droite" est très compliqué avec notre système de coordonnées actuel. Par conséquent,
+    on converti d'abord les coordonnées de la pièce en coordonnées cubiques avant de regarder si les 2 cases sont en ligne droite*/
+    vector<int> fromCubeCoords = getPosition().toCube();
+    vector<int> toCubeCoords = to.toCube();
+    if(fromCubeCoords[0]!=toCubeCoords[0] && fromCubeCoords[1]!=toCubeCoords[1] && fromCubeCoords[2]!=toCubeCoords[2]){
+        return false; //sous cette condition, les 2 cases ne sont pas allignées
     }
 
     // Check if there are pieces in between

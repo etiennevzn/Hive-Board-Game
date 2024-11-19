@@ -23,10 +23,12 @@ class Position{
 public:
     // Constructeur
     Position(int q, int r) : q(q), r(r) {}
-
+    Position(int x, int y, int z); // à faire, constructeur à partir des coordonnées cubiques
     //getters pour les attributs
     int getColonne() const {return q;}
     int getLigne() const {return r;}
+
+    vector<int> toCube() const; //converti les coordonnées en coordonnées cubiques
 
     // Opérateur d’égalité
     bool operator==(const Position& other) const {return q == other.q && r == other.r;}

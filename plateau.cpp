@@ -84,6 +84,9 @@ bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
         std::cout << "La reine doit etre posee avant de deplacer une autre piece." << std::endl;
         return false;
     }
+    if(from.getColonne() == to.getColonne() && from.getLigne() == to.getLigne()){
+        return false; //si la destination est la même case que l'origine
+    }
     if (isPositionOccupied(from)) {  
         Piece* piece = plateau.at(from).back();
         if (piece->getCouleur() == couleur && piece->isValidMove(to, plateau)) {

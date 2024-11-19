@@ -26,6 +26,7 @@ int main(){
     plateau.print_board();
     plateau.deplacerPiece(Position(-1,0), Position(0,1),Noir);
     plateau.print_board();
+
     /*
     Partie partie(j1, j2,plateau,0);
     partie.jouer();

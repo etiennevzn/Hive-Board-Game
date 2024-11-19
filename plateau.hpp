@@ -26,7 +26,7 @@ public:
     bool deplacerPiece(Position from, Position to, Couleur couleur);
     void print_board()const;
     void print_positions() const;
-    vector<Position> getAllAdjacentCoordinates()const;
+    vector<Position> getAllAdjacentCoordinates()const; //récupère toutes les positions libres du bord de la ruche
 
 };
 
