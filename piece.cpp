@@ -142,26 +142,19 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
         return false; //sous cette condition, les 2 cases ne sont pas allignées
     }
 
-    // Check if there are pieces in between
-    int qStep = (to.getColonne() - getPosition().getColonne()) == 0 ? 0 : (to.getColonne() - getPosition().getColonne()) / abs(to.getColonne() - getPosition().getColonne());
-    int rStep = (to.getLigne() - getPosition().getLigne()) == 0 ? 0 : (to.getLigne() - getPosition().getLigne()) / abs(to.getLigne() - getPosition().getLigne());
+    int distance = max(abs(fromCubeCoords[0] - toCubeCoords[0]), max(abs(fromCubeCoords[1] - toCubeCoords[1]), abs(fromCubeCoords[2] - toCubeCoords[2])));
+    for (int i = 1; i < distance; ++i) {
+        int interX = fromCubeCoords[0] + i * (toCubeCoords[0] - fromCubeCoords[0]) / distance;
+        int interY = fromCubeCoords[1] + i * (toCubeCoords[1] - fromCubeCoords[1]) / distance;
+        int interZ = fromCubeCoords[2] + i * (toCubeCoords[2] - fromCubeCoords[2]) / distance;
+        Position intermediate(interX, interY, interZ);
 
-    int q = getPosition().getColonne() + qStep;
-    int r = getPosition().getLigne() + rStep;
-    bool foundPiece = false;
-
-    while (q != to.getColonne() || r != to.getLigne()) {
-        Position intermediate(q, r);
-        if (plateau.find(intermediate) != plateau.end() && !plateau.at(intermediate).empty()) {
-            foundPiece = true;
-        } else if (foundPiece) {
-            return false; // There was a gap in the line of pieces
+        // vérifier si la position intermédiaire est occupée
+        if (plateau.find(intermediate) == plateau.end() || plateau.find(intermediate)->second.empty()) {// case vide ou absente du plateau
+            return false;
         }
-        q += qStep;
-        r += rStep;
     }
-
-    return foundPiece; // The destination must be empty and there must be at least one piece in between
+    return true;
 }
 
 bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau) const{
