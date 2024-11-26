@@ -10,12 +10,12 @@ string toString(Couleur couleur) {
 }
 
 Position::Position(int x, int y, int z){
-    q = x+(y-(y%2))/2;
+    q = x+(y-(y&1))/2;
     r = y;
-}
+}   
 
 vector<int> Position::toCube()const{
-    int x = q-(r-(r%2))/2;
+    int x = q-((r-(r&1))/2);
     int y = r;
     return {x,y,-x-y};
 }
