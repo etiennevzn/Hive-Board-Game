@@ -139,7 +139,7 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
     vector<int> fromCubeCoords = getPosition().toCube();
     vector<int> toCubeCoords = to.toCube();
     if(fromCubeCoords[0]!=toCubeCoords[0] && fromCubeCoords[1]!=toCubeCoords[1] && fromCubeCoords[2]!=toCubeCoords[2]){
-        return false; //sous cette condition, les 2 cases ne sont pas allignées
+        return false; //sous cette condition, les 2 cases ne sont pas alignées
     }
 
     int distance = max(abs(fromCubeCoords[0] - toCubeCoords[0]), max(abs(fromCubeCoords[1] - toCubeCoords[1]), abs(fromCubeCoords[2] - toCubeCoords[2])));
@@ -147,7 +147,7 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
         int interX = fromCubeCoords[0] + i * (toCubeCoords[0] - fromCubeCoords[0]) / distance;
         int interY = fromCubeCoords[1] + i * (toCubeCoords[1] - fromCubeCoords[1]) / distance;
         int interZ = fromCubeCoords[2] + i * (toCubeCoords[2] - fromCubeCoords[2]) / distance;
-        Position intermediate(interX, interY, interZ);
+        Position intermediate(interX, interY, interZ); //on calcule les coordonnées de chaque position entre les deux cases
 
         // vérifier si la position intermédiaire est occupée
         if (plateau.find(intermediate) == plateau.end() || plateau.find(intermediate)->second.empty()) {// case vide ou absente du plateau
@@ -157,7 +157,7 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
     return true;
 }
 
-bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau) const{
+bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
         return false; 
     }
@@ -171,7 +171,6 @@ bool Fourmi::canSlideTo(const Position& from, const Position& to, const unordere
     if (from == to) {
         return true;
     }
-
     visited.insert(from);
     vector<Position> adjacents = from.getAdjacentCoordinates();
     for (const Position& adj : adjacents) {

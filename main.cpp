@@ -24,7 +24,7 @@ int main(){
     j1.poserPiece('H', Position(-1,-1), plateau,3);
     j1.poserPiece('H', Position(-1,0), plateau,4);
     plateau.print_board();
-    plateau.deplacerPiece(Position(-1,-1), Position(0,1),Noir);
+    plateau.deplacerPiece(Position(-1,0), Position(-2,2),Noir);
     plateau.print_board();
     /*
     Partie partie(j1, j2,plateau,0);

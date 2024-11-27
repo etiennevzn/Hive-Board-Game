@@ -61,6 +61,14 @@ bool Plateau::wouldSplitHive(Position from, Position to) {
     return !isHiveConnected(tempPlateau); //si le plateau n'est pas conecté alors on return true (ça casserait la ruche), et vice-versa
 }
 
+bool Plateau::isAccessible(Position pos) const{
+    vector<Position> adjacentes = pos.getAdjacentCoordinates();
+    int piecesCount = 0;
+    for(const Position& it : adjacentes){
+        if(isPositionOccupied(it)) piecesCount++;
+    }
+    return piecesCount>=5; //s'il y a plus de 4 pièces autour de la position, elle est innaccessible par glissement
+}
 
 void Plateau::addPiece(Piece* piece, Position pos) {
     plateau[pos].push_back(piece);
@@ -81,11 +89,16 @@ bool Plateau::isReinePlaced(Couleur couleur) const {
 
 bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
     if (!isReinePlaced(couleur)) {
-        std::cout << "La reine doit etre posee avant de deplacer une autre piece." << std::endl;
+        cout << "La reine doit etre posee avant de deplacer une autre piece." <<endl;
         return false;
     }
+    if(wouldSplitHive(from,to)){
+        cout << "Le mouvement casserait la ruche !" <<endl; 
+        return false;   
+    }
     if(from.getColonne() == to.getColonne() && from.getLigne() == to.getLigne()){
-        return false; //si la destination est la même case que l'origine
+        cout<<"La destination doit-être différente de l'origine !"<<endl;
+        return false; 
     }
     if (isPositionOccupied(from)) {  
         Piece* piece = plateau.at(from).back();
@@ -94,8 +107,15 @@ bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
             piece->setPosition(to);
             plateau[to].push_back(piece); 
             return true;
+        }else if (piece->getCouleur() != couleur){
+            cout<<"Ce n'est pas votre piece"<<endl;
+            return false;
+        }else if(!piece->isValidMove(to, plateau)){
+            cout<<"Le mouvement n'est pas valide !"<<endl;
+            return false;
         }
-        return false;
+    }else{
+        cout<<"Erreur : La position d'origine du déplacement est vide"<<endl;
     }
     return false;
 }
