@@ -157,16 +157,6 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
     return true;
 }
 
-bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        return false; 
-    }
-
-    // Check if the ant can slide to the destination
-    unordered_set<Position, hash<Position>> visited;
-    return true; // Assuming the move is valid if the destination is not occupied
-}
-
 bool Fourmi::canSlideTo(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau, unordered_set<Position, hash<Position>>& visited) const {
     if (from == to) {
         return true;
@@ -174,7 +164,7 @@ bool Fourmi::canSlideTo(const Position& from, const Position& to, const unordere
     visited.insert(from);
     vector<Position> adjacents = from.getAdjacentCoordinates();
     for (const Position& adj : adjacents) {
-        if (visited.find(adj) == visited.end() && (plateau.find(adj) == plateau.end() || plateau.at(adj).empty())) {
+        if (visited.find(adj) == visited.end() && (plateau.find(adj) == plateau.end() || plateau.at(adj).empty()) && adj.getAdjacentCoordinates().size() > 0) {
             if (canSlideTo(adj, to, plateau, visited)) {
                 return true;
             }
@@ -182,6 +172,36 @@ bool Fourmi::canSlideTo(const Position& from, const Position& to, const unordere
     }
     return false;
 }
+
+vector<Position> Fourmi::getBorderPositions(const unordered_map<Position, vector<Piece*>>& plateau)const{
+    unordered_set<Position> borderPositions; //unordered set pour éviter les doublons. 
+
+    for (const auto& entry : plateau) {
+        const Position& pos = entry.first;
+        if (!entry.second.empty()) { 
+            vector<Position> adjacents = pos.getAdjacentCoordinates();
+            for (const Position& adj : adjacents) {
+                if (plateau.find(adj) == plateau.end() || plateau.at(adj).empty()) {
+                    borderPositions.insert(adj);
+                }
+            }
+        }
+    }
+
+    return vector<Position>(borderPositions.begin(), borderPositions.end());
+}
+
+bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
+    }
+    unordered_set<Position, hash<Position>> visited;
+    if (canSlideTo(getPosition(), to, plateau, visited)) {
+        return true;
+    }
+    return false;
+}
+
 
 bool Moustique::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
