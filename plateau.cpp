@@ -61,15 +61,6 @@ bool Plateau::wouldSplitHive(Position from, Position to) {
     return !isHiveConnected(tempPlateau); //si le plateau n'est pas conecté alors on return true (ça casserait la ruche), et vice-versa
 }
 
-bool Plateau::isAccessible(Position pos) const{
-    vector<Position> adjacentes = pos.getAdjacentCoordinates();
-    int piecesCount = 0;
-    for(const Position& it : adjacentes){
-        if(isPositionOccupied(it)) piecesCount++;
-    }
-    return piecesCount>=5; //s'il y a plus de 4 pièces autour de la position, elle est innaccessible par glissement
-}
-
 void Plateau::addPiece(Piece* piece, Position pos) {
     plateau[pos].push_back(piece);
     piece->setPosition(pos);

@@ -1,5 +1,6 @@
 #include "piece.hpp"
 #include <vector>
+#include <queue>
 
 string toString(Couleur couleur) {
     switch (couleur) {
@@ -53,6 +54,15 @@ bool Position::isAdjacent(const Position& other) const {
     return false;
 }
 
+bool Position::isAccessible(const unordered_map<Position, vector<Piece*>>& plateau)const{
+    vector<Position> adjacentes = getAdjacentCoordinates();
+    int piecesCount = 0;
+    for(const Position& adj : adjacentes){
+        auto it = plateau.find(adj);
+        if(it != plateau.end() && !it->second.empty()) piecesCount++;
+    }
+    return piecesCount<5; //s'il y a plus de 4 pièces autour de la position, elle est innaccessible par glissement
+}
 
 bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
     if (!getPosition().isAdjacent(to)) {
@@ -157,22 +167,6 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
     return true;
 }
 
-bool Fourmi::canSlideTo(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau, unordered_set<Position, hash<Position>>& visited) const {
-    if (from == to) {
-        return true;
-    }
-    visited.insert(from);
-    vector<Position> adjacents = from.getAdjacentCoordinates();
-    for (const Position& adj : adjacents) {
-        if (visited.find(adj) == visited.end() && (plateau.find(adj) == plateau.end() || plateau.at(adj).empty()) && adj.getAdjacentCoordinates().size() > 0) {
-            if (canSlideTo(adj, to, plateau, visited)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 vector<Position> Fourmi::getBorderPositions(const unordered_map<Position, vector<Piece*>>& plateau)const{
     unordered_set<Position> borderPositions; //unordered set pour éviter les doublons. 
 
@@ -191,15 +185,31 @@ vector<Position> Fourmi::getBorderPositions(const unordered_map<Position, vector
     return vector<Position>(borderPositions.begin(), borderPositions.end());
 }
 
-bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        return false; 
-    }
-    unordered_set<Position, hash<Position>> visited;
-    if (canSlideTo(getPosition(), to, plateau, visited)) {
+bool Fourmi::canReach(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position>& visited, const vector<Position>& borderPositions) const {
+    if (current == target) {
         return true;
     }
+
+    visited.insert(current);
+    vector<Position> adjacents = current.getAdjacentCoordinates();
+    for (const Position& adj : adjacents) {
+        if (visited.find(adj) == visited.end() && find(borderPositions.begin(), borderPositions.end(), adj) != borderPositions.end() && adj.isAccessible(plateau)) {
+            return canReach(adj, target, plateau, visited, borderPositions);
+
+        }
+    }
+
     return false;
+}
+
+bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        cout<<"Piece sur la destination"<<endl;
+        return false; 
+    }
+    vector<Position> borderPositions = getBorderPositions(plateau);
+    unordered_set<Position> visited;
+    return canReach(getPosition(), to, plateau, visited, borderPositions);
 }
 
 

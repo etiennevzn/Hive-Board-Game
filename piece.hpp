@@ -17,6 +17,8 @@ enum Couleur {
     Blanc
 };
 
+class Piece;
+
 class Position{
     int q; // Colonne
     int r; // Ligne
@@ -35,6 +37,7 @@ public:
     bool operator!=(const Position& other) const {return q != other.q || r != other.r;}
     vector<Position> getAdjacentCoordinates() const;
     bool isAdjacent(const Position& other) const;
+    bool isAccessible(const unordered_map<Position, vector<Piece*>>& plateau)const; //vérifie si la position est accessible en glissant
 };
 
 namespace std{
@@ -98,6 +101,7 @@ class Fourmi : public Piece {
 public:
     Fourmi(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
     vector<Position> getBorderPositions(const unordered_map<Position, vector<Piece*>>& plateau)const;
+    bool canReach(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position, hash<Position>>& visited, const vector<Position>& borderPositions) const ;
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau) const override;
     bool canSlideTo(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau, unordered_set<Position, hash<Position>>& visited) const;
     string getType() const override { return "Fourmi"; }
