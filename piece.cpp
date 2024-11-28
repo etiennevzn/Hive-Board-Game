@@ -54,6 +54,11 @@ bool Position::isAdjacent(const Position& other) const {
     return false;
 }
 
+/*
+Remarque sur cette méthode : commentée car la méthode isSlidingPossible est plus efficace. 
+Je la supprime parce que elle pourra potentiellement être utile, peut-être on pourra la changer en isSurrounded pour savoir si une Position
+est entourée par 6 autres positions (pour la condition de défaite par exemple)
+
 bool Position::isAccessible(const unordered_map<Position, vector<Piece*>>& plateau)const{
     vector<Position> adjacentes = getAdjacentCoordinates();
     int piecesCount = 0;
@@ -63,6 +68,41 @@ bool Position::isAccessible(const unordered_map<Position, vector<Piece*>>& plate
     }
     return piecesCount<5; //s'il y a plus de 4 pièces autour de la position, elle est innaccessible par glissement
 }
+
+*/
+
+bool Position::isSlidingPossible(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
+    if (!isAdjacent(to)) {
+        return false;
+    }
+
+    //on récupère les positions adjacentes à la position de départ et à la position d'arrivée (2 positions)
+    vector<Position> adjacentsFrom = getAdjacentCoordinates();
+    vector<Position> adjacentsTo = to.getAdjacentCoordinates();
+    unordered_set<Position> setAdjTo(adjacentsTo.begin(), adjacentsTo.end()); 
+    vector<Position> intersection;
+
+    for (const Position& pos : adjacentsFrom) {
+        if (setAdjTo.find(pos) != setAdjTo.end()) { 
+            intersection.push_back(pos);
+        }
+    }
+
+    int OccupiedCount = 0;
+    for(const Position& pos : intersection){
+        auto it = plateau.find(pos);
+        if(it != plateau.end() && !it->second.empty()) OccupiedCount++;
+    }
+
+    return !(OccupiedCount == 2); //si les 2 positions adjacentes à la position de départ et à la position d'arrivée sont occupées, alors le glissement est impossible
+
+}
+
+
+
+
+
+//MÉTHODES DE LA CLASSE PIECE
 
 bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
     if (!getPosition().isAdjacent(to)) {
@@ -190,7 +230,7 @@ bool Fourmi::canReach(const Position& current, const Position& target, const uno
     visited.insert(current);
     vector<Position> adjacents = current.getAdjacentCoordinates();
     for (const Position& adj : adjacents) {
-        if (visited.find(adj) == visited.end() && find(borderPositions.begin(), borderPositions.end(), adj) != borderPositions.end() && adj.isAccessible(plateau)) {
+        if (visited.find(adj) == visited.end() && find(borderPositions.begin(), borderPositions.end(), adj) != borderPositions.end() && current.isSlidingPossible(adj, plateau)) {
             return canReach(adj, target, plateau, visited, borderPositions);
 
         }
@@ -202,9 +242,6 @@ bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vecto
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
         cout<<"Piece sur la destination"<<endl;
         return false; 
-    }
-    if(!to.isAccessible(plateau)){ //on check si la destination est accessible par glissement avant d'appeler la fonction de recherche de chemin
-        return false;
     }
     vector<Position> borderPositions = getBorderPositions(plateau);
     unordered_set<Position> visited;

@@ -13,31 +13,25 @@ int main(){
     Joueur j1(Noir);
     Joueur j2(Blanc);
 
-    j1.print_piece_left();
 
     j1.poserPiece('R', Position(0,0), plateau,0);
     j2.poserPiece('R', Position(1,0), plateau,1);
 
 
-    j1.print_piece_left();
-    j2.poserPiece('A', Position(1,1), plateau,2);
-    j2.poserPiece('A', Position(2,1), plateau,2);
-    j2.poserPiece('F', Position(1,-1), plateau,2);
-    j2.poserPiece('F', Position(2,-1), plateau,2);
-    j1.poserPiece('H', Position(-1,-1), plateau,3);
-    j1.poserPiece('H', Position(-1,0), plateau,4);
-    j1.poserPiece('F', Position(-2,0), plateau,5);  
+    j2.poserPiece('A', Position(1,-1), plateau,2);
+    j2.poserPiece('A', Position(2,-2), plateau,2);
+    j2.poserPiece('F', Position(1,-3), plateau,2);
+    j2.poserPiece('F', Position(1,-4), plateau,2);
+    j1.poserPiece('H', Position(-1,0), plateau,3);
+    j1.poserPiece('H', Position(-2,-1), plateau,4);
+    j1.poserPiece('F', Position(-1,-2), plateau,5);  
+    j1.poserPiece('A', Position(-1,-3), plateau,4);
+
+    j1.poserPiece('F', Position(-1,-1), plateau,5);  
     plateau.print_board();
-    /*
-    for(const auto& piece : j1.getPieces()){
-        if(piece->getInitial() == 'F'){
-            vector<Position> borderPos = dynamic_cast<Fourmi*>(piece)->getBorderPositions(plateau.getPlateau());
-            for(const auto& pos : borderPos){
-                cout<<"("<<pos.getColonne()<< " "<<pos.getLigne()<<")"<<endl;
-            }
-        }
-    }*/
-    plateau.deplacerPiece(Position(-2,0), Position(2,0),Noir);
+    //cout<<Position(-1,-1).isSlidingPossible(Position(0,-1), plateau.getPlateau())<<endl;
+    plateau.deplacerPiece(Position(-1,-1), Position(0,-4),Noir);
+    cout<<endl;
     plateau.print_board();
     /*
     Partie partie(j1, j2,plateau,0);

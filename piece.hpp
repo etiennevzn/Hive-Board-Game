@@ -38,6 +38,7 @@ public:
     vector<Position> getAdjacentCoordinates() const;
     bool isAdjacent(const Position& other) const;
     bool isAccessible(const unordered_map<Position, vector<Piece*>>& plateau)const; //vérifie si la position est accessible en glissant
+    bool isSlidingPossible(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const;
 };
 
 namespace std{
