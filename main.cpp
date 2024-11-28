@@ -21,6 +21,9 @@ int main(){
 
     j1.print_piece_left();
     j2.poserPiece('A', Position(1,1), plateau,2);
+    j2.poserPiece('A', Position(2,1), plateau,2);
+    j2.poserPiece('F', Position(1,-1), plateau,2);
+    j2.poserPiece('F', Position(2,-1), plateau,2);
     j1.poserPiece('H', Position(-1,-1), plateau,3);
     j1.poserPiece('H', Position(-1,0), plateau,4);
     j1.poserPiece('F', Position(-2,0), plateau,5);  
@@ -34,7 +37,7 @@ int main(){
             }
         }
     }*/
-    plateau.deplacerPiece(Position(-2,0), Position(-2,1),Noir);
+    plateau.deplacerPiece(Position(-2,0), Position(2,0),Noir);
     plateau.print_board();
     /*
     Partie partie(j1, j2,plateau,0);

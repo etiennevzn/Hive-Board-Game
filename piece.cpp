@@ -169,7 +169,6 @@ bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, v
 
 vector<Position> Fourmi::getBorderPositions(const unordered_map<Position, vector<Piece*>>& plateau)const{
     unordered_set<Position> borderPositions; //unordered set pour éviter les doublons. 
-
     for (const auto& entry : plateau) {
         const Position& pos = entry.first;
         if (!entry.second.empty()) { 
@@ -181,7 +180,6 @@ vector<Position> Fourmi::getBorderPositions(const unordered_map<Position, vector
             }
         }
     }
-
     return vector<Position>(borderPositions.begin(), borderPositions.end());
 }
 
@@ -189,7 +187,6 @@ bool Fourmi::canReach(const Position& current, const Position& target, const uno
     if (current == target) {
         return true;
     }
-
     visited.insert(current);
     vector<Position> adjacents = current.getAdjacentCoordinates();
     for (const Position& adj : adjacents) {
@@ -198,7 +195,6 @@ bool Fourmi::canReach(const Position& current, const Position& target, const uno
 
         }
     }
-
     return false;
 }
 
@@ -206,6 +202,9 @@ bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vecto
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
         cout<<"Piece sur la destination"<<endl;
         return false; 
+    }
+    if(!to.isAccessible(plateau)){ //on check si la destination est accessible par glissement avant d'appeler la fonction de recherche de chemin
+        return false;
     }
     vector<Position> borderPositions = getBorderPositions(plateau);
     unordered_set<Position> visited;
