@@ -27,13 +27,14 @@ int main(){
     j1.poserPiece('F', Position(-1,-2), plateau,5);  
     j1.poserPiece('A', Position(-1,-3), plateau,4);
 
+    //j2.poserPiece('H', Position(3,-2), plateau,4);
 
     //j1.poserPiece('F', Position(-1,-1), plateau,5);  
     plateau.print_board();
     //cout<<Position(-1,-1).isSlidingPossible(Position(0,-1), plateau.getPlateau())<<endl;
-    for(const auto& piece : j1.getPieces()){
+    for(const auto& piece : j2.getPieces()){
         if(piece->getType() == "Araignee"){
-            cout<<piece->isValidMove(Position(-1,-4), plateau.getPlateau());
+            cout<<piece->isValidMove(Position(3,-2), plateau.getPlateau());
         }
     }
     /*

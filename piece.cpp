@@ -141,8 +141,7 @@ bool Araignee::isValidMoveRecursive(const Position& current, const Position& tar
         if (plateau.find(neighbor) != plateau.end() && !plateau.at(neighbor).empty()) {
             vector<Position> neighborAdjacents = neighbor.getAdjacentCoordinates();
             for (const Position& candidate : neighborAdjacents) {
-                if (find(adjacents.begin(), adjacents.end(), candidate) != adjacents.end() &&
-                    visited.find(candidate) == visited.end()) {
+                if (find(adjacents.begin(), adjacents.end(), candidate) != adjacents.end() && visited.find(candidate) == visited.end()) {
                     cout<<"("<<candidate.getColonne()<<","<<candidate.getLigne()<<")"<<endl;
                     if (isValidMoveRecursive(candidate, target, plateau, stepsLeft - 1, visited)) {
                         return true;
