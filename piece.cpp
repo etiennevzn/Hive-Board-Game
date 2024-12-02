@@ -242,3 +242,44 @@ bool Coccinelle::isValidMove(const Position& to, const unordered_map<Position, v
     }
     return true;
 }
+
+
+
+
+//Ajout arthur : 
+
+vector<Position> Position::successeurs_valides(const unordered_map<Position, vector<Piece*>>& plateau, const vector<Position>& chemin) const {
+    vector<Position> succ_valide = this->getAdjacentCoordinates(); // Les positions adjacentes
+    vector<Position> resultat;
+
+    for (const auto& elem : succ_valide) {
+        // Vérifie si la position est accessible et pas déjà dans le chemin
+        if (isSlidingPossible(elem, plateau) && find(chemin.begin(), chemin.end(), elem) == chemin.end()) {
+            resultat.push_back(elem);
+        }
+    }
+    return resultat;
+}
+
+vector<Position> Araignee::validMove(const Position& position_actuelle, 
+                                     const unordered_map<Position, vector<Piece*>>& plateau, 
+                                     vector<Position>& chemin, 
+                                     int profondeur, 
+                                     vector<Position>& MoveValid) const {
+    chemin.push_back(position_actuelle); // Ajoute la position actuelle au chemin
+    profondeur++;
+    
+    if (profondeur == 3) {
+        MoveValid.push_back(position_actuelle); // Si la profondeur est atteinte, ajoute la position aux mouvements valides
+        return MoveValid;
+    }
+
+    // Obtient les successeurs valides
+    vector<Position> succ = position_actuelle.successeurs_valides(plateau, chemin);
+    for (const auto& successeur : succ) {
+        validMove(successeur, plateau, chemin, profondeur, MoveValid); // Appel récursif
+    }
+
+    chemin.pop_back(); // Backtrack en supprimant la position actuelle du chemin
+    return MoveValid;
+}
