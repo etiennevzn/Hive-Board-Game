@@ -111,13 +111,7 @@ bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
         return false; 
     }
-    // Check if the queen can slide to the destination
-    vector<Position> adjacents = getPosition().getAdjacentCoordinates();
-    for (const Position& adj : adjacents) {
-        if (adj == to) {
-            return true;
-        }
-    }
+    if(getPosition().isSlidingPossible(to, plateau)) return true; 
     return false;
 }
 
@@ -125,6 +119,9 @@ bool Scarabee::isValidMove(const Position& to, const unordered_map<Position, vec
     //pas besoin de checker si la destination est libre car il peut monter sur d'autres pièces
     if (!getPosition().isAdjacent(to)) {
         return false;
+    }
+    if (plateau.find(to) == plateau.end() || plateau.at(to).empty()) { 
+        if(!getPosition().isSlidingPossible(to, plateau)) return false; //s'il y n'y a pas de pièce sur la destination, il faut que la position soit accessible par glissement
     }
     return true;
 }
@@ -142,7 +139,7 @@ bool Araignee::isValidMoveRecursive(const Position& current, const Position& tar
             vector<Position> neighborAdjacents = neighbor.getAdjacentCoordinates();
             for (const Position& candidate : neighborAdjacents) {
                 if (find(adjacents.begin(), adjacents.end(), candidate) != adjacents.end() && visited.find(candidate) == visited.end()) {
-                    cout<<"("<<candidate.getColonne()<<","<<candidate.getLigne()<<")"<<endl;
+                    //cout<<"("<<candidate.getColonne()<<","<<candidate.getLigne()<<")"<<endl; test
                     if (isValidMoveRecursive(candidate, target, plateau, stepsLeft - 1, visited)) {
                         return true;
                     }
@@ -162,9 +159,6 @@ bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vec
     unordered_set<Position> visited; // Suivi des cases déjà explorées
     return isValidMoveRecursive(getPosition(), to, plateau, 3, visited);
 }
-
-
-
 
 bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
