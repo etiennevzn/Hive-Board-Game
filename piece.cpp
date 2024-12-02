@@ -129,56 +129,43 @@ bool Scarabee::isValidMove(const Position& to, const unordered_map<Position, vec
     return true;
 }
 
-bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        return false; 
+
+bool Araignee::isValidMoveRecursive(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, int stepsLeft, unordered_set<Position>& visited) const {
+    if (stepsLeft == 0) {
+        return current == target;
     }
-    // Araignee must move exactly three spaces
-    if (getPosition().isAdjacent(to)) {
-        return false; // Direct adjacency is not allowed
-    }
+    visited.insert(current);
+    vector<Position> adjacents = current.getAdjacentCoordinates();
 
-    // Check if the destination is three spaces away
-    unordered_set<Position, hash<Position>> visited;
-    return canMoveThreeSpaces(getPosition(), to, plateau, visited, 0);
-    
-}
-
-bool Araignee::canMoveThreeSpaces(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position, hash<Position>>& visited, int depth)const{
-    // Check if we've moved exactly three steps
-    if (depth == 3) {
-        return from == to; // If at depth 3, we must be at the destination
-    }
-
-    visited.insert(from);
-    vector<Position> adjacents = from.getAdjacentCoordinates();
-
-    for (const Position& adj : adjacents) {
-        // Continue only if this position is unvisited and either empty or not the final destination
-        if (visited.find(adj) == visited.end() &&
-            (plateau.find(adj) == plateau.end() || plateau.at(adj).empty())) {
-
-            // Ensure adjacency with at least one other piece
-            if (isAdjacentToPiece(adj, plateau)) {
-                if (canMoveThreeSpaces(adj, to, plateau, visited, depth + 1)) {
-                    return true;
+    for (const Position& neighbor : adjacents) {
+        if (plateau.find(neighbor) != plateau.end() && !plateau.at(neighbor).empty()) {
+            vector<Position> neighborAdjacents = neighbor.getAdjacentCoordinates();
+            for (const Position& candidate : neighborAdjacents) {
+                if (find(adjacents.begin(), adjacents.end(), candidate) != adjacents.end() &&
+                    visited.find(candidate) == visited.end()) {
+                    cout<<"("<<candidate.getColonne()<<","<<candidate.getLigne()<<")"<<endl;
+                    if (isValidMoveRecursive(candidate, target, plateau, stepsLeft - 1, visited)) {
+                        return true;
+                    }
                 }
             }
         }
     }
-
+    visited.erase(current);
     return false;
 }
 
-bool Araignee::isAdjacentToPiece(const Position& pos, const unordered_map<Position, vector<Piece*>>& plateau) const {
-    // Checks if the position has any neighboring pieces
-    for (const Position& adj : pos.getAdjacentCoordinates()) {
-        if (plateau.find(adj) != plateau.end() && !plateau.at(adj).empty()) {
-            return true; // Found an adjacent piece
-        }
+
+bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
     }
-    return false;
+    unordered_set<Position> visited; // Suivi des cases déjà explorées
+    return isValidMoveRecursive(getPosition(), to, plateau, 3, visited);
 }
+
+
+
 
 bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination

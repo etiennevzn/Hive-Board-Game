@@ -83,6 +83,7 @@ public:
 class Araignee : public Piece {
 public:
     Araignee(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
+    bool isValidMoveRecursive(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, int stepsLeft, unordered_set<Position>& visited) const;
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
     bool canMoveThreeSpaces(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position, hash<Position>>& visited, int depth) const;
     bool isAdjacentToPiece(const Position& pos, const unordered_map<Position, vector<Piece*>>& plateau) const; // ?????
