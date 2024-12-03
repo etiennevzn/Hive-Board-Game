@@ -116,6 +116,17 @@ bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector
     return false;
 }
 
+vector<Position> Reine::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const {
+    vector<Position> adjacents = getPosition().getAdjacentCoordinates();
+    vector<Position> validMoves;
+    for (const Position& adj : adjacents) {
+        if (plateau.find(adj) == plateau.end() || plateau.at(adj).empty()) {
+            if(getPosition().isSlidingPossible(adj, plateau)) validMoves.push_back(adj);
+        }
+    }
+    return validMoves;
+}
+
 bool Scarabee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
     //pas besoin de checker si la destination est libre car il peut monter sur d'autres pièces
     if (!getPosition().isAdjacent(to)) {
@@ -315,16 +326,16 @@ vector<Position> Araignee::getValidMoves(const Position& start,
             }
         }
 
-        visited.erase(current);                 // Backtrack pour permettre d'autres chemins
+        visited.erase(current);// Backtrack pour permettre d'autres chemins
     };
 
     Position invalidPosition = Position(-70000, -7000); // Position invalide pour le premier appel (pas de précédent)
     findMoves(start, invalidPosition, 0); 
     for (auto it = validMoves.begin(); it != validMoves.end(); ) {
         if (!isValidMove(*it, plateau)) {
-            it = validMoves.erase(it); // Supprime l'élément et met à jour l'itérateur
+            it = validMoves.erase(it); 
         } else {
-            ++it; // Passe au prochain élément
+            ++it; 
         }
     }
     return validMoves;

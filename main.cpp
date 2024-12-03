@@ -44,6 +44,13 @@ int main(){
                 }
             }
         }
+        if(piece->getType() == "Reine"){
+            //cout<<piece->isValidMove(Position(-1,-4), plateau.getPlateau())<<endl;
+            vector<Position> validMoves = dynamic_cast<Reine*>(piece)->getValidMoves(plateau.getPlateau());
+            for(const auto& pos : validMoves){
+                cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
+            }
+        }
     }
 
     plateau.deplacerPiece(Position(1,-4), Position(1,-1), Blanc);
