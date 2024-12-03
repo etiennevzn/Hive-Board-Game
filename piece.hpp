@@ -39,6 +39,9 @@ public:
     bool isAdjacent(const Position& other) const;
     bool isAccessible(const unordered_map<Position, vector<Piece*>>& plateau)const; //vérifie si la position est accessible en glissant
     bool isSlidingPossible(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const;
+
+
+    vector<Position> successeurs_valides(const unordered_map<Position, vector<Piece*>>& plateau, const vector<Position>& chemin) const;
 };
 
 namespace std{
@@ -87,6 +90,9 @@ public:
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;    
     string getType() const override { return "Araignee"; }
     char getInitial() const override {return 'A';}
+
+    
+vector<Position>getValidMoves(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const; 
 };
 
 class Sauterelle : public Piece {
