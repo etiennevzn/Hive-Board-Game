@@ -82,6 +82,7 @@ public:
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
     string getType() const override { return "Scarabee"; }
     char getInitial() const override {return 'S';}
+    vector<Position> getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const;
 };
 
 class Araignee : public Piece {

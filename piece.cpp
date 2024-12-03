@@ -138,6 +138,19 @@ bool Scarabee::isValidMove(const Position& to, const unordered_map<Position, vec
     return true;
 }
 
+vector<Position> Scarabee::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const {
+    vector<Position> adjacents = getPosition().getAdjacentCoordinates();
+    vector<Position> validMoves;
+    for (const Position& adj : adjacents) {
+        if (plateau.find(adj) == plateau.end() || plateau.at(adj).empty()) {
+            if(getPosition().isSlidingPossible(adj, plateau)) validMoves.push_back(adj);
+        }else{
+            validMoves.push_back(adj);
+        }
+    }
+    return validMoves;
+}
+
 
 bool Araignee::isValidMoveRecursive(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, int stepsLeft, unordered_set<Position>& visited) const {
     if (stepsLeft == 0) {

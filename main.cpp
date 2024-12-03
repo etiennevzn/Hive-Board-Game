@@ -18,10 +18,10 @@ int main(){
     j2.poserPiece('R', Position(1,0), plateau,1);
 
 
-    j2.poserPiece('S', Position(1,-1), plateau,2);
+    j2.poserPiece('H', Position(1,-1), plateau,2);
     j2.poserPiece('F', Position(2,-2), plateau,2);
     j2.poserPiece('F', Position(1,-3), plateau,2);
-    j2.poserPiece('A', Position(1,-4), plateau,2);
+    j2.poserPiece('S', Position(1,-4), plateau,2);
     j1.poserPiece('H', Position(-1,0), plateau,3);
     j1.poserPiece('H', Position(-2,-1), plateau,4);
     j1.poserPiece('F', Position(-1,-2), plateau,5);  
@@ -44,9 +44,9 @@ int main(){
                 }
             }
         }
-        if(piece->getType() == "Reine"){
+        if(piece->getType() == "Scarabee"){
             //cout<<piece->isValidMove(Position(-1,-4), plateau.getPlateau())<<endl;
-            vector<Position> validMoves = dynamic_cast<Reine*>(piece)->getValidMoves(plateau.getPlateau());
+            vector<Position> validMoves = dynamic_cast<Scarabee*>(piece)->getValidMoves(plateau.getPlateau());
             for(const auto& pos : validMoves){
                 cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
             }
