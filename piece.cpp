@@ -103,7 +103,25 @@ bool Position::isSlidingPossible(const Position& to, const unordered_map<Positio
 
 
 
+
+
 //MÉTHODES DE LA CLASSE PIECE
+
+vector<Position> Piece::getBorderPositions(const unordered_map<Position, vector<Piece*>>& plateau)const{
+    unordered_set<Position> borderPositions; //unordered set pour éviter les doublons. 
+    for (const auto& entry : plateau) {
+        const Position& pos = entry.first;
+        if (!entry.second.empty()) { 
+            vector<Position> adjacents = pos.getAdjacentCoordinates();
+            for (const Position& adj : adjacents) {
+                if (plateau.find(adj) == plateau.end() || plateau.at(adj).empty()) {
+                    borderPositions.insert(adj);
+                }
+            }
+        }
+    }
+    return vector<Position>(borderPositions.begin(), borderPositions.end());
+}
 
 bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
     if (!getPosition().isAdjacent(to)) {
@@ -126,6 +144,7 @@ vector<Position> Reine::getValidMoves(const unordered_map<Position, vector<Piece
     }
     return validMoves;
 }
+
 
 bool Scarabee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
     //pas besoin de checker si la destination est libre car il peut monter sur d'autres pièces
@@ -176,7 +195,6 @@ bool Araignee::isValidMoveRecursive(const Position& current, const Position& tar
     return false;
 }
 
-
 bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
         return false; 
@@ -185,133 +203,7 @@ bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vec
     return isValidMoveRecursive(getPosition(), to, plateau, 3, visited);
 }
 
-bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        return false; 
-    }
-    /*Déterminer si 2 cases sont en "ligne droite" est très compliqué avec notre système de coordonnées actuel. Par conséquent,
-    on converti d'abord les coordonnées de la pièce en coordonnées cubiques avant de regarder si les 2 cases sont en ligne droite*/
-    vector<int> fromCubeCoords = getPosition().toCube();
-    vector<int> toCubeCoords = to.toCube();
-    if(fromCubeCoords[0]!=toCubeCoords[0] && fromCubeCoords[1]!=toCubeCoords[1] && fromCubeCoords[2]!=toCubeCoords[2]){
-        return false; //sous cette condition, les 2 cases ne sont pas alignées
-    }
-
-    int distance = max(abs(fromCubeCoords[0] - toCubeCoords[0]), max(abs(fromCubeCoords[1] - toCubeCoords[1]), abs(fromCubeCoords[2] - toCubeCoords[2])));
-    for (int i = 1; i < distance; ++i) {
-        int interX = fromCubeCoords[0] + i * (toCubeCoords[0] - fromCubeCoords[0]) / distance;
-        int interY = fromCubeCoords[1] + i * (toCubeCoords[1] - fromCubeCoords[1]) / distance;
-        int interZ = fromCubeCoords[2] + i * (toCubeCoords[2] - fromCubeCoords[2]) / distance;
-        Position intermediate(interX, interY, interZ); //on calcule les coordonnées de chaque position entre les deux cases
-
-        // vérifier si la position intermédiaire est occupée
-        if (plateau.find(intermediate) == plateau.end() || plateau.find(intermediate)->second.empty()) {// case vide ou absente du plateau
-            return false;
-        }
-    }
-    return true;
-}
-
-vector<Position> Fourmi::getBorderPositions(const unordered_map<Position, vector<Piece*>>& plateau)const{
-    unordered_set<Position> borderPositions; //unordered set pour éviter les doublons. 
-    for (const auto& entry : plateau) {
-        const Position& pos = entry.first;
-        if (!entry.second.empty()) { 
-            vector<Position> adjacents = pos.getAdjacentCoordinates();
-            for (const Position& adj : adjacents) {
-                if (plateau.find(adj) == plateau.end() || plateau.at(adj).empty()) {
-                    borderPositions.insert(adj);
-                }
-            }
-        }
-    }
-    return vector<Position>(borderPositions.begin(), borderPositions.end());
-}
-
-bool Fourmi::canReach(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position>& visited, const vector<Position>& borderPositions) const {
-    if (current == target) {
-        return true;
-    }
-    visited.insert(current);
-    vector<Position> adjacents = current.getAdjacentCoordinates();
-    for (const Position& adj : adjacents) {
-        if (visited.find(adj) == visited.end() && find(borderPositions.begin(), borderPositions.end(), adj) != borderPositions.end() && current.isSlidingPossible(adj, plateau)) {
-            return canReach(adj, target, plateau, visited, borderPositions);
-
-        }
-    }
-    return false;
-}
-
-bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        cout<<"Piece sur la destination"<<endl;
-        return false; 
-    }
-    vector<Position> borderPositions = getBorderPositions(plateau);
-    unordered_set<Position> visited;
-    return canReach(getPosition(), to, plateau, visited, borderPositions);
-}
-
-
-bool Moustique::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        return false; 
-    }
-    return true;
-}
-
-bool Coccinelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        return false; 
-    }
-    return true;
-}
-
-
-
-
-//Ajout arthur : 
-
-vector<Position> Position::successeurs_valides(const unordered_map<Position, vector<Piece*>>& plateau, const vector<Position>& chemin) const {
-    vector<Position> succ_valide = this->getAdjacentCoordinates(); // Les positions adjacentes
-    vector<Position> resultat;
-    
-    for (const auto& elem : succ_valide) {
-        // Vérifie si la position est accessible et pas déjà dans le chemin
-        if (isSlidingPossible(elem, plateau) && find(chemin.begin(), chemin.end(), elem) == chemin.end()) {
-            resultat.push_back(elem);
-        }
-    }
-    return resultat;
-}
-
-/*
-vector<Position> Araignee::getValidMoves(const Position& position_actuelle, 
-                                     const unordered_map<Position, vector<Piece*>>& plateau, 
-                                     vector<Position>& chemin, 
-                                     int profondeur, 
-                                     vector<Position>& MoveValid) const {
-    chemin.push_back(position_actuelle); // Ajoute la position actuelle au chemin
-    profondeur++;
-    
-    if (profondeur == 3) {
-        MoveValid.push_back(position_actuelle); // Si la profondeur est atteinte, ajoute la position aux mouvements valides
-        return MoveValid;
-    }
-
-    // Obtient les successeurs valides
-    vector<Position> succ = position_actuelle.successeurs_valides(plateau, chemin);
-    for (const auto& successeur : succ) {
-        getValidMoves(successeur, plateau, chemin, profondeur, MoveValid); // Appel récursif
-    }
-
-    chemin.pop_back(); // Backtrack en supprimant la position actuelle du chemin
-    return MoveValid;
-}*/
-
-vector<Position> Araignee::getValidMoves(const Position& start, 
-                                         const unordered_map<Position, vector<Piece*>>& plateau) const {
+vector<Position> Araignee::getValidMoves(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const {
     vector<Position> validMoves;                 // Contiendra toutes les positions valides
     unordered_set<Position> visited;            // Suivi des cases déjà explorées
 
@@ -353,5 +245,144 @@ vector<Position> Araignee::getValidMoves(const Position& start,
     }
     return validMoves;
 }
+
+
+bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
+    }
+    vector<Position> Adjacents = getPosition().getAdjacentCoordinates();
+    for(const auto& pos : Adjacents){
+        if(pos == to){
+            return false; //la sauterelle doit sauter au moins 1 pièce pour se déplacer, donc la destination ne peut pas être une case adjacente
+        }
+    }
+    /*Déterminer si 2 cases sont en "ligne droite" est très compliqué avec notre système de coordonnées actuel. Par conséquent,
+    on converti d'abord les coordonnées de la pièce en coordonnées cubiques avant de regarder si les 2 cases sont en ligne droite*/
+    vector<int> fromCubeCoords = getPosition().toCube();
+    vector<int> toCubeCoords = to.toCube();
+    if(fromCubeCoords[0]!=toCubeCoords[0] && fromCubeCoords[1]!=toCubeCoords[1] && fromCubeCoords[2]!=toCubeCoords[2]){
+        return false; //sous cette condition, les 2 cases ne sont pas alignées
+    }
+
+    int distance = max(abs(fromCubeCoords[0] - toCubeCoords[0]), max(abs(fromCubeCoords[1] - toCubeCoords[1]), abs(fromCubeCoords[2] - toCubeCoords[2])));
+    for (int i = 1; i < distance; ++i) {
+        int interX = fromCubeCoords[0] + i * (toCubeCoords[0] - fromCubeCoords[0]) / distance;
+        int interY = fromCubeCoords[1] + i * (toCubeCoords[1] - fromCubeCoords[1]) / distance;
+        int interZ = fromCubeCoords[2] + i * (toCubeCoords[2] - fromCubeCoords[2]) / distance;
+        Position intermediate(interX, interY, interZ); //on calcule les coordonnées de chaque position entre les deux cases
+
+        // vérifier si la position intermédiaire est occupée
+        if (plateau.find(intermediate) == plateau.end() || plateau.find(intermediate)->second.empty()) {// case vide ou absente du plateau
+            return false;
+        }
+    }
+    return true;
+}
+
+vector<Position> Sauterelle::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const {
+    vector<Position> validMoves; // Contiendra les positions valides où la sauterelle peut se déplacer
+    vector<Position> borderPositions = getBorderPositions(plateau); 
+    for(const Position& border : borderPositions){
+        if(isValidMove(border, plateau)){
+            validMoves.push_back(border);
+        } 
+    }
+    return validMoves;
+}
+
+bool Fourmi::canReach(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position>& visited, const vector<Position>& borderPositions) const {
+    if (current == target) {
+        return true;
+    }
+    visited.insert(current);
+    vector<Position> adjacents = current.getAdjacentCoordinates();
+    for (const Position& adj : adjacents) {
+        if (visited.find(adj) == visited.end() && find(borderPositions.begin(), borderPositions.end(), adj) != borderPositions.end() && current.isSlidingPossible(adj, plateau)) {
+            return canReach(adj, target, plateau, visited, borderPositions);
+        }
+    }
+    return false;
+}
+
+bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        cout<<"Piece sur la destination"<<endl;
+        return false; 
+    }
+    vector<Position> borderPositions = getBorderPositions(plateau);
+    unordered_set<Position> visited;
+    return canReach(getPosition(), to, plateau, visited, borderPositions);
+}
+
+vector<Position> Fourmi::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const {
+    vector<Position> borderPos = getBorderPositions(plateau);
+    vector<Position> validMoves;
+    for (const Position& border : borderPos) {
+        if (isValidMove(border, plateau)) {
+            validMoves.push_back(border);
+        }
+    }
+    return validMoves;
+}
+
+
+bool Moustique::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
+    }
+    return true;
+}
+
+bool Coccinelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false; 
+    }
+    return true;
+}
+
+
+
+
+//Ajout arthur : 
+/*
+vector<Position> Position::successeurs_valides(const unordered_map<Position, vector<Piece*>>& plateau, const vector<Position>& chemin) const {
+    vector<Position> succ_valide = this->getAdjacentCoordinates(); // Les positions adjacentes
+    vector<Position> resultat;
+    
+    for (const auto& elem : succ_valide) {
+        // Vérifie si la position est accessible et pas déjà dans le chemin
+        if (isSlidingPossible(elem, plateau) && find(chemin.begin(), chemin.end(), elem) == chemin.end()) {
+            resultat.push_back(elem);
+        }
+    }
+    return resultat;
+}
+
+
+vector<Position> Araignee::getValidMoves(const Position& position_actuelle, 
+                                     const unordered_map<Position, vector<Piece*>>& plateau, 
+                                     vector<Position>& chemin, 
+                                     int profondeur, 
+                                     vector<Position>& MoveValid) const {
+    chemin.push_back(position_actuelle); // Ajoute la position actuelle au chemin
+    profondeur++;
+    
+    if (profondeur == 3) {
+        MoveValid.push_back(position_actuelle); // Si la profondeur est atteinte, ajoute la position aux mouvements valides
+        return MoveValid;
+    }
+
+    // Obtient les successeurs valides
+    vector<Position> succ = position_actuelle.successeurs_valides(plateau, chemin);
+    for (const auto& successeur : succ) {
+        getValidMoves(successeur, plateau, chemin, profondeur, MoveValid); // Appel récursif
+    }
+
+    chemin.pop_back(); // Backtrack en supprimant la position actuelle du chemin
+    return MoveValid;
+}*/
+
+
 
 

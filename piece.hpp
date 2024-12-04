@@ -35,6 +35,7 @@ public:
     // Opérateur d’égalité
     bool operator==(const Position& other) const {return q == other.q && r == other.r;}
     bool operator!=(const Position& other) const {return q != other.q || r != other.r;}
+    Position& operator=(const Position& other) {q = other.q; r = other.r; return *this;}
     vector<Position> getAdjacentCoordinates() const;
     bool isAdjacent(const Position& other) const;
     bool isAccessible(const unordered_map<Position, vector<Piece*>>& plateau)const; //vérifie si la position est accessible en glissant
@@ -64,6 +65,7 @@ public:
     void setPosition(const Position& newPos) { pos = newPos; }
     virtual string getType() const = 0;
     virtual char getInitial() const = 0;
+    vector<Position> getBorderPositions(const unordered_map<Position, vector<Piece*>>& plateau)const;
 };
 
 
@@ -92,9 +94,7 @@ public:
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;    
     string getType() const override { return "Araignee"; }
     char getInitial() const override {return 'A';}
-
-    
-vector<Position>getValidMoves(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const; 
+    vector<Position>getValidMoves(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const; 
 };
 
 class Sauterelle : public Piece {
@@ -103,17 +103,18 @@ public:
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
     string getType() const override { return "Sauterelle"; }
     char getInitial() const override {return 'H';}
+    vector<Position> getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const; 
 };
 
 class Fourmi : public Piece {
 public:
     Fourmi(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
-    vector<Position> getBorderPositions(const unordered_map<Position, vector<Piece*>>& plateau)const;
     bool canReach(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position, hash<Position>>& visited, const vector<Position>& borderPositions) const ;
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau) const override;
     bool canSlideTo(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau, unordered_set<Position, hash<Position>>& visited) const;
     string getType() const override { return "Fourmi"; }
     char getInitial() const override {return 'F';}
+    vector<Position> getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const;
 };
 
 class Moustique : public Piece {
