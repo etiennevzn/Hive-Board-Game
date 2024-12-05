@@ -326,12 +326,58 @@ vector<Position> Fourmi::getValidMoves(const unordered_map<Position, vector<Piec
     return validMoves;
 }
 
+vector<Position> Moustique::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau)const{
+    unordered_set<Position> validMoves; //On fait un unordered_set pour éviter que, si on peut arriver a la même position de plusieurs manières, elle soit ajoutée plusieurs fois
+    vector<Position> adjacents = getPosition().getAdjacentCoordinates();
+    unordered_set<string> types;
+    for(const auto& pos : adjacents){
+        auto it = plateau.find(pos);
+        if(it != plateau.end() && !it->second.empty()){
+            types.insert(it->second.back()->getType());
+        }
+    }
+    for(const auto& type : types){
+        if(type == "Reine"){
+            Reine tempReine(getPosition(),getCouleur()); // on créé une instance temporaire de la reine à la même position que le Moustique
+            vector<Position> validMovesReine = tempReine.getValidMoves(plateau); //on récupère ses mouvements valides
+            validMoves.insert(validMovesReine.begin(), validMovesReine.end()); 
+        }else if(type == "Scarabee"){
+            Scarabee tempScarabee(getPosition(),getCouleur()); 
+            vector<Position> validMovesScarabee = tempScarabee.getValidMoves(plateau); 
+            validMoves.insert(validMovesScarabee.begin(), validMovesScarabee.end()); 
+        }else if(type == "Araignee"){
+            Araignee tempAraignee(getPosition(), getCouleur()); 
+            vector<Position> validMovesAraignee = tempAraignee.getValidMoves(getPosition(), plateau); 
+            validMoves.insert(validMovesAraignee.begin(), validMovesAraignee.end()); 
+        }else if(type == "Sauterelle"){
+            Sauterelle tempSauterelle(getPosition(), getCouleur()); 
+            vector<Position> validMovesSauterelle = tempSauterelle.getValidMoves(plateau); 
+            validMoves.insert(validMovesSauterelle.begin(), validMovesSauterelle.end());
+        }else if(type == "Fourmi"){
+            Fourmi tempFourmi(getPosition(), getCouleur()); 
+            vector<Position> validMovesFourmi = tempFourmi.getValidMoves(plateau); 
+            validMoves.insert(validMovesFourmi.begin(), validMovesFourmi.end());
+        }else if(type == "Coccinelle"){
+            Coccinelle tempCoccinelle(getPosition(), getCouleur()); 
+            vector<Position> validMovesCoccinelle = tempCoccinelle.getValidMoves(plateau); 
+            validMoves.insert(validMovesCoccinelle.begin(), validMovesCoccinelle.end());
+        }
+    }
+    return vector<Position>(validMoves.begin(), validMoves.end());
+}
+
 
 bool Moustique::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
     if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
         return false; 
     }
-    return true;
+    vector<Position> validMoves = getValidMoves(plateau);
+    for(const auto& pos : validMoves){
+        if(pos == to){  
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Coccinelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
@@ -339,6 +385,10 @@ bool Coccinelle::isValidMove(const Position& to, const unordered_map<Position, v
         return false; 
     }
     return true;
+}
+
+vector<Position> Coccinelle::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau)const{
+    return getPosition().getAdjacentCoordinates(); // TEMPORAIRE
 }
 
 

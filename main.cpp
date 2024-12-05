@@ -18,8 +18,8 @@ int main(){
     j2.poserPiece('R', Position(1,0), plateau,1);
 
 
-    j2.poserPiece('S', Position(1,-1), plateau,2);
-    j2.poserPiece('F', Position(2,-2), plateau,2);
+    j2.poserPiece('F', Position(1,-1), plateau,2);
+    j2.poserPiece('M', Position(2,-2), plateau,2);
     j2.poserPiece('F', Position(1,-3), plateau,2);
     j2.poserPiece('H', Position(1,-4), plateau,2);
     j1.poserPiece('H', Position(-1,0), plateau,3);
@@ -34,28 +34,20 @@ int main(){
     cout<<endl;
     //cout<<Position(-1,-1).isSlidingPossible(Position(0,-1), plateau.getPlateau())<<endl;
     for(const auto& piece : j2.getPieces()){
-        if(piece->getType() == "Araignee"){
-            //cout<<piece->isValidMove(Position(-1,-4), plateau.getPlateau())<<endl;
-            vector<Position> chemin, validList;
-            vector<Position> validMoves = dynamic_cast<Araignee*>(piece)->getValidMoves(piece->getPosition(), plateau.getPlateau());
+        if(piece->getType() == "Moustique"){
+            vector<Position> validMoves = dynamic_cast<Moustique*>(piece)->getValidMoves(plateau.getPlateau());
+            cout<<"Position de la piece : ("<<piece->getPosition().getColonne()<<","<<piece->getPosition().getLigne()<<")"<<endl;
             for(const auto& pos : validMoves){
+                //cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
                 if(!plateau.wouldSplitHive(piece->getPosition(), pos)){
                     cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
                 }
             }
         }
-        if(piece->getType() == "Sauterelle"){
-            //cout<<piece->isValidMove(Position(-1,-4), plateau.getPlateau())<<endl;
-            vector<Position> validMoves = dynamic_cast<Sauterelle*>(piece)->getValidMoves(plateau.getPlateau());
-            cout<<validMoves.size()<<endl;
-            for(const auto& pos : validMoves){
-                cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
-            }
-        }
     }
 
-    plateau.deplacerPiece(Position(1,-4), Position(0,-4), Blanc);
-    plateau.print_board();
+    //plateau.deplacerPiece(Position(1,-4), Position(2,-1), Blanc);
+    //plateau.print_board();
     /*
     Partie partie(j1, j2,plateau,0);
     partie.jouer();

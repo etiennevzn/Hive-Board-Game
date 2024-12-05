@@ -120,7 +120,8 @@ public:
 class Moustique : public Piece {
 public:
     Moustique(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
-    bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
+    vector<Position> getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau)const;
+    bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const override;
     string getType() const override { return "Moustique"; }
     char getInitial() const override {return 'M';}
 };
@@ -129,6 +130,7 @@ class Coccinelle : public Piece {
 public:
     Coccinelle(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
+    vector<Position> getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau)const;
     string getType() const override { return "Coccinelle"; }
     char getInitial() const override {return 'C';}
 };
