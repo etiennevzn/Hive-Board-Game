@@ -1,19 +1,21 @@
+#include "piece.cpp"
+#include "plateau.cpp"
+#include "joueur.cpp"
+#include "partie.cpp"
 #include <iostream>
-#include "partie.hpp"
-#include "joueur.hpp"
-#include "plateau.hpp"
+#include "gamemanager.hpp"
 
 int main() {
+    Joueur joueur1("Joueur 1", Couleur::Noir);
+    Joueur joueur2("Joueur 2", Couleur::Blanc);
     Plateau plateau;
-    Joueur joueur1(Noir);
-    Joueur joueur2(Blanc);
 
+    // Démarrer une nouvelle partie via GameManager
+    GameManager::getInstance()->demarrerNouvellePartie(joueur1, joueur2, plateau);
 
-    Partie partie;
-
-    std::cout << "Bienvenue dans le jeu Hive!" << std::endl;
-    partie.jouer();  
+    // Obtenir l'instance de Partie et commencer le jeu
+    Partie* partie = GameManager::getInstance()->getPartie();
+    partie->jouer();
 
     return 0;
 }
-
