@@ -1,179 +1,127 @@
 #include "partie.hpp"
 #include <iostream>
 
-void Partie::jouer() {
-    bool jeuEnCours = true;
-
-    while (jeuEnCours) {
-        plateau.print_board();
-
-        std::cout << "Tour du joueur " << (joueurCourant == &joueur1 ? "1" : "2") << " ("
-            << (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << ")" << std::endl;
-
-        bool actionValide = false;
-        while (!actionValide) {
-            char choix;
-            std::cout << "Voulez-vous (P)oser une nouvelle piece ou (D)eplacer une piece existante ? ";
-            std::cin >> choix;
-
-            if (choix == 'P' || choix == 'p') {
-                int pieceType, col, row;
-                std::cout << "Choisissez le type de piece a poser (1=Reine, 2=Scarabee, 3=Araignee, 4=Sauterelle, 5=Fourmi) : ";
-                std::cin >> pieceType;
-                std::cout << "Entrez la position pour poser la piece (colonne et ligne) : ";
-                std::cin >> col >> row;
-
-                Position pos(col, row);
-                Piece* piece = nullptr;
-
-                switch (pieceType) {
-                case 1:
-                    if (joueurCourant->getNbReine() == 0) {
-                        std::cout << "Vous n'avez plus de Reine disponible." << std::endl;
-                        continue;
-                    }
-                    piece = new Reine(pos, joueurCourant->getCouleur());
-                    break;
-                case 2:
-                    if (joueurCourant->getNbScarabes() == 0) {
-                        std::cout << "Vous n'avez plus de Scarabees disponibles." << std::endl;
-                        continue;
-                    }
-                    piece = new Scarabee(pos, joueurCourant->getCouleur());
-                    break;
-                case 3:
-                    if (joueurCourant->getNbAraignees() == 0) {
-                        std::cout << "Vous n'avez plus d'Araignees disponibles." << std::endl;
-                        continue;
-                    }
-                    piece = new Araignee(pos, joueurCourant->getCouleur());
-                    break;
-                case 4:
-                    if (joueurCourant->getNbSauterelles() == 0) {
-                        std::cout << "Vous n'avez plus de Sauterelles disponibles." << std::endl;
-                        continue;
-                    }
-                    piece = new Sauterelle(pos, joueurCourant->getCouleur());
-                    break;
-                case 5:
-                    if (joueurCourant->getNbFourmis() == 0) {
-                        std::cout << "Vous n'avez plus de Fourmis disponibles." << std::endl;
-                        continue;
-                    }
-                    piece = new Fourmi(pos, joueurCourant->getCouleur());
-                    break;
-                default:
-                    std::cout << "Type de piece invalide." << std::endl;
-                    continue;
-                }
-
-                if (joueurCourant->poserPiece(piece, pos, plateau)) {
-                    actionValide = true; // Action valide seulement si poserPiece retourne true
-                }
-            }
-            else if (choix == 'D' || choix == 'd') {
-                int colFrom, rowFrom, colTo, rowTo;
-
-                std::cout << "Entrer la position de depart (colonne et ligne) : ";
-                std::cin >> colFrom >> rowFrom;
-
-                std::cout << "Entrer la position d'arrivee (colonne et ligne) : ";
-                std::cin >> colTo >> rowTo;
-
-                Position from(colFrom, rowFrom);
-                Position to(colTo, rowTo);
-
-                if (!plateau.isPositionOccupied(from)) {
-                    std::cout << "Aucune piece a la position de depart. Reessayez." << std::endl;
-                    continue;
-                }
-
-                Piece* piece = plateau.getPieceAtPosition(from);
-                if (piece == nullptr || piece->getCouleur() != joueurCourant->getCouleur()) {
-                    std::cout << "Vous ne pouvez deplacer que vos propres pieces. Reessayez." << std::endl;
-                    continue;
-                }
-
-                if (joueurCourant->isValidMove(from, to, plateau)) {
-                    joueurCourant->movePiece(from, to, plateau);
-                    actionValide = true;
-                }
-                else {
-                    std::cout << "Mouvement invalide. Reessayez." << std::endl;
-                }
-            }
-            else {
-                std::cout << "Choix invalide. Reessayez." << std::endl;
-            }
-        }
-
-        if (conditionsDeVictoire()) {
-            jeuEnCours = false;
-        }
-        else if (conditionsDeMatchNul()) {
-            std::cout << "Match nul !" << std::endl;
-            jeuEnCours = false;
-        }
-        else {
-            nextTurn();
-        }
-    }
-}
+using namespace std;
 
 void Partie::nextTurn() {
     tourActuel++;
     joueurCourant = (joueurCourant == &joueur1) ? &joueur2 : &joueur1;
+    //à compléter...
 }
 
-bool Partie::conditionsDeVictoire() {
-    Position posReineJoueur1;
-    Position posReineJoueur2;
-    bool foundReineJoueur1 = false;
-    bool foundReineJoueur2 = false;
-
-    for (const auto& entry : plateau.getPlateauMap()) {
-        const Position& pos = entry.first;
-        const std::vector<Piece*>& pieces = entry.second;
-
-        for (const Piece* piece : pieces) {
-            if (piece->getType() == "Reine") {
-                if (piece->getCouleur() == joueur1.getCouleur()) {
-                    posReineJoueur1 = pos;
-                    foundReineJoueur1 = true;
-                }
-                else if (piece->getCouleur() == joueur2.getCouleur()) {
-                    posReineJoueur2 = pos;
-                    foundReineJoueur2 = true;
-                }
+void Partie::afficherMouvementsPossibles(Position pos) {
+    if (plateau.isPositionOccupied(pos)) {
+        Piece* piece = plateau.getPlateau().at(pos).back();
+        cout << "Mouvements possibles pour la piece " << piece->getType() << " a la position (" << pos.getColonne() << ", " << pos.getLigne() << "):" << endl;
+        vector<Position> adjacents = plateau.getAllAdjacentCoordinates();
+        for (const Position& adj : adjacents) {
+            if (piece->isValidMove(adj, plateau.getPlateau()) && !plateau.wouldSplitHive(pos, adj)) {
+                cout << "(" << adj.getColonne() << ", " << adj.getLigne() << ")" << endl;
             }
         }
     }
-
-    if (foundReineJoueur1 && isPieceSurrounded(posReineJoueur1)) {
-        std::cout << "Joueur 2 a gagne !" << std::endl;
-        return true;
+    else {
+        cout << "Aucune pièce à cette position." << endl;
     }
-
-    if (foundReineJoueur2 && isPieceSurrounded(posReineJoueur2)) {
-        std::cout << "Joueur 1 a gagne !" << std::endl;
-        return true;
-    }
-
-    return false;
 }
 
-bool Partie::isPieceSurrounded(const Position& pos) const {
-    std::vector<Position> adjacents = pos.getAdjacentCoordinates();
+Memento Partie::sauvegarder() {
+    return Memento(tourActuel, joueur1, joueur2, joueurCourant, plateau);
+}
 
-    for (const Position& adj : adjacents) {
-        if (!plateau.isPositionOccupied(adj)) {
-            return false;
+void Partie::restaurer(const Memento& memento) {
+    tourActuel = memento.tourActuel;
+    joueur1 = memento.joueur1;
+    joueur2 = memento.joueur2;
+    joueurCourant = memento.joueurCourant;
+    plateau = memento.plateau;
+}
+
+void Partie::jouer() {
+    // Ajoute l'état initial à l'historique
+    historique.push_back(sauvegarder());
+
+    while (true) {
+        cout << "Tour " << tourActuel << endl;
+        plateau.print_board();
+        plateau.print_positions();
+        cout << "Tour du joueur " << " (" << (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << ")" << endl;
+        cout << "1. Poser une piece" << endl;
+        cout << "2. Deplacer une piece" << endl;
+        cout << "3. Voir les mouvements possibles pour une piece" << endl;
+        cout << "4. Annuler le dernier mouvement" << endl;
+        cout << "Choisissez une option: ";
+        int choix;
+        cin >> choix;
+        switch (choix) {
+        case 1: {
+            // Poser une pièce
+            cout << "Choisissez une piece a poser (R: Reine, S: Scarabee, A: Araignee, H: Sauterelle, F: Fourmi): ";
+            char pieceType;
+            cin >> pieceType;
+            //si premier tour on pose juste la pîèce au milieu
+            if (tourActuel == 0) {
+                joueurCourant->poserPiece(pieceType, Position(0, 0), plateau, tourActuel);
+                nextTurn();
+                historique.push_back(sauvegarder());
+                break;
+            }
+            cout << "Entrez la position (q r): ";
+            int q, r;
+            cin >> q >> r;
+            Position pos(q, r);
+
+            if (joueurCourant->poserPiece(pieceType, pos, plateau, tourActuel)) {
+                nextTurn();
+                historique.push_back(sauvegarder());
+            }
+            else {
+                cout << "Impossible de poser la piece a cette position." << endl;
+            }
+            break;
+        }
+        case 2: {
+            // Déplacer une pièce
+            cout << "Entrez la position de depart (q r): ";
+            int qFrom, rFrom;
+            cin >> qFrom >> rFrom;
+            Position from(qFrom, rFrom);
+            cout << "Entrez la position de destination (q r): ";
+            int qTo, rTo;
+            cin >> qTo >> rTo;
+            Position to(qTo, rTo);
+            if (plateau.deplacerPiece(from, to, joueurCourant->getCouleur())) {
+                nextTurn();
+                historique.push_back(sauvegarder());
+            }
+            else {
+                cout << "Mouvement invalide. Réessayez." << endl;
+            }
+            break;
+        }
+        case 3: {
+            // Voir les mouvements possibles pour une pièce
+            cout << "Entrez la position de la piece (q r): ";
+            int q, r;
+            cin >> q >> r;
+            Position pos(q, r);
+            afficherMouvementsPossibles(pos);
+            break;
+        }
+        case 4: {
+            // Annuler le dernier mouvement
+            if (historique.size() > 1) {
+                historique.pop_back();
+                restaurer(historique.back());
+            }
+            else {
+                cout << "Aucun mouvement à annuler." << endl;
+            }
+            break;
+        }
+        default:
+            cout << "Choix invalide. Réessayez." << endl;
+            break;
         }
     }
-    return true;
-}
-
-bool Partie::conditionsDeMatchNul() {
-    // Implementer la logique pour verifier un match nul
-    return false;
 }
