@@ -33,9 +33,9 @@ int main(){
     plateau.print_board();
     cout<<endl;
     //cout<<Position(-1,-1).isSlidingPossible(Position(0,-1), plateau.getPlateau())<<endl;
-    for(const auto& piece : j2.getPieces()){
-        if(piece->getType() == "Moustique"){
-            vector<Position> validMoves = dynamic_cast<Moustique*>(piece)->getValidMoves(plateau.getPlateau());
+    for(const auto& piece : j1.getPieces()){
+        if(piece->getType() == "Araignee"){
+            vector<Position> validMoves = dynamic_cast<Araignee*>(piece)->getValidMoves(piece->getPosition(), plateau.getPlateau());
             cout<<"Position de la piece : ("<<piece->getPosition().getColonne()<<","<<piece->getPosition().getLigne()<<")"<<endl;
             for(const auto& pos : validMoves){
                 //cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
@@ -46,8 +46,8 @@ int main(){
         }
     }
 
-    plateau.deplacerPiece(Position(2,-2), Position(0,-4), Blanc);
-    plateau.print_board();
+    //plateau.deplacerPiece(Position(2,-2), Position(0,-4), Blanc);
+    //plateau.print_board();
     /*
     Partie partie(j1, j2,plateau,0);
     partie.jouer();

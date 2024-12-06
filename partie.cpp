@@ -10,7 +10,7 @@ void Partie::nextTurn(){
 
 
 void Partie::afficherMouvementsPossibles(Position pos) {
-    if (plateau.isPositionOccupied(pos)) {
+    /*if (plateau.isPositionOccupied(pos)) {
         Piece* piece = plateau.getPlateau().at(pos).back();
         cout << "Mouvements possibles pour la piece " << piece->getType() << " a la position (" << pos.getColonne() << ", " << pos.getLigne() << "):" << endl;
         vector<Position> adjacents = plateau.getAllAdjacentCoordinates();
@@ -21,7 +21,7 @@ void Partie::afficherMouvementsPossibles(Position pos) {
         }
     } else {
         cout << "Aucune pièce à cette position." << endl;
-    }
+    }*/
 }
 
 
