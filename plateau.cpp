@@ -67,8 +67,8 @@ void Plateau::addPiece(Piece* piece, Position pos) {
 }
 
 bool Plateau::isReinePlaced(Couleur couleur) const {
-    for (const auto& entry : plateau) {
-        const vector<Piece*>& pieces = entry.second;
+    for (const auto& pair : plateau) {
+        const vector<Piece*>& pieces = pair.second;
         for (const Piece* piece : pieces) {
             if (piece->getType() == "Reine" && piece->getCouleur() == couleur) {
                 return true;
@@ -95,8 +95,7 @@ bool Plateau::deplacerPiece(Position from, Position to, Couleur couleur) {
         Piece* piece = plateau.at(from).back();
         if (piece->getCouleur() == couleur && piece->isValidMove(to, plateau)) {
             plateau[from].pop_back();
-            piece->setPosition(to);
-            plateau[to].push_back(piece); 
+            addPiece(piece, to);
             return true;
         }else if (piece->getCouleur() != couleur){
             cout<<"Ce n'est pas votre piece"<<endl;
@@ -153,23 +152,5 @@ void Plateau::print_positions() const {
     }
 }
 
-vector<Position> Plateau::getAllAdjacentCoordinates() const {
-    unordered_set<Position, hash<Position>> allAdjacents;
-    for (const auto& entry : plateau) {
-        const Position& pos = entry.first;
-        vector<Position> adjacents = pos.getAdjacentCoordinates();
-        for (const Position& adj : adjacents) {
-            auto it = plateau.find(adj);
-            if (it == plateau.end() || it->second.empty()) {
-                allAdjacents.insert(adj);
-            }
-        }
-    }
-    for (const Position& adj : allAdjacents){
-        cout<<"("<<adj.getColonne()<< " "<<adj.getLigne()<<")"<<endl;
-    }
-    cout<<"---------------------------\n"<<endl;
-    return vector<Position>(allAdjacents.begin(), allAdjacents.end());
-}
 
 

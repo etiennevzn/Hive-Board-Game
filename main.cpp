@@ -46,8 +46,8 @@ int main(){
         }
     }
 
-    //plateau.deplacerPiece(Position(1,-4), Position(2,-1), Blanc);
-    //plateau.print_board();
+    plateau.deplacerPiece(Position(2,-2), Position(0,-4), Blanc);
+    plateau.print_board();
     /*
     Partie partie(j1, j2,plateau,0);
     partie.jouer();

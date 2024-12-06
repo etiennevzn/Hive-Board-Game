@@ -203,44 +203,12 @@ bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vec
     return isValidMoveRecursive(getPosition(), to, plateau, 3, visited);
 }
 
-vector<Position> Araignee::getValidMoves(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const {
-    vector<Position> validMoves;                 // Contiendra toutes les positions valides
-    unordered_set<Position> visited;            // Suivi des cases déjà explorées
-
-    // Fonction récursive interne
-    std::function<void(const Position&, const Position&, int)> findMoves = [&](const Position& current, const Position& previous, int depth) {
-        if (depth == 3) {                        // Si la profondeur est atteinte, ajoute la position actuelle
-            validMoves.push_back(current);
-            return;
-        }
-
-        visited.insert(current);                // Marque la position actuelle comme visitée
-
-        vector<Position> adjacents = current.getAdjacentCoordinates();
-        for (const Position& neighbor : adjacents) {
-            if (neighbor != previous &&          // Empêche de revenir en arrière
-                plateau.find(neighbor) != plateau.end() && 
-                !plateau.at(neighbor).empty()) {
-                vector<Position> neighborAdjacents = neighbor.getAdjacentCoordinates();
-                for (const Position& candidate : neighborAdjacents) {
-                    if (find(adjacents.begin(), adjacents.end(), candidate) != adjacents.end() && 
-                        visited.find(candidate) == visited.end()) {
-                        findMoves(candidate, current, depth + 1); // Appel récursif avec une profondeur augmentée
-                    }
-                }
-            }
-        }
-
-        visited.erase(current);// Backtrack pour permettre d'autres chemins
-    };
-
-    Position invalidPosition = Position(-70000, -7000); // Position invalide pour le premier appel (pas de précédent)
-    findMoves(start, invalidPosition, 0); 
-    for (auto it = validMoves.begin(); it != validMoves.end(); ) {
-        if (!isValidMove(*it, plateau)) {
-            it = validMoves.erase(it); 
-        } else {
-            ++it; 
+vector<Position> Araignee::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const{
+    vector<Position> borderPos = getBorderPositions(plateau);
+    vector<Position> validMoves;
+    for (const Position& border : borderPos) {
+        if (isValidMove(border, plateau)) {
+            validMoves.push_back(border);
         }
     }
     return validMoves;
@@ -347,7 +315,7 @@ vector<Position> Moustique::getValidMoves(const unordered_map<Position, vector<P
             validMoves.insert(validMovesScarabee.begin(), validMovesScarabee.end()); 
         }else if(type == "Araignee"){
             Araignee tempAraignee(getPosition(), getCouleur()); 
-            vector<Position> validMovesAraignee = tempAraignee.getValidMoves(getPosition(), plateau); 
+            vector<Position> validMovesAraignee = tempAraignee.getValidMoves(plateau); 
             validMoves.insert(validMovesAraignee.begin(), validMovesAraignee.end()); 
         }else if(type == "Sauterelle"){
             Sauterelle tempSauterelle(getPosition(), getCouleur()); 
