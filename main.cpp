@@ -20,9 +20,11 @@ int main(){
     Plateau plateau;
     Joueur j1(Noir);
     Joueur j2(Blanc);
+    Partie partie(j1, j2, plateau,0);
+    partie.playTurn();
 
 
-    j1.poserPiece('R', Position(0,0), plateau,0);
+    /*j1.poserPiece('R', Position(0,0), plateau,0);
     j2.poserPiece('R', Position(1,0), plateau,1);
 
 
