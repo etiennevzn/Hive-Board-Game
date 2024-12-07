@@ -83,7 +83,18 @@ void Partie::playTurn() {
                     nextTurn();
                     break;
                 }
+
                 vector<Position> posPossible = joueurCourant->get_liste_placements(plateau);
+                if(tourActuel == 1){
+                    for (const auto& pair : plateau.getPlateau()) { 
+                        vector<Position> adjacents = pair.first.getAdjacentCoordinates();
+                        for(const auto& pos : adjacents){
+                            if(find(posPossible.begin(), posPossible.end(), pos) == posPossible.end()){
+                                posPossible.push_back(pos);
+                            }
+                        }
+                    }     
+                }
                 cout<<"Positions possibles pour le placement : "<<endl;
                 for(const auto& pos : posPossible){
                     cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
