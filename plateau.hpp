@@ -28,6 +28,8 @@ public:
     void print_board()const;
     void print_positions() const;
 
+    bool isGameOver() const;
+
 };
 
 #endif

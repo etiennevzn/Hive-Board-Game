@@ -16,6 +16,7 @@ public :
     Joueur(const Couleur& c) : couleur(c), pieces(), nb_pieces{{"R", 0}, {"F", 0}, {"S", 0}, {"H", 0}, {"C", 0}, {"A", 0}, {"M", 0}} {};
     Couleur getCouleur() const { return couleur; }
     const vector<Piece*>& getPieces() const { return pieces; }
+    const unordered_map<string, int> getNbPieces() const { return nb_pieces; }
     //void jouerTour(); a voir si c'est utile
     bool poserPiece(char pieceType, Position pos, Plateau& plateaun,int tourActuel);
     void print_piece_left();

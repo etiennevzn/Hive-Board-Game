@@ -5,34 +5,47 @@ using namespace std;
 
 void Partie::nextTurn() {
     tourActuel++;
-    joueurCourant = (joueurCourant == &joueur1) ? &joueur2 : &joueur1;
+    joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
     //à compléter...
 }
 
-void Partie::afficherMouvementsPossibles(Position pos) {
-    /*if (plateau.isPositionOccupied(pos)) {
+void Partie::afficherMouvementsPossibles(Position pos) const {
+    if (plateau.isPositionOccupied(pos)) {
         Piece* piece = plateau.getPlateau().at(pos).back();
         cout << "Mouvements possibles pour la piece " << piece->getType() << " a la position (" << pos.getColonne() << ", " << pos.getLigne() << "):" << endl;
-        vector<Position> adjacents = plateau.getAllAdjacentCoordinates();
-        for (const Position& adj : adjacents) {
-            if (piece->isValidMove(adj, plateau.getPlateau()) && !plateau.wouldSplitHive(pos, adj)) {
-                cout << "(" << adj.getColonne() << ", " << adj.getLigne() << ")" << endl;
-            }
-        }
+        vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
     }
     else {
         cout << "Aucune pièce à cette position." << endl;
-    }*/
+    }
+}
+
+void Partie::printPossiblePlays(Joueur* joueurCourant)const{
+    cout<<"***************Actions possibles***************"<<endl;
+    cout<<"******************Placements*******************"<<endl;
+    joueurCourant->print_piece_left();
+    cout<<"******************Déplacements*****************"<<endl;
+    vector<Piece*> pieces = joueurCourant->getPieces();
+    for(const auto& piece : pieces){
+        vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
+        if(validMoves.size() != 0){
+            cout<<"Position de la piece : ("<<piece->getPosition().getColonne()<<","<<piece->getPosition().getLigne()<<") - Type de la piece : "<<piece->getType()<<endl;
+            for(const auto& pos : validMoves){
+                cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
+            }
+        }
+    }
+        
 }
 
 Memento Partie::sauvegarder() {
-    return Memento(tourActuel, joueur1, joueur2, joueurCourant, plateau);
+    return Memento(tourActuel, joueurs[0], joueurs[1], joueurCourant, plateau);
 }
 
 void Partie::restaurer(const Memento& memento) {
     tourActuel = memento.tourActuel;
-    joueur1 = memento.joueur1;
-    joueur2 = memento.joueur2;
+    joueurs[0] = memento.joueurs[0];
+    joueurs[1] = memento.joueurs[1];
     joueurCourant = memento.joueurCourant;
     plateau = memento.plateau;
 }
@@ -41,7 +54,7 @@ void Partie::jouer() {
     // Ajoute l'état initial à l'historique
     historique.push_back(sauvegarder());
 
-    while (true) {
+    do{
         cout << "Tour " << tourActuel << endl;
         plateau.print_board();
         plateau.print_positions();
@@ -123,5 +136,5 @@ void Partie::jouer() {
             cout << "Choix invalide. Réessayez." << endl;
             break;
         }
-    }
+    }while(!plateau.isGameOver());
 }

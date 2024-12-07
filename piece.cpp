@@ -55,22 +55,7 @@ bool Position::isAdjacent(const Position& other) const {
     return false;
 }
 
-/*
-Remarque sur cette méthode : commentée car la méthode isSlidingPossible est plus efficace. 
-Je la supprime parce que elle pourra potentiellement être utile, peut-être on pourra la changer en isSurrounded pour savoir si une Position
-est entourée par 6 autres positions (pour la condition de défaite par exemple)
 
-bool Position::isAccessible(const unordered_map<Position, vector<Piece*>>& plateau)const{
-    vector<Position> adjacentes = getAdjacentCoordinates();
-    int piecesCount = 0;
-    for(const Position& adj : adjacentes){
-        auto it = plateau.find(adj);
-        if(it != plateau.end() && !it->second.empty()) piecesCount++;
-    }
-    return piecesCount<5; //s'il y a plus de 4 pièces autour de la position, elle est innaccessible par glissement
-}
-
-*/
 
 bool Position::isSlidingPossible(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
     if (!isAdjacent(to)) {
@@ -121,6 +106,16 @@ vector<Position> Piece::getBorderPositions(const unordered_map<Position, vector<
         }
     }
     return vector<Position>(borderPositions.begin(), borderPositions.end());
+}
+
+bool Reine::isSurrounded(const unordered_map<Position, vector<Piece*>>& plateau) const {
+    vector<Position> adjacents = getPosition().getAdjacentCoordinates();
+    for (const Position& adj : adjacents) {
+        if (plateau.find(adj) == plateau.end() || plateau.at(adj).empty()) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool Reine::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
@@ -203,7 +198,7 @@ bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vec
     return isValidMoveRecursive(getPosition(), to, plateau, 3, visited);
 }
 
-vector<Position> Araignee::getValidMoves(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const {
+vector<Position> Araignee::getValidMovesIntermediate(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const {
     vector<Position> validMoves;                 // Contiendra toutes les positions valides
     unordered_set<Position> visited;            // Suivi des cases déjà explorées
 
@@ -246,7 +241,11 @@ vector<Position> Araignee::getValidMoves(const Position& start, const unordered_
     return validMoves;
 }
 
-
+vector<Position> Araignee::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const{
+    vector<Position> validMoves; // Contiendra les positions valides où la fourmi peut se déplacer
+    validMoves = getValidMovesIntermediate(getPosition(), plateau);
+    return validMoves;
+}
 
 
 bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
@@ -349,7 +348,7 @@ vector<Position> Moustique::getValidMoves(const unordered_map<Position, vector<P
             validMoves.insert(validMovesScarabee.begin(), validMovesScarabee.end()); 
         }else if(type == "Araignee"){
             Araignee tempAraignee(getPosition(), getCouleur()); 
-            vector<Position> validMovesAraignee = tempAraignee.getValidMoves(getPosition(),plateau); 
+            vector<Position> validMovesAraignee = tempAraignee.getValidMoves(plateau); 
             validMoves.insert(validMovesAraignee.begin(), validMovesAraignee.end()); 
         }else if(type == "Sauterelle"){
             Sauterelle tempSauterelle(getPosition(), getCouleur()); 

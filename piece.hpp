@@ -60,6 +60,7 @@ public:
     Piece(const Position& pos, Couleur couleur): pos(pos), couleur(couleur) {}
     virtual ~Piece() = default;
     virtual bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const = 0;
+    virtual vector<Position> getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const = 0; 
     const Position& getPosition() const { return pos; }
     const Couleur& getCouleur() const { return couleur; }
     void setPosition(const Position& newPos) { pos = newPos; }
@@ -72,6 +73,7 @@ public:
 class Reine : public Piece {
 public:
     Reine(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
+    bool isSurrounded(const unordered_map<Position, vector<Piece*>>& plateau) const;
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
     string getType() const override { return "Reine"; }
     char getInitial() const override {return 'R';}
@@ -94,7 +96,8 @@ public:
     bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;    
     string getType() const override { return "Araignee"; }
     char getInitial() const override {return 'A';}
-    vector<Position> getValidMoves(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const;
+    vector<Position> getValidMovesIntermediate(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const;
+    vector<Position> getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const; 
 };
 
 class Sauterelle : public Piece {
