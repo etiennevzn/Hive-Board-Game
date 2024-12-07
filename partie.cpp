@@ -117,6 +117,12 @@ void Partie::playTurn() {
                 // Déplacer une pièce
                 cout << "Entrez la position de depart (q r): ";
                 int qFrom, rFrom;
+                cin >> qFrom >> rFrom;
+                Position from(qFrom, rFrom);
+                cout << "Entrez la position de destination (q r): ";
+                int qTo, rTo;
+                cin >> qTo >> rTo;
+                Position to(qTo, rTo);
                 if(!(plateau.isPositionOccupied(Position(qFrom, rFrom)))) {
                     cout << "Aucune piece a cette position." << endl;
                     break;
@@ -125,12 +131,6 @@ void Partie::playTurn() {
                     cout << "Ce n'est pas votre piece." << endl;
                     break;
                 }
-                cin >> qFrom >> rFrom;
-                Position from(qFrom, rFrom);
-                cout << "Entrez la position de destination (q r): ";
-                int qTo, rTo;
-                cin >> qTo >> rTo;
-                Position to(qTo, rTo);
                 if (plateau.deplacerPiece(from, to, joueurCourant->getCouleur())) {
                     historique.push_back(sauvegarder());
                     nextTurn();

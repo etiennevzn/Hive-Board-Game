@@ -11,6 +11,8 @@ int main(){
     GameManager::getInstance()->demarrerNouvellePartie(joueur1, joueur2, plateau);
 
     // Obtenir l'instance de Partie et commencer le jeu
+    //Remarque : a voir ce que fait gameManager concrètement. Est-ce que demarrerNouvellePartie créé simplement la partie
+    //ou est-ce que ça la lance aussi ?
     Partie* partie = GameManager::getInstance()->getPartie();
     partie->jouer();
     */

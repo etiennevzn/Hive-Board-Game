@@ -17,9 +17,13 @@ public:
         return instance;
     }
 
-    void demarrerNouvellePartie(const Joueur& j1, const Joueur& j2, const Plateau& p) {
+    void demarrerNouvellePartie() {
         delete partie;
-        partie = new Partie(j1, j2, p);
+        Plateau plateau;
+        Joueur j1(Noir);
+        Joueur j2(Blanc);
+        partie = new Partie(j1, j2, plateau);
+        partie->playTurn();
     }
 
     Partie* getPartie() const {
