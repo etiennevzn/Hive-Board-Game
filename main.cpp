@@ -6,6 +6,14 @@
 
 
 int main(){
+    /*
+    // Démarrer une nouvelle partie via GameManager
+    GameManager::getInstance()->demarrerNouvellePartie(joueur1, joueur2, plateau);
+
+    // Obtenir l'instance de Partie et commencer le jeu
+    Partie* partie = GameManager::getInstance()->getPartie();
+    partie->jouer();
+    */
 
    cout<<"Debut du jeu\n"<<endl;
 
