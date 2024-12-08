@@ -18,7 +18,7 @@ public :
     const vector<Piece*>& getPieces() const { return pieces; }
     const unordered_map<string, int> getNbPieces() const { return nb_pieces; }
     //void jouerTour(); a voir si c'est utile
-    bool poserPiece(char pieceType, Position pos, Plateau& plateaun,int tourActuel);
+    bool poserPiece(char pieceType, Position pos, Plateau& plateau,int tourActuel);
     void print_piece_left();
     vector<Position> get_liste_placements(const Plateau& plateau);
 };

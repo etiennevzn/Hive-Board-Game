@@ -113,8 +113,7 @@ class Fourmi : public Piece {
 public:
     Fourmi(const Position& pos, Couleur couleur) : Piece(pos, couleur) {}
     bool canReach(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position, hash<Position>>& visited, const vector<Position>& borderPositions) const ;
-    bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau) const override;
-    bool canSlideTo(const Position& from, const Position& to, const unordered_map<Position, vector<Piece*>, hash<Position>>& plateau, unordered_set<Position, hash<Position>>& visited) const;
+    bool isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const override;
     string getType() const override { return "Fourmi"; }
     char getInitial() const override {return 'F';}
     vector<Position> getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const;

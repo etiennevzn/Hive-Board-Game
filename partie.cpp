@@ -56,10 +56,11 @@ void Partie::nextTurn() {
 
 void Partie::playTurn() {
     do{
-        cout << "Debut du tour numero " << tourActuel << endl;
+        cout << "************Debut du tour numero : " << tourActuel <<"***************"<<endl;
+        cout<<"************Etat actuel du plateau*************"<<endl;
         plateau.print_board();
         cout<<endl;
-        cout << "Tour du joueur " << " (" << (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << ")" << endl;
+        cout << "Tour du joueur "<< (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << endl;
         printPossiblePlays(joueurCourant);
         cout<<endl;
         cout << "1. Poser une piece" << endl;
