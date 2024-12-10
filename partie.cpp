@@ -7,8 +7,16 @@ void Partie::afficherMouvementsPossibles(Position pos, Couleur couleur) const {
     if (plateau.isPositionOccupied(pos)) {
         if(plateau.getPlateau().at(pos).back()->getCouleur() == couleur){
             Piece* piece = plateau.getPlateau().at(pos).back();
-            cout << "Mouvements possibles pour la piece " << piece->getType() << " a la position (" << pos.getColonne() << ", " << pos.getLigne() << "):" << endl;
             vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
+            if(validMoves.size() == 0){
+                cout << "Aucun mouvement possible pour cette piece." << endl;
+            }else{
+                cout << "Mouvements possibles pour la piece " << piece->getType() << " a la position (" << pos.getColonne() << ", " << pos.getLigne() << "):" << endl;
+                for (const auto& move : validMoves) {
+                    cout << "(" << move.getColonne() << ", " << move.getLigne() << ")" << endl;
+                }
+            }
+            
         }else {
             cout << "Ce n'est pas votre piece." << endl;
         }
@@ -55,6 +63,7 @@ void Partie::nextTurn() {
 }
 
 void Partie::playTurn() {
+    bool turnOver = false;
     do{
         cout << "************Debut du tour numero : " << tourActuel <<"***************"<<endl;
         cout<<"************Etat actuel du plateau*************"<<endl;
@@ -81,7 +90,7 @@ void Partie::playTurn() {
                     cout<<"Premiere piece de la ruche, placee a la position (0,0)"<<endl;
                     joueurCourant->poserPiece(pieceType, Position(0, 0), plateau, tourActuel);
                     historique.push_back(sauvegarder()); 
-                    nextTurn();
+                    turnOver = true;
                     break;
                 }
 
@@ -107,7 +116,7 @@ void Partie::playTurn() {
 
                 if (joueurCourant->poserPiece(pieceType, pos, plateau, tourActuel)) {
                     historique.push_back(sauvegarder()); 
-                    nextTurn();
+                    turnOver = true;
                 }
                 else {
                     cout << "Impossible de poser la piece a cette position." << endl;
@@ -120,10 +129,6 @@ void Partie::playTurn() {
                 int qFrom, rFrom;
                 cin >> qFrom >> rFrom;
                 Position from(qFrom, rFrom);
-                cout << "Entrez la position de destination (q r): ";
-                int qTo, rTo;
-                cin >> qTo >> rTo;
-                Position to(qTo, rTo);
                 if(!(plateau.isPositionOccupied(Position(qFrom, rFrom)))) {
                     cout << "Aucune piece a cette position." << endl;
                     break;
@@ -132,9 +137,22 @@ void Partie::playTurn() {
                     cout << "Ce n'est pas votre piece." << endl;
                     break;
                 }
+                if(plateau.getPlateau().at(Position(qFrom, rFrom)).back()->getValidMoves(plateau.getPlateau()).size() == 0){
+                    cout << "Aucuns mouvement possible pour cette pièce" << endl;
+                    break;
+                }
+                vector<Position> validMoves = plateau.getPlateau().at(Position(qFrom, rFrom)).back()->getValidMoves(plateau.getPlateau());
+                cout<<"Mouvements possibles pour la piece : "<<endl;
+                for(const auto& pos : validMoves){
+                    cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
+                }
+                cout << "Entrez la position de destination (q r): ";
+                int qTo, rTo;
+                cin >> qTo >> rTo;
+                Position to(qTo, rTo);
                 if (plateau.deplacerPiece(from, to, joueurCourant->getCouleur())) {
                     historique.push_back(sauvegarder());
-                    nextTurn();
+                    turnOver = true;
                 }
                 else {
                     cout << "Mouvement invalide. Réessayez." << endl;
@@ -167,5 +185,19 @@ void Partie::playTurn() {
                 break;
             
         }
-    }while(!plateau.isGameOver());
+    }while(!turnOver);
+}
+
+void Partie::play(){
+    cout<<"************Bienvenue dans HIVE************\n"<<endl;
+    Plateau plateau;
+    Joueur j1(Noir);
+    Joueur j2(Blanc);
+    Partie partie(j1, j2, plateau,0);
+    do{
+        partie.playTurn();
+        tourActuel++;
+        joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
+    }while(tourActuel<2 || !plateau.isGameOver());
+
 }

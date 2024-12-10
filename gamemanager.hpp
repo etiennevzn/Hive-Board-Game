@@ -23,8 +23,7 @@ public:
         Joueur j1(Noir);
         Joueur j2(Blanc);
         partie = new Partie(j1, j2, plateau);
-        cout<<"************Debut du jeu***************"<<endl;
-        partie->playTurn();
+        partie->play();
     }
 
     Partie* getPartie() const {

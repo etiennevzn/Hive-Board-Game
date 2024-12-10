@@ -34,6 +34,7 @@ public:
     void playTurn();
     Memento sauvegarder();
     void restaurer(const Memento& memento);
+    void play();
 };
 
 #endif

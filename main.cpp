@@ -19,15 +19,11 @@ int main(){
     partie->jouer();
     */
 
-   cout<<"Debut du jeu\n"<<endl;
+    GameManager::getInstance()->demarrerNouvellePartie();
 
+
+    /*
     Plateau plateau;
-    Joueur j1(Noir);
-    Joueur j2(Blanc);
-    Partie partie(j1, j2, plateau,0);
-    partie.playTurn();
-
-    /*Plateau plateau;
     Joueur j1(Noir);
     Joueur j2(Blanc);
     Partie partie(j1, j2, plateau,0);
@@ -52,7 +48,7 @@ int main(){
     //cout<<Position(-1,-1).isSlidingPossible(Position(0,-1), plateau.getPlateau())<<endl;
     for(const auto& piece : j1.getPieces()){
         if(piece->getType() == "Araignee"){
-            vector<Position> validMoves = dynamic_cast<Araignee*>(piece)->getValidMoves(plateau.getPlateau());
+            vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
             cout<<"Position de la piece : ("<<piece->getPosition().getColonne()<<","<<piece->getPosition().getLigne()<<")"<<endl;
             for(const auto& pos : validMoves){
                 //cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;

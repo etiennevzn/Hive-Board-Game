@@ -90,6 +90,10 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
         case 'M':
             piece = new Moustique(origin, couleur);
             break;
+        default:
+            cout << "Type de piece invalide." << endl;
+            delete piece;
+            return false;
     }
 
     if (tourActuel == 0) {
