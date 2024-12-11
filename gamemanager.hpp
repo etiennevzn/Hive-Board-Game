@@ -10,25 +10,9 @@ class GameManager {
     GameManager(const GameManager&) = delete;
     GameManager& operator=(const GameManager&) = delete;
 public:
-    static GameManager* getInstance() {
-        if (instance == nullptr) {
-            instance = new GameManager();
-        }
-        return instance;
-    }
-
-    void demarrerNouvellePartie() {
-        delete partie;
-        Plateau plateau;
-        Joueur j1(Noir);
-        Joueur j2(Blanc);
-        partie = new Partie(j1, j2, plateau);
-        partie->play();
-    }
-
-    Partie* getPartie() const {
-        return partie;
-    }
+    static GameManager* getInstance();
+    void demarrerNouvellePartie();
+    Partie* getPartie() const {return partie;}
 };
 
 // Initialisation du pointeur statique

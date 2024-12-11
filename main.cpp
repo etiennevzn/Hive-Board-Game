@@ -1,4 +1,4 @@
-#include "gamemanager.hpp"
+#include "gamemanager.cpp"
 #include "piece.cpp"
 #include "plateau.cpp"
 #include "joueur.cpp"
