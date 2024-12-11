@@ -56,11 +56,6 @@ void Partie::restaurer(const Memento& memento) {
     plateau = memento.plateau;
 }
 
-void Partie::nextTurn() {
-    tourActuel++;
-    joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
-    playTurn();
-}
 
 void Partie::playTurn() {
     bool turnOver = false;

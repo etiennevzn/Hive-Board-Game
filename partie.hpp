@@ -30,7 +30,6 @@ public:
         : joueurs{j1, j2}, tourActuel(t), joueurCourant(&joueurs[0]), plateau(p) {}
     void afficherMouvementsPossibles(Position pos, Couleur couleur)const;
     void printPossiblePlays(Joueur* joueurCourant)const;
-    void nextTurn();
     void playTurn();
     Memento sauvegarder();
     void restaurer(const Memento& memento);
