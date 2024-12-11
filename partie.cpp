@@ -64,7 +64,7 @@ void Partie::nextTurn() {
 
 void Partie::playTurn() {
     bool turnOver = false;
-    do{
+    while(!turnOver){
         cout << "************Debut du tour numero : " << tourActuel <<"***************"<<endl;
         cout<<"************Etat actuel du plateau*************"<<endl;
         plateau.print_board();
@@ -117,6 +117,7 @@ void Partie::playTurn() {
                 if (joueurCourant->poserPiece(pieceType, pos, plateau, tourActuel)) {
                     historique.push_back(sauvegarder()); 
                     turnOver = true;
+                    break;
                 }
                 else {
                     cout << "Impossible de poser la piece a cette position." << endl;
@@ -153,6 +154,7 @@ void Partie::playTurn() {
                 if (plateau.deplacerPiece(from, to, joueurCourant->getCouleur())) {
                     historique.push_back(sauvegarder());
                     turnOver = true;
+                    break;
                 }
                 else {
                     cout << "Mouvement invalide. Réessayez." << endl;
@@ -185,19 +187,15 @@ void Partie::playTurn() {
                 break;
             
         }
-    }while(!turnOver);
+    }
 }
 
 void Partie::play(){
     cout<<"************Bienvenue dans HIVE************\n"<<endl;
-    Plateau plateau;
-    Joueur j1(Noir);
-    Joueur j2(Blanc);
-    Partie partie(j1, j2, plateau,0);
-    do{
-        partie.playTurn();
-        tourActuel++;
+    while(tourActuel<2 || !plateau.isGameOver()){
+        playTurn();
         joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
-    }while(tourActuel<2 || !plateau.isGameOver());
+        ++tourActuel;
+    }
 
 }
