@@ -186,11 +186,15 @@ void Partie::playTurn() {
 }
 
 void Partie::play(){
+    //variable running : méchanisme de sortie ajouté pour sortir du programme (temporaire)
+    int running = 1;
     cout<<"************Bienvenue dans HIVE************\n"<<endl;
-    while(tourActuel<2 || !plateau.isGameOver()){
+    while((tourActuel<2 || !plateau.isGameOver())&&running == 1){
         playTurn();
         joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
         ++tourActuel;
+        cout<<"Entrez 0 pour sortir du programme, 1 pour continuer :"<<endl;
+        cin>>running;
     }
 
 }

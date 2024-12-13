@@ -388,52 +388,52 @@ bool Coccinelle::isValidMove(const Position& to, const unordered_map<Position, v
     return true;
 }
 
-vector<Position> Coccinelle::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau)const{
-    return getPosition().getAdjacentCoordinates(); // TEMPORAIRE
-}
+vector<Position> Coccinelle::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const {
+    vector<Position> validMoves; // Stocke les mouvements valides
+    unordered_set<Position> visited; // Pour éviter les boucles infinies
 
-
-
-
-//Ajout arthur : 
-/*
-vector<Position> Position::successeurs_valides(const unordered_map<Position, vector<Piece*>>& plateau, const vector<Position>& chemin) const {
-    vector<Position> succ_valide = this->getAdjacentCoordinates(); // Les positions adjacentes
-    vector<Position> resultat;
-    
-    for (const auto& elem : succ_valide) {
-        // Vérifie si la position est accessible et pas déjà dans le chemin
-        if (isSlidingPossible(elem, plateau) && find(chemin.begin(), chemin.end(), elem) == chemin.end()) {
-            resultat.push_back(elem);
+    // Fonction récursive interne
+    function<void(const Position&, int, vector<Position>)> explore = [&](const Position& current, int depth, vector<Position> path) {
+        if (depth == 3) {
+            if ((plateau.find(current) == plateau.end() || plateau.at(current).empty()) &&
+                !path.empty() &&
+                (plateau.find(path[0]) != plateau.end() && !plateau.at(path[0]).empty())) {
+                validMoves.push_back(current);
+            }
+            return;
         }
-    }
-    return resultat;
+
+        visited.insert(current);
+        path.push_back(current);
+
+        vector<Position> adjacents = current.getAdjacentCoordinates();
+        for (const Position& neighbor : adjacents) {
+            if (visited.find(neighbor) == visited.end()) {
+                bool isValid = false;
+                if (depth < 2) {
+                    // Les deux premiers mouvements doivent être sur des cases occupées
+                    isValid = (plateau.find(neighbor) != plateau.end() && !plateau.at(neighbor).empty());
+                } else if (depth == 2) {
+                    // Le dernier mouvement doit être sur une case vide
+                    isValid = (plateau.find(neighbor) == plateau.end() || plateau.at(neighbor).empty());
+                }
+
+                if (isValid) {
+                    explore(neighbor, depth + 1, path);
+                }
+            }
+        }
+
+        visited.erase(current);
+    };
+
+    // Lancer la recherche depuis la position actuelle
+    explore(getPosition(), 0, {});
+    unordered_set<Position> validMovesSet(validMoves.begin(), validMoves.end());
+    vector<Position> sol;
+    for (auto elem : validMovesSet) sol.push_back(elem);
+    return sol;
 }
-
-
-vector<Position> Araignee::getValidMoves(const Position& position_actuelle, 
-                                     const unordered_map<Position, vector<Piece*>>& plateau, 
-                                     vector<Position>& chemin, 
-                                     int profondeur, 
-                                     vector<Position>& MoveValid) const {
-    chemin.push_back(position_actuelle); // Ajoute la position actuelle au chemin
-    profondeur++;
-    
-    if (profondeur == 3) {
-        MoveValid.push_back(position_actuelle); // Si la profondeur est atteinte, ajoute la position aux mouvements valides
-        return MoveValid;
-    }
-
-    // Obtient les successeurs valides
-    vector<Position> succ = position_actuelle.successeurs_valides(plateau, chemin);
-    for (const auto& successeur : succ) {
-        getValidMoves(successeur, plateau, chemin, profondeur, MoveValid); // Appel récursif
-    }
-
-    chemin.pop_back(); // Backtrack en supprimant la position actuelle du chemin
-    return MoveValid;
-}*/
-
 
 
 
