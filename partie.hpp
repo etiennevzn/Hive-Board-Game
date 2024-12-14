@@ -1,40 +1,40 @@
-#ifndef PARTIE_HPP
-#define PARTIE_HPP
-
-#include <iostream>
+#pragma once
 #include "plateau.hpp"
 #include "joueur.hpp"
-#include <vector>
-
-class Memento {
-    friend class Partie;
-    int tourActuel;
-    Joueur joueur1;
-    Joueur joueur2;
-    Joueur* joueurCourant;
-    Plateau plateau;
-
-    Memento(int t, const Joueur& j1, const Joueur& j2, Joueur* jc, const Plateau& p)
-        : tourActuel(t), joueur1(j1), joueur2(j2), joueurCourant(jc), plateau(p) {}
-};
+#include <stack>
 
 class Partie {
+    struct PartieMemento {
+        Plateau plateau;
+        Joueur joueur1;
+        Joueur joueur2;
+        Joueur* joueurCourant;
+        int tourActuel;
+
+        PartieMemento(const Plateau& p, const Joueur& j1, const Joueur& j2, Joueur* jc, int ta)
+            : plateau(p), joueur1(j1), joueur2(j2), joueurCourant(jc), tourActuel(ta) {}
+    };
+
     Plateau plateau;
-    int tourActuel;
     Joueur joueur1;
     Joueur joueur2;
     Joueur* joueurCourant;
-    std::vector<Memento> historique;
+    int tourActuel;
+    std::stack<PartieMemento> historique; // Pile pour stocker les mementos
+    int maxRetoursEnArriere; // Nombre maximum de retours en arrière possibles
 
 public:
-    Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t = 0)
-        : joueur1(j1), joueur2(j2), tourActuel(t), joueurCourant(&joueur1), plateau(p) {}
-
+    Partie(int maxRetours); // Constructeur avec paramètre pour le nombre de retours en arrière
     void jouer();
-    void afficherMouvementsPossibles(Position pos);
-    void nextTurn();
-    Memento sauvegarder();
-    void restaurer(const Memento& memento);
-};
+    void sauvegarderEtat(); // Sauvegarde l'état actuel
+    void restaurerEtat(); // Restaure l'état précédent
+    void restaurerDeuxDerniersEtats(); // Restaure les deux derniers états
+    bool poserPiece(); // Déclare la méthode poserPiece
+    bool deplacerPiece(); // Déclare la méthode deplacerPiece
 
-#endif
+private:
+    bool isPieceSurrounded(const Position& pos) const;
+    bool conditionsDeVictoire();
+    bool conditionsDeMatchNul();
+    void nextTurn();
+};
