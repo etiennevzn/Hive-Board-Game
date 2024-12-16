@@ -3,11 +3,16 @@
 
 using namespace std;
 
-void Partie::afficherMouvementsPossibles(Position pos, Couleur couleur) const {
+void Partie::afficherMouvementsPossibles(Position pos, Couleur couleur){
     if (plateau.isPositionOccupied(pos)) {
         if(plateau.getPlateau().at(pos).back()->getCouleur() == couleur){
             Piece* piece = plateau.getPlateau().at(pos).back();
             vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
+            for(const auto& pos : validMoves){
+                if(plateau.wouldSplitHive(piece->getPosition(), pos)){
+                    validMoves.erase(remove(validMoves.begin(), validMoves.end(), pos), validMoves.end());
+                }
+            }
             if(validMoves.size() == 0){
                 cout << "Aucun mouvement possible pour cette piece." << endl;
             }else{
@@ -26,7 +31,7 @@ void Partie::afficherMouvementsPossibles(Position pos, Couleur couleur) const {
     }
 }
 
-void Partie::printPossiblePlays(Joueur* joueurCourant)const{
+void Partie::printPossiblePlays(Joueur* joueurCourant){
     cout<<"***************Actions possibles***************"<<endl;
     cout<<"****************Pieces a placer****************"<<endl;
     joueurCourant->print_piece_left();
@@ -37,6 +42,11 @@ void Partie::printPossiblePlays(Joueur* joueurCourant)const{
     }else{
         for(const auto& piece : pieces){
             vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
+            for(const auto& pos : validMoves){
+                if(plateau.wouldSplitHive(piece->getPosition(), pos)){
+                    validMoves.erase(remove(validMoves.begin(), validMoves.end(), pos), validMoves.end());
+                }
+            }
             if(validMoves.size() != 0){
                 cout<<"Position de la piece : ("<<piece->getPosition().getColonne()<<","<<piece->getPosition().getLigne()<<") - Type de la piece : "<<piece->getType()<<endl;
             }
@@ -139,13 +149,15 @@ void Partie::playTurn() {
                     break;
                 }
                 if(plateau.getPlateau().at(Position(qFrom, rFrom)).back()->getValidMoves(plateau.getPlateau()).size() == 0){
-                    cout << "Aucuns mouvement possible pour cette pièce" << endl;
+                    cout << "Aucun mouvement possible pour cette piece" << endl;
                     break;
                 }
                 vector<Position> validMoves = plateau.getPlateau().at(Position(qFrom, rFrom)).back()->getValidMoves(plateau.getPlateau());
                 cout<<"Mouvements possibles pour la piece : "<<endl;
                 for(const auto& pos : validMoves){
-                    cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
+                    if(!plateau.wouldSplitHive(from,pos)){
+                        cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
+                    }
                 }
                 cout << "Entrez la position de destination (q r): ";
                 int qTo, rTo;

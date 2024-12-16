@@ -28,8 +28,8 @@ class Partie {
 public:
     Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t = 0)
         : joueurs{j1, j2}, tourActuel(t), joueurCourant(&joueurs[0]), plateau(p) {}
-    void afficherMouvementsPossibles(Position pos, Couleur couleur)const;
-    void printPossiblePlays(Joueur* joueurCourant)const;
+    void afficherMouvementsPossibles(Position pos, Couleur couleur); //pas const car on utilise wouldSplitHive dedans qui n'est pas const
+    void printPossiblePlays(Joueur* joueurCourant); //pareil que la méthode au dessus
     void playTurn();
     Memento sauvegarder();
     void restaurer(const Memento& memento);

@@ -46,7 +46,7 @@ bool Plateau::isHiveConnected(const unordered_map<Position, vector<Piece*>>& tem
 }
 
 
-bool Plateau::wouldSplitHive(Position from, Position to) {
+bool Plateau::wouldSplitHive(Position from, Position to){
 
     if (plateau[from].empty()) { // Vérifie qu'il y a une pièce à la position d'origine 
         throw std::runtime_error("Aucune piece a deplacer depuis cette position.");
