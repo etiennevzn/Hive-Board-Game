@@ -219,8 +219,6 @@ void Partie::loadFromFile(ifstream& inFile) {
         cerr << "Erreur lors de l'ouverture du fichier pour le chargement." << endl;
         return;
     }
-    tourActuel = 0;
-
     plateau.load(inFile);
     for (auto& joueur : joueurs) {
         joueur.load(inFile, plateau);

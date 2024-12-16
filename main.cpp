@@ -46,7 +46,7 @@ int main(){
     saveFile.close();
     */
     // Load the game state from the file
-    
+      
     std::ifstream loadFile("savegame.dat", std::ios::binary);
     Plateau plateau;
     Joueur j1(Noir);

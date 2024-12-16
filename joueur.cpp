@@ -196,10 +196,10 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
 
 void Joueur::save(ofstream& out) const {
     out << couleur << endl;
-    /*
     for (const auto& pair : nb_pieces) {
-        out << pair.first << " " << pair.second << endl;
-    }*/
+        out << pair.first << " " << pair.second <<"\n";
+    }
+    out<< "END_J" <<"\n";
 }
 
 istream& operator>>(istream& in, Couleur& couleur) {
@@ -216,8 +216,23 @@ void Joueur::load(ifstream& in, const Plateau& plateau) {
         for(Piece* piece : pair.second){
             if(piece->getCouleur() == couleur){
                 pieces.push_back(piece);
-                nb_pieces[piece->getType()]++;
             }
+        }
+    }
+
+    while (true) {
+        std::string line;
+        std::getline(in, line);  // Lire la ligne entière
+        if (line.empty()) continue;  // Ignorer les lignes vides
+        if (line == "END_J") break;  // Vérifier si on atteint "END_J"
+
+        std::istringstream iss(line);  // Convertir la ligne en flux
+        std::string type;
+        int nb;
+        if (iss >> type >> nb) {
+            nb_pieces[type] = nb;  // Ajouter au map
+        } else {
+            throw std::runtime_error("Format incorrect dans la section nb_pieces.");
         }
     }
 }
