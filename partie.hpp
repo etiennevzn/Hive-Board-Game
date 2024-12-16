@@ -34,6 +34,11 @@ public:
     Memento sauvegarder();
     void restaurer(const Memento& memento);
     void play();
+
+
+    void saveToFile(ofstream& outFile) const;
+    void loadFromFile(ifstream& inFile);
+     
 };
 
 #endif

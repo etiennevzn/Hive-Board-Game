@@ -30,6 +30,9 @@ public:
 
     bool isGameOver() const;
 
+    void save(std::ofstream& outFile) const;  
+    void load(std::ifstream& inFile);
+
 };
 
 #endif

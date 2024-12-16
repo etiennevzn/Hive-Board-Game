@@ -19,7 +19,55 @@ int main(){
     partie->jouer();
     */
 
-    GameManager::getInstance()->demarrerNouvellePartie();
+    //GameManager::getInstance()->demarrerNouvellePartie();
+
+    /*Position mypos(0,0);    
+    fstream myfile("test.txt", ios::out | ios::binary); 
+    myfile.write((char*)&mypos, sizeof(Position));
+    myfile.close();
+
+    fstream mynewfile("test.txt", ios::in | ios::binary);
+    Position* mynewpos = (Position*)malloc(sizeof(Position));
+    mynewfile.read((char*)mynewpos, sizeof(Position));
+    mynewfile.close();
+    cout<<mynewpos->getColonne()<<" "<<mynewpos->getLigne()<<endl;*/
+
+    /*
+    // Create a game state to save
+    Plateau plateau;
+    Joueur j1(Noir);
+    Joueur j2(Blanc);
+    Partie partie(j1, j2, plateau, 0);
+    partie.play();
+
+    // Save the game state to a file
+    std::ofstream saveFile("savegame.dat", std::ios::binary);
+    partie.saveToFile(saveFile);
+    saveFile.close();
+    */
+    // Load the game state from the file
+    
+    std::ifstream loadFile("savegame.dat", std::ios::binary);
+    Plateau plateau;
+    Joueur j1(Noir);
+    Joueur j2(Blanc);
+    Partie loadedPartie(j1, j2, plateau, 0);
+    loadedPartie.loadFromFile(loadFile);
+    loadFile.close();
+
+    // Verify the loaded game state
+    loadedPartie.play();
+
+   /* Plateau plateau;
+    Joueur j1(Noir);
+    Joueur j2(Blanc);
+    Partie partie(j1, j2, plateau, 0);
+    j1.poserPiece('R', Position(0, 0), plateau, 0);
+    j2.poserPiece('R', Position(1, 0), plateau, 1);
+    plateau.print_board();
+
+    std::ofstream outFile("partie.dat", std::ios::binary);
+    plateau.save(outFile);*/
 
 
     /*

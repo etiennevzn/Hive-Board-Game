@@ -3,6 +3,21 @@
 #include <algorithm> //pour std::find
 
 
+string toString(Couleur couleur) {
+    switch (couleur) {
+        case Noir: return "Noir";
+        case Blanc: return "Blanc";
+        default: return "Inconnu";
+    }
+}
+
+Couleur stringToCouleur(const std::string& str) {
+    if (str == "Noir") return Noir;
+    if (str == "Blanc") return Blanc;
+    throw std::invalid_argument("Couleur inconnue");
+}
+
+
 void Joueur::print_piece_left(){
     cout<< "La liste des pieces restantes est : "<<endl;
     for (const auto& pair : nb_pieces) {
@@ -173,3 +188,36 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
     return false;
 }
 
+
+
+
+
+//Sauvegarde
+
+void Joueur::save(ofstream& out) const {
+    out << couleur << endl;
+    /*
+    for (const auto& pair : nb_pieces) {
+        out << pair.first << " " << pair.second << endl;
+    }*/
+}
+
+istream& operator>>(istream& in, Couleur& couleur) {
+    int value;
+    in >> value;
+    couleur = static_cast<Couleur>(value);
+    return in;
+}
+
+void Joueur::load(ifstream& in, const Plateau& plateau) {
+    in >> couleur;
+    pieces.clear();
+    for(const auto& pair : plateau.getPlateau()){
+        for(Piece* piece : pair.second){
+            if(piece->getCouleur() == couleur){
+                pieces.push_back(piece);
+                nb_pieces[piece->getType()]++;
+            }
+        }
+    }
+}

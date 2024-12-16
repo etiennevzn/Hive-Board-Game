@@ -1,5 +1,6 @@
 #include "plateau.hpp"
 #include <iomanip>
+#include <sstream>
 
 bool Plateau::isPositionOccupied(Position pos) const {
     auto it = plateau.find(pos);
@@ -175,3 +176,71 @@ bool Plateau::isGameOver() const{
 }
 
 
+
+//Sauvegarde
+
+
+void Plateau::save(std::ofstream& outFile) const {
+    if (!outFile) {
+        throw std::runtime_error("Cannot write to the provided ofstream");
+    }
+
+    for (const auto& entry : plateau) {
+        const Position& pos = entry.first;
+        const vector<Piece*>& pieces = entry.second;
+        for (const Piece* piece : pieces) {
+            outFile << pos.getColonne() << " " << pos.getLigne() << " "<< piece->getType() << " " << (piece->getCouleur() == Noir ? "Noir" : "Blanc") << "\n";
+        }
+    }
+    
+    outFile << "END_PIECES" <<"\n";
+}
+
+void Plateau::load(std::ifstream& inFile) {
+    if (!inFile) {
+        throw std::runtime_error("Cannot read from the provided ifstream");
+    }
+    plateau.clear();
+    int q, r;
+    string type, couleurStr;
+    while(true) {
+        std::string line;
+        std::getline(inFile, line);  // Lire la ligne entière
+
+        if (line.empty()) continue;  // Ignorer les lignes vides
+        if (line == "END_PIECES") break;
+        std::istringstream iss(line);
+
+        int q, r;
+        std::string type, couleurStr;
+
+        iss >> q >> r >> type >> couleurStr;
+        cout << q << " " << r << " " << type << " " << couleurStr << endl;
+
+        if (type.empty() || couleurStr.empty()) {
+            throw std::runtime_error("Format incorrect dans le fichier.");
+        }
+        Couleur couleur = (couleurStr == "Noir") ? Noir : Blanc;
+        Position pos(q, r);
+        Piece* piece = nullptr;
+
+        if (type == "Reine") {
+            piece = new Reine(pos, couleur);
+        } else if (type == "Scarabee") {
+            piece = new Scarabee(pos, couleur);
+        } else if (type == "Araignee") {
+            piece = new Araignee(pos, couleur);
+        } else if (type == "Sauterelle") {
+            piece = new Sauterelle(pos, couleur);
+        } else if (type == "Fourmi") {
+            piece = new Fourmi(pos, couleur);
+        } else if (type == "Moustique") {
+            piece = new Moustique(pos, couleur);
+        } else if (type == "Coccinelle") {
+            piece = new Coccinelle(pos, couleur);
+        } else {
+            throw std::invalid_argument("Type de pièce inconnu");
+        }
+        plateau[pos].push_back(piece);
+    }
+}

@@ -3,13 +3,6 @@
 #include <queue>
 #include <functional>
 
-string toString(Couleur couleur) {
-    switch (couleur) {
-        case Noir: return "Noir";
-        case Blanc: return "Blanc";
-        default: return "Inconnu";
-    }
-}
 
 Position::Position(int x, int y, int z){
     q = x+(y-(y&1))/2;
@@ -434,6 +427,4 @@ vector<Position> Coccinelle::getValidMoves(const unordered_map<Position, vector<
     for (auto elem : validMovesSet) sol.push_back(elem);
     return sol;
 }
-
-
 

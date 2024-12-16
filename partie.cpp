@@ -189,7 +189,7 @@ void Partie::play(){
     //variable running : méchanisme de sortie ajouté pour sortir du programme (temporaire)
     int running = 1;
     cout<<"************Bienvenue dans HIVE************\n"<<endl;
-    while((tourActuel<2 || !plateau.isGameOver())&&running == 1){
+    while((tourActuel<5 || !plateau.isGameOver())&&running == 1){
         playTurn();
         joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
         ++tourActuel;
@@ -197,4 +197,36 @@ void Partie::play(){
         cin>>running;
     }
 
+}
+
+#include <fstream>
+
+void Partie::saveToFile(ofstream& outFile) const {
+    if (!outFile) {
+        cerr << "Erreur lors de l'ouverture du fichier pour la sauvegarde." << endl;
+        return;
+    }
+    plateau.save(outFile);
+    for (const auto& joueur : joueurs) {
+        joueur.save(outFile);
+    }
+    joueurCourant->save(outFile);
+    outFile << tourActuel << "\n";
+}
+
+void Partie::loadFromFile(ifstream& inFile) {
+    if (!inFile) {
+        cerr << "Erreur lors de l'ouverture du fichier pour le chargement." << endl;
+        return;
+    }
+    tourActuel = 0;
+
+    plateau.load(inFile);
+    for (auto& joueur : joueurs) {
+        joueur.load(inFile, plateau);
+    }
+    joueurCourant->load(inFile, plateau);
+    if (!(inFile >> tourActuel)) {
+        throw std::runtime_error("Erreur de lecture du tour actuel dans le fichier.");
+    }
 }

@@ -21,6 +21,9 @@ public :
     bool poserPiece(char pieceType, Position pos, Plateau& plateau,int tourActuel);
     void print_piece_left();
     vector<Position> get_liste_placements(const Plateau& plateau);
+
+    void save(ofstream& out) const;
+    void load(ifstream& in, const Plateau& plateau); 
 };
 
 #endif

@@ -4,7 +4,9 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <fstream>
 #include <string>
+#include <stdexcept>
 #include <vector>
 #include <algorithm>
 #include <unordered_set>
@@ -43,6 +45,16 @@ public:
 
 
     vector<Position> successeurs_valides(const unordered_map<Position, vector<Piece*>>& plateau, const vector<Position>& chemin) const;
+
+    void sauvegarder(std::ofstream& outFile) const {
+        outFile << q << " " << r << "\n"; // Sauvegarder les coordonnées
+    }
+
+    static Position charger(std::ifstream& inFile) {
+        int q, r;
+        inFile >> q >> r; // Lire les coordonnées
+        return Position(q, r);
+    }
 };
 
 namespace std{
