@@ -19,7 +19,7 @@ int main(){
     partie->jouer();
     */
 
-    //GameManager::getInstance()->demarrerNouvellePartie();
+    GameManager::getInstance()->demarrerNouvellePartie();
 
     /*Position mypos(0,0);    
     fstream myfile("test.txt", ios::out | ios::binary); 
@@ -46,7 +46,7 @@ int main(){
     saveFile.close();
     */
     // Load the game state from the file
-    
+    /*
     std::ifstream loadFile("savegame.txt");
     Plateau plateau;
     Joueur j1(Noir);
@@ -57,7 +57,7 @@ int main(){
 
     // Verify the loaded game state
     loadedPartie.play();
-
+    */
    /* Plateau plateau;
     Joueur j1(Noir);
     Joueur j2(Blanc);

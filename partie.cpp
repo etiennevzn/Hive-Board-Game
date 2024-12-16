@@ -59,14 +59,15 @@ void Partie::restaurer(const Memento& memento) {
 
 void Partie::playTurn() {
     bool turnOver = false;
+    cout << "************Debut du tour numero : " << tourActuel <<"***************"<<endl;
+    cout<<"************Etat actuel du plateau*************"<<endl;
+    plateau.print_board();
+    cout<<endl;
+    cout << "Tour du joueur "<< (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << endl;
+    printPossiblePlays(joueurCourant);
+    cout<<endl;
     while(!turnOver){
-        cout << "************Debut du tour numero : " << tourActuel <<"***************"<<endl;
-        cout<<"************Etat actuel du plateau*************"<<endl;
-        plateau.print_board();
-        cout<<endl;
-        cout << "Tour du joueur "<< (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << endl;
-        printPossiblePlays(joueurCourant);
-        cout<<endl;
+        cout << "Que souhaitez vous faire ?" << endl;
         cout << "1. Poser une piece" << endl;
         cout << "2. Deplacer une piece" << endl;
         cout << "3. Voir les mouvements possibles pour une piece" << endl;
@@ -83,10 +84,14 @@ void Partie::playTurn() {
                 //si premier tour on pose juste la pîèce au milieu
                 if (tourActuel == 0) {
                     cout<<"Premiere piece de la ruche, placee a la position (0,0)"<<endl;
-                    joueurCourant->poserPiece(pieceType, Position(0, 0), plateau, tourActuel);
-                    historique.push_back(sauvegarder()); 
-                    turnOver = true;
-                    break;
+                    if(joueurCourant->poserPiece(pieceType, Position(0, 0), plateau, tourActuel)){
+                        historique.push_back(sauvegarder()); 
+                        turnOver = true;
+                        break;
+                    }else{
+                        cout<<"Impossible de poser la piece."<<endl;
+                        break;
+                    }
                 }
 
                 vector<Position> posPossible = joueurCourant->get_liste_placements(plateau);
@@ -115,7 +120,7 @@ void Partie::playTurn() {
                     break;
                 }
                 else {
-                    cout << "Impossible de poser la piece a cette position." << endl;
+                    cout << "Impossible de poser la piece." << endl;
                 }
                 break;
             }
