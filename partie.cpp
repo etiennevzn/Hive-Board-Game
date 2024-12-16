@@ -210,7 +210,8 @@ void Partie::saveToFile(ofstream& outFile) const {
     for (const auto& joueur : joueurs) {
         joueur.save(outFile);
     }
-    joueurCourant->save(outFile);
+    int joueurCourantIndex = (joueurCourant == &joueurs[0]) ? 0 : 1;
+    outFile << joueurCourantIndex <<"\n";
     outFile << tourActuel << "\n";
 }
 
@@ -223,7 +224,9 @@ void Partie::loadFromFile(ifstream& inFile) {
     for (auto& joueur : joueurs) {
         joueur.load(inFile, plateau);
     }
-    joueurCourant->load(inFile, plateau);
+    int joueurCourantIndex;
+    inFile >> joueurCourantIndex;
+    joueurCourant = &joueurs[joueurCourantIndex];
     if (!(inFile >> tourActuel)) {
         throw std::runtime_error("Erreur de lecture du tour actuel dans le fichier.");
     }
