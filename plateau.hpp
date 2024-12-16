@@ -15,6 +15,7 @@ class Plateau{
     
 public:
     Plateau()=default;
+
     bool isPositionOccupied(Position pos) const;
     void dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position, hash<Position>>& visited);
     bool isHiveConnected(const unordered_map<Position, vector<Piece*>>& tempPlateau);

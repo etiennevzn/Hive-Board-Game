@@ -5,8 +5,8 @@
 
 using namespace std;
 
-Partie::Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t) : joueurs{j1, j2}, tourActuel(t),plateau(p) {
-    srand(static_cast<unsigned int>(std::time(nullptr))); 
+Partie::Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t, int maxRetours) : joueurs{j1, j2}, tourActuel(t),plateau(p), maxRetoursEnArriere(maxRetours) {
+    srand(static_cast<unsigned int>(time(nullptr))); 
     joueurCourant = (std::rand() % 2 == 0) ? &joueurs[0] : &joueurs[1];
     // A FAIRE : faire en sorte que l'humain commence toujours si un des deux joueurs est une IA
 }
@@ -62,20 +62,41 @@ void Partie::printPossiblePlays(Joueur* joueurCourant){
     }
 }
 
-Memento Partie::sauvegarder() {
-    return Memento(tourActuel, joueurs[0], joueurs[1], joueurCourant, plateau);
+
+//Retour en arriere
+
+// Sauvegarder l'état actuel de la partie
+void Partie::sauvegarderEtat() {
+    historique.push(PartieMemento(plateau, joueurs[0], joueurs[1], joueurCourant, tourActuel));
 }
 
-void Partie::restaurer(const Memento& memento) {
-    tourActuel = memento.tourActuel;
-    joueurs[0] = memento.joueurs[0];
-    joueurs[1] = memento.joueurs[1];
-    joueurCourant = memento.joueurCourant;
-    plateau = memento.plateau;
+// Restaurer l'état précédent de la partie
+void Partie::restaurerEtat() {
+    if (!historique.empty()) {
+        PartieMemento m = historique.top();
+        historique.pop();
+        plateau = m.plateau;
+        joueurs[0] = m.joueur1;
+        joueurs[1] = m.joueur2;
+        if(m.joueurCourant == &m.joueur1){
+            joueurCourant = &joueurs[0];
+        }else if(m.joueurCourant == &m.joueur2){
+            joueurCourant = &joueurs[1];
+        }
+        tourActuel = m.tourActuel; // Affiche l'état du plateau après la restauration
+    }
+}
+
+// Restaurer les deux derniers états de la partie
+void Partie::restaurerDeuxDerniersEtats() {
+    historique.pop();
+    historique.pop();
+    restaurerEtat();
 }
 
 
 void Partie::playTurn() {
+    sauvegarderEtat(); //on commence par sauvegarder l'état
     bool turnOver = false;
     //Rq : on affiche tourActuel+1 car on commence c'est indexé à 0... si besoin pour debug on peut enlever ça
     cout << "************Debut du tour numero : " << tourActuel+1 <<"***************"<<endl;
@@ -105,7 +126,6 @@ void Partie::playTurn() {
                 if (tourActuel == 0) {
                     cout<<"Premiere piece de la ruche, placee a la position (0,0)"<<endl;
                     if(joueurCourant->poserPiece(pieceType, Position(0, 0), plateau, tourActuel)){
-                        historique.push_back(sauvegarder()); 
                         turnOver = true;
                         break;
                     }else{
@@ -135,7 +155,6 @@ void Partie::playTurn() {
                 Position pos(q, r);
 
                 if (joueurCourant->poserPiece(pieceType, pos, plateau, tourActuel)) {
-                    historique.push_back(sauvegarder()); 
                     turnOver = true;
                     break;
                 }
@@ -174,7 +193,6 @@ void Partie::playTurn() {
                 cin >> qTo >> rTo;
                 Position to(qTo, rTo);
                 if (plateau.deplacerPiece(from, to, joueurCourant->getCouleur())) {
-                    historique.push_back(sauvegarder());
                     turnOver = true;
                     break;
                 }
@@ -194,10 +212,18 @@ void Partie::playTurn() {
             }
             case 4: {
                 // Annuler le dernier mouvement
+                
                 if (historique.size() > 1) {
-                    Memento last = historique.back();
-                    historique.pop_back();
-                    restaurer(last);
+                    if(maxRetoursEnArriere == 0){
+                        cout << "Vous avez atteint le nombre maximum de retours en arriere." << endl;
+                        break;
+                    }
+                    cout << "Annulation du dernier mouvement..." << endl;
+                    restaurerDeuxDerniersEtats();
+                    --maxRetoursEnArriere;
+                    cout<<"Nombre de retours en arriere restants : "<<maxRetoursEnArriere<<endl;
+                    cout<<"Etat actuel du plateau : "<<endl;
+                    plateau.print_board();
                 }
                 else {
                     cout << "Aucun mouvement à annuler." << endl;
@@ -245,6 +271,11 @@ void Partie::play(){
     }
 
 }
+
+
+
+
+//Sauvegarde
 
 #include <fstream>
 

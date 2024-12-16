@@ -12,7 +12,12 @@ void GameManager::startGame() {
     Plateau plateau;
     Joueur j1(Noir);
     Joueur j2(Blanc);
-    partie = new Partie(j1, j2, plateau);
+    int nbRetoursEnArriere = 4;
+    while(nbRetoursEnArriere < 0 || nbRetoursEnArriere > 3){
+        cout<<"Combien de retours en arriere souhaitez-vous ? (0 a 3) : ";
+        cin>>nbRetoursEnArriere;
+    }
+    partie = new Partie(j1, j2, plateau, 0, nbRetoursEnArriere);
     partie->play();
 }
 

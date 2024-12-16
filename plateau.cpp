@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <sstream>
 
+
 bool Plateau::isPositionOccupied(Position pos) const {
     auto it = plateau.find(pos);
     return it != plateau.end() && !it->second.empty();
