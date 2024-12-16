@@ -16,15 +16,29 @@ void GameManager::startGame() {
     partie->play();
 }
 
-void GameManager::loadGame(){
-    delete partie;
+void GameManager::loadGame() {
     ifstream loadFile("savegame.txt");
+
+    // Vérifier si le fichier existe et est ouvert
+    if (!loadFile.is_open()) {
+        cout << "Erreur : Impossible de trouver le fichier de sauvegarde 'savegame.txt'." << endl;
+        cout << "Retour au menu principal..." << endl;
+        return;
+    }
+
+    // Supprimer la partie précédente, s'il y en a une
+    delete partie;
+
     Plateau plateau;
     Joueur j1(Noir);
     Joueur j2(Blanc);
     partie = new Partie(j1, j2, plateau, 0);
+
+    // Charger la partie depuis le fichier
     partie->loadFromFile(loadFile);
     loadFile.close();
+
+    // Commencer la partie chargée
     partie->play();
 }
 

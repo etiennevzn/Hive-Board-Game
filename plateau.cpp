@@ -196,29 +196,28 @@ void Plateau::save(std::ofstream& outFile) const {
     outFile << "END_PIECES" <<"\n";
 }
 
-void Plateau::load(std::ifstream& inFile) {
+void Plateau::load(ifstream& inFile) {
     if (!inFile) {
-        throw std::runtime_error("Cannot read from the provided ifstream");
+        throw runtime_error("Cannot read from the provided ifstream");
     }
     plateau.clear();
     int q, r;
     string type, couleurStr;
     while(true) {
-        std::string line;
-        std::getline(inFile, line);  // Lire la ligne entière
+        string line;
+        getline(inFile, line);  // Lire la ligne entière
 
         if (line.empty()) continue;  // Ignorer les lignes vides
         if (line == "END_PIECES") break;
-        std::istringstream iss(line);
+        istringstream iss(line);
 
         int q, r;
-        std::string type, couleurStr;
+        string type, couleurStr;
 
         iss >> q >> r >> type >> couleurStr;
-        cout << q << " " << r << " " << type << " " << couleurStr << endl;
 
         if (type.empty() || couleurStr.empty()) {
-            throw std::runtime_error("Format incorrect dans le fichier.");
+            throw runtime_error("Format incorrect dans le fichier.");
         }
         Couleur couleur = (couleurStr == "Noir") ? Noir : Blanc;
         Position pos(q, r);

@@ -77,7 +77,8 @@ void Partie::restaurer(const Memento& memento) {
 
 void Partie::playTurn() {
     bool turnOver = false;
-    cout << "************Debut du tour numero : " << tourActuel <<"***************"<<endl;
+    //Rq : on affiche tourActuel+1 car on commence c'est indexé à 0... si besoin pour debug on peut enlever ça
+    cout << "************Debut du tour numero : " << tourActuel+1 <<"***************"<<endl;
     cout<<"************Etat actuel du plateau*************"<<endl;
     plateau.print_board();
     cout<<endl;
