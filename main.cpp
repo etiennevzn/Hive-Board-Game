@@ -19,7 +19,7 @@ int main(){
     partie->jouer();
     */
 
-    GameManager::getInstance()->demarrerNouvellePartie();
+    GameManager::getInstance()->startApp();
 
     /*Position mypos(0,0);    
     fstream myfile("test.txt", ios::out | ios::binary); 

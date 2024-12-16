@@ -11,8 +11,11 @@ class GameManager {
     GameManager& operator=(const GameManager&) = delete;
 public:
     static GameManager* getInstance();
-    void demarrerNouvellePartie();
     Partie* getPartie() const {return partie;}
+    void startGame();
+    void loadGame();
+    void printHiveArt()const;
+    void startApp();
 };
 
 // Initialisation du pointeur statique

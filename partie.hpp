@@ -26,8 +26,7 @@ class Partie {
     Joueur* joueurCourant;
     vector<Memento> historique;
 public:
-    Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t = 0)
-        : joueurs{j1, j2}, tourActuel(t), joueurCourant(&joueurs[0]), plateau(p) {}
+    Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t = 0);
     void afficherMouvementsPossibles(Position pos, Couleur couleur); //pas const car on utilise wouldSplitHive dedans qui n'est pas const
     void printPossiblePlays(Joueur* joueurCourant); //pareil que la méthode au dessus
     void playTurn();

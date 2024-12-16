@@ -1,7 +1,15 @@
 #include "partie.hpp"
 #include <iostream>
+#include <cstdlib>  // Pour std::rand() et std::srand()
+#include <ctime>    // Pour std::time()
 
 using namespace std;
+
+Partie::Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t) : joueurs{j1, j2}, tourActuel(t),plateau(p) {
+    srand(static_cast<unsigned int>(std::time(nullptr))); 
+    joueurCourant = (std::rand() % 2 == 0) ? &joueurs[0] : &joueurs[1];
+    // A FAIRE : faire en sorte que l'humain commence toujours si un des deux joueurs est une IA
+}
 
 void Partie::afficherMouvementsPossibles(Position pos, Couleur couleur){
     if (plateau.isPositionOccupied(pos)) {
@@ -82,7 +90,8 @@ void Partie::playTurn() {
         cout << "2. Deplacer une piece" << endl;
         cout << "3. Voir les mouvements possibles pour une piece" << endl;
         cout << "4. Annuler le dernier mouvement" << endl;
-        cout << "Choisissez une option: ";
+        cout << "5. Sauvegarder la partie et quitter" << endl;
+        cout << "Choisissez une option: "<<endl;
         int choix;
         cin >> choix;
         switch (choix) {
@@ -194,10 +203,30 @@ void Partie::playTurn() {
                 }
                 break;
             }
-            default:
-                cout << "Choix invalide. Réessayez." << endl;
+            case 5: {
+                choix = -1;
+                while(choix != 0 && choix != 1){
+                    cout << "Attention : la sauvegarde predecente sera ecrasee. Voulez-vous continuer ? (0: Non, 1: Oui)" << endl;
+                    cin >> choix;
+                }
+                if(choix == 1){
+                    cout << "Sauvegarde en cours..." << endl;
+                    ofstream saveFile("savegame.txt");
+                    saveToFile(saveFile);
+                    saveFile.close();
+                    cout << "Partie sauvegardee." << endl;
+                    exit(0);
+                }else if (choix == 0){
+                    cout << "Sauvegarde annulee." << endl;
+                }
                 break;
-            
+            }
+            default:
+                cout << "Choix invalide. Veuillez reessayer." << endl;
+                // Efface l'erreur et ignore le reste de la ligne
+                std::cin.clear(); // Réinitialise les erreurs du flux (par exemple, si un caractère non valide a été saisi)
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore les caractères jusqu'à la fin de la ligne
+                break;          
         }
     }
 }

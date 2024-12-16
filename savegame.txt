@@ -1,10 +1,11 @@
-0 0 Reine Noir
+0 0 Scarabee Blanc
+0 1 Scarabee Noir
 END_PIECES
 0
 M 0
-R 1
+R 0
 F 0
-S 0
+S 1
 H 0
 A 0
 C 0
@@ -13,10 +14,10 @@ END_J
 M 0
 R 0
 F 0
-S 0
+S 1
 H 0
 A 0
 C 0
 END_J
 1
-1
+2
