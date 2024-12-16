@@ -41,13 +41,13 @@ int main(){
     partie.play();
 
     // Save the game state to a file
-    std::ofstream saveFile("savegame.dat", std::ios::binary);
+    std::ofstream saveFile("savegame.txt");
     partie.saveToFile(saveFile);
     saveFile.close();
     */
     // Load the game state from the file
     
-    std::ifstream loadFile("savegame.dat", std::ios::binary);
+    std::ifstream loadFile("savegame.txt");
     Plateau plateau;
     Joueur j1(Noir);
     Joueur j2(Blanc);
