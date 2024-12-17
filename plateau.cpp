@@ -50,7 +50,8 @@ bool Plateau::isHiveConnected(const unordered_map<Position, vector<Piece*>>& tem
 bool Plateau::wouldSplitHive(Position from, Position to){
 
     if (plateau[from].empty()) { // Vérifie qu'il y a une pièce à la position d'origine 
-        throw std::runtime_error("Aucune piece a deplacer depuis cette position.");
+        return false;
+        //throw std::runtime_error("Aucune piece a deplacer depuis cette position.");
     } //a voir si on fait ça ou simplement un return false (car dans si il n'y a pas de pièce à déplacer ça va pas split)
 
     unordered_map<Position, vector<Piece*>> tempPlateau = plateau; //on fait une copie du plateau pour pouvoir faire des changements temporaires
@@ -154,27 +155,6 @@ void Plateau::print_positions() const {
     }
 }
 
-bool Plateau::isGameOver() const{
-    for(const auto& pair : plateau){
-        for(const Piece* piece : pair.second){
-            if(piece->getType() == "Reine"){
-                if(dynamic_cast<const Reine*>(piece)->isSurrounded(plateau)){ //defaite d'un des deux joueurs
-                    return true;
-                }
-            }
-        }
-    }
-
-    for(const auto& pair : plateau){
-        Piece* piece = pair.second.back();
-        vector<Position> validMoves = piece->getValidMoves(plateau);
-        if(validMoves.size() != 0){
-            return false;
-        }
-    }
-    return true; //si on arrive la, c'est que les deux joueurs ne peuvent plus bouger : égalité
-
-}
 
 
 

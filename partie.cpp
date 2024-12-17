@@ -94,6 +94,41 @@ void Partie::restaurerDeuxDerniersEtats() {
     restaurerEtat();
 }
 
+bool Partie::isGameOver(){
+    for(const auto& pair : plateau.getPlateau()){
+        for(const Piece* piece : pair.second){
+            if(piece->getType() == "Reine"){
+                if(dynamic_cast<const Reine*>(piece)->isSurrounded(plateau.getPlateau())){ //defaite d'un des deux joueurs
+                    return true;
+                }
+            }
+        }
+    }
+
+    for(auto& joueur : joueurs){
+        if(joueur.get_liste_placements(plateau).size() != 0){ //si un des deux joueurs peut encore poser une pièce
+            return false;
+        }
+    }
+
+    for(const auto& pair : plateau.getPlateau()){
+        Piece* piece = pair.second.back();
+        vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
+        for(const auto& pos : validMoves){
+            if(plateau.wouldSplitHive(piece->getPosition(), pos)){
+                validMoves.erase(remove(validMoves.begin(), validMoves.end(), pos), validMoves.end());
+            }
+        }
+        if(validMoves.size() != 0){
+            return false;
+        }
+    }
+
+    return true; //si on arrive la, c'est que personne n'a gagné mais les deux joueurs ne peuvent plus ni bouger ni placer de pièces : égalité
+
+}
+
+
 
 void Partie::playTurn() {
     sauvegarderEtat(); //on commence par sauvegarder l'état
@@ -104,6 +139,24 @@ void Partie::playTurn() {
     plateau.print_board();
     cout<<endl;
     cout << "Tour du joueur "<< (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << endl;
+    if(tourActuel > 2){
+        bool canPlay = false;
+        for(const auto& piece : joueurCourant->getPieces()){
+            if(piece->getValidMoves(plateau.getPlateau()).size() != 0) {
+                canPlay = true;
+                break;
+            }
+        }
+        if(joueurCourant->get_liste_placements(plateau).size() != 0){
+            canPlay = true;
+        }
+        if(!canPlay){
+            cout<<"Aucun coup possible pour le joueur "<<(joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc")<<endl;
+            cout<<"Vous devez passer votre tour."<<endl;
+            return;
+        }
+    }
+
     printPossiblePlays(joueurCourant);
     cout<<endl;
     while(!turnOver){
@@ -111,7 +164,7 @@ void Partie::playTurn() {
         cout << "1. Poser une piece" << endl;
         cout << "2. Deplacer une piece" << endl;
         cout << "3. Voir les mouvements possibles pour une piece" << endl;
-        cout << "4. Annuler le dernier mouvement" << endl;
+        cout << "4. Annuler votre dernier coup" << endl;
         cout << "5. Sauvegarder la partie et quitter" << endl;
         cout << "Choisissez une option: "<<endl;
         int choix;
@@ -179,6 +232,8 @@ void Partie::playTurn() {
                 }
                 if(plateau.getPlateau().at(Position(qFrom, rFrom)).back()->getValidMoves(plateau.getPlateau()).size() == 0){
                     cout << "Aucun mouvement possible pour cette piece" << endl;
+                    cin.clear(); 
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     break;
                 }
                 vector<Position> validMoves = plateau.getPlateau().at(Position(qFrom, rFrom)).back()->getValidMoves(plateau.getPlateau());
@@ -199,6 +254,8 @@ void Partie::playTurn() {
                 else {
                     cout << "Mouvement invalide. Réessayez." << endl;
                 }
+                cin.clear(); 
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             }
             case 3: {
@@ -208,6 +265,8 @@ void Partie::playTurn() {
                 cin >> q >> r;
                 Position pos(q, r);
                 afficherMouvementsPossibles(pos,joueurCourant->getCouleur());
+                cin.clear(); 
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             }
             case 4: {
@@ -216,18 +275,25 @@ void Partie::playTurn() {
                 if (historique.size() > 1) {
                     if(maxRetoursEnArriere == 0){
                         cout << "Vous avez atteint le nombre maximum de retours en arriere." << endl;
+                        cin.clear(); 
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
                         break;
                     }
                     cout << "Annulation du dernier mouvement..." << endl;
                     restaurerDeuxDerniersEtats();
                     --maxRetoursEnArriere;
+                    cout<<"Coup annule."<<endl;
                     cout<<"Nombre de retours en arriere restants : "<<maxRetoursEnArriere<<endl;
+                    cout<<"Tour actuel : "<<tourActuel+1<<endl;
                     cout<<"Etat actuel du plateau : "<<endl;
                     plateau.print_board();
+                    break;
                 }
                 else {
                     cout << "Aucun mouvement à annuler." << endl;
                 }
+                cin.clear(); 
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             }
             case 5: {
@@ -246,15 +312,19 @@ void Partie::playTurn() {
                 }else if (choix == 0){
                     cout << "Sauvegarde annulee." << endl;
                 }
+                cin.clear(); 
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             }
             default:
                 cout << "Choix invalide. Veuillez reessayer." << endl;
                 // Efface l'erreur et ignore le reste de la ligne
-                std::cin.clear(); // Réinitialise les erreurs du flux (par exemple, si un caractère non valide a été saisi)
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore les caractères jusqu'à la fin de la ligne
+                cin.clear(); // Réinitialise les erreurs du flux (par exemple, si un caractère non valide a été saisi)
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore les caractères jusqu'à la fin de la ligne
                 break;          
         }
+        cin.clear(); 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 }
 
@@ -262,14 +332,38 @@ void Partie::play(){
     //variable running : méchanisme de sortie ajouté pour sortir du programme (temporaire)
     int running = 1;
     cout<<"************Bienvenue dans HIVE************\n"<<endl;
-    while((tourActuel<5 || !plateau.isGameOver())&&running == 1){
+    while((tourActuel<5 || !isGameOver())&&running == 1){
         playTurn();
         joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
         ++tourActuel;
         cout<<"Entrez 0 pour sortir du programme, 1 pour continuer :"<<endl;
         cin>>running;
     }
-
+    bool draw = true;
+    for(auto& joueur : joueurs){
+        if(joueurCourant->get_liste_placements(plateau).size() == 0){
+            for(const auto& piece : joueur.getPieces()){
+                vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
+                for(const auto& pos : validMoves){
+                    if(plateau.wouldSplitHive(piece->getPosition(), pos)){
+                        validMoves.erase(remove(validMoves.begin(), validMoves.end(), pos), validMoves.end());
+                    }
+                }
+                if(validMoves.size() != 0) {
+                    draw = false;
+                    break;
+                }
+            }
+        }else{
+            draw = false;
+            break;
+        }
+    }
+    if(draw){
+        cout<<"Fin de la partie. Resultat : Egalite"<<endl;
+        cout<<"Merci d'avoir joue a HIVE ! "<<endl;
+        return;
+    }
 }
 
 

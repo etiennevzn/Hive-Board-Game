@@ -29,7 +29,6 @@ public:
     void print_board()const;
     void print_positions() const;
 
-    bool isGameOver() const;
 
     void save(std::ofstream& outFile) const;  
     void load(std::ifstream& inFile);

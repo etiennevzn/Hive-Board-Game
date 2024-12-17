@@ -19,7 +19,14 @@ class Partie {
         int tourActuel;
 
         PartieMemento(const Plateau& p, const Joueur& j1, const Joueur& j2, Joueur* jc, int ta)
-            : plateau(p), joueur1(j1), joueur2(j2), joueurCourant(jc), tourActuel(ta) {}
+            : plateau(p), joueur1(j1), joueur2(j2), tourActuel(ta) {
+
+            if (jc == &j1) {
+                joueurCourant = &joueur1;
+            } else if (jc == &j2) {
+                joueurCourant = &joueur2;
+            }
+        }
         
         PartieMemento& operator=(const PartieMemento& autre) {
             if (this != &autre) { // Vérification d'auto-affectation
@@ -43,6 +50,7 @@ public:
     Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t = 0, int maxRetours = 3);
     void afficherMouvementsPossibles(Position pos, Couleur couleur); //pas const car on utilise wouldSplitHive dedans qui n'est pas const
     void printPossiblePlays(Joueur* joueurCourant); //pareil que la méthode au dessus
+    bool isGameOver();
     void playTurn();
     void sauvegarderEtat(); // Sauvegarde l'état actuel
     void restaurerEtat(); // Restaure l'état précédent
