@@ -2,12 +2,15 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <random>
 
-// Constructeur de Partie
-Partie::Partie(int maxRetours)
-    : joueur1(Noir), joueur2(Blanc), joueurCourant(&joueur1), tourActuel(0), maxRetoursEnArriere(maxRetours) {
+
+Partie::Partie(int maxRetours, bool ia)
+    : joueur1(Noir), joueur2(Blanc), joueurCourant(&joueur1),
+      tourActuel(0), contreIA(ia), maxRetoursEnArriere(maxRetours) {
     std::srand(std::time(0)); // Initialiser la graine aléatoire
 }
+
 
 void Partie::jouer() {
     bool jeuEnCours = true;
@@ -21,33 +24,42 @@ void Partie::jouer() {
         std::cout << "Tour du joueur " << (joueurCourant == &joueur1 ? "1" : "2") << " ("
                   << (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << ")" << std::endl;
 
-        bool actionValide = false;
+        if (contreIA && joueurCourant == &joueur2) {
+            if (contreIA && joueurCourant == &joueur2) {
+                std::cout << "C'est le tour de l'IA !" << std::endl;
+                jouerTourIA();
+                }
+        } else {
+            // Tour du joueur humain
+            bool actionValide = false;
 
-        while (!actionValide) {
-            int choix;
-            std::cout << "Menu: \n1. Poser une pièce \n2. Déplacer une pièce \n3. Revenir en arrière (" << retoursRestants << " retours restants)\nVotre choix: ";
-            std::cin >> choix;
+            while (!actionValide) {
+                int choix;
+                std::cout << "Menu: \n1. Poser une pièce \n2. Déplacer une pièce \n3. Revenir en arrière ("
+                          << retoursRestants << " retours restants)\nVotre choix: ";
+                std::cin >> choix;
 
-            switch (choix) {
-                case 1:
-                    sauvegarderEtat();
-                    actionValide = poserPiece();
-                    break;
-                case 2:
-                    sauvegarderEtat();
-                    actionValide = deplacerPiece();
-                    break;
-                case 3:
-                    if (retoursRestants > 0) {
-                        restaurerDeuxDerniersEtats();
-                        retoursRestants--;
-                    } else {
-                        std::cout << "Nombre maximum de retours en arrière atteint." << std::endl;
-                    }
-                    break;
-                default:
-                    std::cout << "Choix invalide. Reessayez." << std::endl;
-                    break;
+                switch (choix) {
+                    case 1:
+                        sauvegarderEtat();
+                        actionValide = poserPiece();
+                        break;
+                    case 2:
+                        sauvegarderEtat();
+                        actionValide = deplacerPiece();
+                        break;
+                    case 3:
+                        if (retoursRestants > 0) {
+                            restaurerDeuxDerniersEtats();
+                            retoursRestants--;
+                        } else {
+                            std::cout << "Nombre maximum de retours en arrière atteint." << std::endl;
+                        }
+                        break;
+                    default:
+                        std::cout << "Choix invalide. Réessayez." << std::endl;
+                        break;
+                }
             }
         }
 
@@ -61,6 +73,7 @@ void Partie::jouer() {
         }
     }
 }
+
 
 bool Partie::poserPiece() {
     int pieceType, col, row;
@@ -240,6 +253,81 @@ bool Partie::isPieceSurrounded(const Position& pos) const {
 }
 
 bool Partie::conditionsDeMatchNul() {
-    // Implémenter la logique pour vérifier un match nul
     return false;
 }
+
+void Partie::jouerTourIA() {
+    bool actionValide = false;
+
+    while (!actionValide) {
+        bool iaHasPiecesOnBoard = plateau.hasPiecesOnBoard(joueurCourant->getCouleur());
+
+        int choix = iaHasPiecesOnBoard ? std::rand() % 2 + 1 : 1;
+
+        if (choix == 1) { // Poser une pièce
+            std::cout << "L'IA choisit de poser une pièce.\n";
+            sauvegarderEtat();
+            actionValide = poserPieceIA();
+        } else { // Déplacer une pièce
+            std::cout << "L'IA choisit de déplacer une pièce.\n";
+            sauvegarderEtat();
+            actionValide = deplacerPieceIA();
+        }
+    }
+}
+
+
+
+
+bool Partie::poserPieceIA() {
+    int col = std::rand() % 5; // Position aléatoire
+    int row = std::rand() % 5;
+
+    Position pos(col, row);
+    Piece* piece = nullptr;
+
+    // L'IA pose une Reine si elle est disponible, sinon elle pose une Fourmi
+    if (joueurCourant->getNbReine() > 0) {
+        piece = new Reine(pos, joueurCourant->getCouleur());
+        std::cout << "L'IA pose une Reine en position (" << col << ", " << row << ").\n";
+    } else if (joueurCourant->getNbFourmis() > 0) {
+        piece = new Fourmi(pos, joueurCourant->getCouleur());
+        std::cout << "L'IA pose une Fourmi en position (" << col << ", " << row << ").\n";
+    } else {
+        return false; // Aucune pièce à poser
+    }
+
+    return joueurCourant->poserPiece(piece, pos, plateau);
+}
+
+
+
+
+bool Partie::deplacerPieceIA() {
+    int colFrom = std::rand() % 5;
+    int rowFrom = std::rand() % 5;
+    int colTo = std::rand() % 5;
+    int rowTo = std::rand() % 5;
+
+    Position from(colFrom, rowFrom);
+    Position to(colTo, rowTo);
+
+    if (!plateau.isPositionOccupied(from)) {
+        return false; // Aucune pièce à déplacer
+    }
+
+    Piece* piece = plateau.getPieceAtPosition(from);
+    if (piece == nullptr || piece->getCouleur() != joueurCourant->getCouleur()) {
+        return false;
+    }
+
+    if (piece->isValidMove(to, plateau.getPlateauMap())) {
+        joueurCourant->movePiece(from, to, plateau);
+        std::cout << "L'IA déplace une pièce de (" << colFrom << ", " << rowFrom << ") à ("
+                  << colTo << ", " << rowTo << ").\n";
+        return true;
+    }
+
+    return false;
+}
+
