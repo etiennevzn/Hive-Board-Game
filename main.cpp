@@ -5,21 +5,29 @@
 
 
 /*-----------------------
-Pour memento :
+Ajouts IA :
 
-partie.hpp
-struct PartieMemento
-historique
-maxRetoursEnArriere
+-partie :
+bool contreIA;
+Partie(int maxRetours, bool ia = false);
+void jouerTourIA();
+bool deplacerPieceIA();
 
-partie.cpp
-constructeur de Partie
-methodes sauvergarderEtat(), restaurerEtat(), restaurerDeuxDerniersEtats()
+-partie.cpp :
+ajustement constructeur
+
+
+-plateau :
+bool Plateau::hasPiecesOnBoard(Couleur couleur) const
+
 --------------------------*/
 
+
 int main() {
-    Partie partie(3, true); // Initialiser une partie avec 3 retours en arrière possibles et avec IA
+    Partie partie(3, true); // Active l'IA (true)
     partie.jouer();
 
     return 0;
 }
+
+
