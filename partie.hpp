@@ -20,17 +20,23 @@ class Partie {
     Joueur joueur2;
     Joueur* joueurCourant;
     int tourActuel;
+    bool contreIA; // Ajout d'un attribut pour savoir si l'IA joue
     std::stack<PartieMemento> historique; // Pile pour stocker les mementos
     int maxRetoursEnArriere; // Nombre maximum de retours en arrière possibles
 
 public:
-    Partie(int maxRetours); // Constructeur avec paramètre pour le nombre de retours en arrière
+    Partie(int maxRetours, bool ia = false); // Modifie le constructeur pour prendre un booléen
     void jouer();
     void sauvegarderEtat(); // Sauvegarde l'état actuel
     void restaurerEtat(); // Restaure l'état précédent
     void restaurerDeuxDerniersEtats(); // Restaure les deux derniers états
     bool poserPiece(); // Déclare la méthode poserPiece
     bool deplacerPiece(); // Déclare la méthode deplacerPiece
+    void jouerTourIA();
+    bool deplacerPieceIA();
+    bool poserPieceIA();
+
+
 
 private:
     bool isPieceSurrounded(const Position& pos) const;
