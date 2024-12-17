@@ -332,7 +332,7 @@ void Partie::play(){
     //variable running : méchanisme de sortie ajouté pour sortir du programme (temporaire)
     int running = 1;
     cout<<"************Bienvenue dans HIVE************\n"<<endl;
-    while((tourActuel<5 || !isGameOver())&&running == 1){
+    while((tourActuel<6 || !isGameOver())&&running == 1){
         playTurn();
         joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
         ++tourActuel;
@@ -363,6 +363,23 @@ void Partie::play(){
         cout<<"Fin de la partie. Resultat : Egalite"<<endl;
         cout<<"Merci d'avoir joue a HIVE ! "<<endl;
         return;
+    }else{
+        cout<<"Fin de la partie. Resultat : ";
+        for(auto& pair : plateau.getPlateau()){
+            for(auto& piece : pair.second){
+                if(piece->getType() == "Reine"){
+                    if(dynamic_cast<Reine*>(piece)->isSurrounded(plateau.getPlateau())){
+                        if(piece->getCouleur() == Noir){
+                            cout<<"Blanc a gagne."<<endl;
+                        }else{
+                            cout<<"Noir a gagne."<<endl;
+                        }
+                        cout<<"Merci d'avoir joue a HIVE ! "<<endl;
+                        return;
+                    }
+                }
+            }
+        }
     }
 }
 
