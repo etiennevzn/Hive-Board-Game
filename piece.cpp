@@ -284,35 +284,52 @@ vector<Position> Sauterelle::getValidMoves(const unordered_map<Position, vector<
     }
     return validMoves;
 }
-
 bool Fourmi::canReach(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, unordered_set<Position>& visited, const vector<Position>& borderPositions) const {
-    if (current == target) {
-        return true;
-    }
+    // Utilisation d'une file pour BFS
+    std::queue<Position> toVisit;
+    toVisit.push(current);
     visited.insert(current);
-    vector<Position> adjacents = current.getAdjacentCoordinates();
-    for (const Position& adj : adjacents) {
-        if (visited.find(adj) == visited.end() && find(borderPositions.begin(), borderPositions.end(), adj) != borderPositions.end() && current.isSlidingPossible(adj, plateau)) {
-            return canReach(adj, target, plateau, visited, borderPositions);
+
+    while (!toVisit.empty()) {
+        Position current = toVisit.front();
+        toVisit.pop();
+
+        if (current == target) {
+            return true;
+        }
+
+        for (const Position& adj : current.getAdjacentCoordinates()) {
+            if (visited.find(adj) == visited.end() &&
+                find(borderPositions.begin(), borderPositions.end(), adj) != borderPositions.end() &&
+                current.isSlidingPossible(adj, plateau)) {
+                toVisit.push(adj);
+                visited.insert(adj);
+            }
         }
     }
+
     return false;
 }
 
-bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const{
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        cout<<"Piece sur la destination"<<endl;
-        return false; 
+bool Fourmi::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
+    // Vérifier que la destination est vide
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) {
+        return false;
     }
+
+    // Obtenir les positions bordantes
     vector<Position> borderPositions = getBorderPositions(plateau);
     unordered_set<Position> visited;
+
+    // Vérifier si la position est atteignable
     return canReach(getPosition(), to, plateau, visited, borderPositions);
 }
 
 vector<Position> Fourmi::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const {
-    vector<Position> borderPos = getBorderPositions(plateau);
+    vector<Position> borderPositions = getBorderPositions(plateau);
     vector<Position> validMoves;
-    for (const Position& border : borderPos) {
+
+    for (const Position& border : borderPositions) {
         if (isValidMove(border, plateau)) {
             validMoves.push_back(border);
         }
