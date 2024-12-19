@@ -74,7 +74,7 @@ void GameManager::startApp(){
         cout<<endl;
         switch(choix){
             case 1:
-                startGame();
+                startGame();    
                 break;
             case 2:
                 loadGame();

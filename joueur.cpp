@@ -1,6 +1,7 @@
 #include "joueur.hpp"
 #include "partie.hpp"
 #include <algorithm> //pour std::find
+#include <sstream> //pour std::istringstream
 
 
 string toString(Couleur couleur) {

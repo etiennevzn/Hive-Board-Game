@@ -59,6 +59,13 @@
         "array": "cpp",
         "deque": "cpp",
         "ranges": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "fstream": "cpp",
+        "functional": "cpp",
+        "iomanip": "cpp",
+        "optional": "cpp",
+        "queue": "cpp",
+        "sstream": "cpp",
+        "stack": "cpp"
     }
 }

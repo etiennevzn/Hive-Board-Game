@@ -106,9 +106,20 @@ bool Partie::isGameOver(){
     }
 
     for(auto& joueur : joueurs){
-        if(joueur.get_liste_placements(plateau).size() != 0){ //si un des deux joueurs peut encore poser une pièce
-            return false;
+        if(joueur.get_liste_placements(plateau).size() != 0){ 
+            if ((joueur.getNbPieces().at("R") < 1) ||
+            (joueur.getNbPieces().at("A") < 2) ||
+            (joueur.getNbPieces().at("S") < 2) ||
+            (joueur.getNbPieces().at("F") < 3) ||
+            (joueur.getNbPieces().at("H") < 3) ||
+            (joueur.getNbPieces().at("C") < 1) ||
+            (joueur.getNbPieces().at("M") < 1)){
+                return false; //si on des joueurs a encore au moins une pièce qu'il peut placer, la partie n'est pas finie
+            }  
         }
+
+        
+
     }
 
     for(const auto& pair : plateau.getPlateau()){
@@ -141,13 +152,25 @@ void Partie::playTurn() {
     cout << "Tour du joueur "<< (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << endl;
     if(tourActuel > 2){
         bool canPlay = false;
-        for(const auto& piece : joueurCourant->getPieces()){
-            if(piece->getValidMoves(plateau.getPlateau()).size() != 0) {
+
+        for(const auto& piece : joueurCourant->getPieces()) {
+            vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
+            vector<Position> finalMoves;
+
+            for(const auto& pos : validMoves) {
+                if(!plateau.wouldSplitHive(piece->getPosition(), pos)) {
+                    finalMoves.push_back(pos);
+                }
+            }
+
+            if(!finalMoves.empty()) {
                 canPlay = true;
                 break;
             }
         }
-        if(joueurCourant->get_liste_placements(plateau).size() != 0){
+
+        vector<Position> placementMoves = joueurCourant->get_liste_placements(plateau);
+        if(!placementMoves.empty()) {
             canPlay = true;
         }
         if(!canPlay){

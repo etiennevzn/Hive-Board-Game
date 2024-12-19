@@ -1,3 +1,4 @@
+0 1 Sauterelle Blanc
 0 0 Reine Noir
 END_PIECES
 0
@@ -14,9 +15,9 @@ M 0
 R 0
 F 0
 S 0
-H 0
+H 1
 A 0
 C 0
 END_J
-1
-1
+0
+2
