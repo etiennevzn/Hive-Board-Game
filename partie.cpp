@@ -6,9 +6,15 @@
 using namespace std;
 
 Partie::Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t, int maxRetours) : joueurs{j1, j2}, tourActuel(t),plateau(p), maxRetoursEnArriere(maxRetours) {
-    srand(static_cast<unsigned int>(time(nullptr))); 
-    joueurCourant = (std::rand() % 2 == 0) ? &joueurs[0] : &joueurs[1];
-    // A FAIRE : faire en sorte que l'humain commence toujours si un des deux joueurs est une IA
+    if(!j1.getIsIa() && !j2.getIsIa()){
+        srand(static_cast<unsigned int>(time(nullptr))); 
+        joueurCourant = (std::rand() % 2 == 0) ? &joueurs[0] : &joueurs[1];
+    }else if(!j1.getIsIa() && j2.getIsIa()){
+        joueurCourant = &joueurs[0];
+    }
+    else if(j1.getIsIa() && !j2.getIsIa()){
+        joueurCourant = &joueurs[1];
+    }
 }
 
 void Partie::afficherMouvementsPossibles(Position pos, Couleur couleur){
@@ -179,8 +185,11 @@ void Partie::playTurn() {
             return;
         }
     }
-
-    printPossiblePlays(joueurCourant);
+    if(joueurCourant->getIsIa()){
+        joueurCourant->playTurnIA(plateau, tourActuel);
+        turnOver = true;
+    }
+    if(!joueurCourant->getIsIa()) printPossiblePlays(joueurCourant);
     cout<<endl;
     while(!turnOver){
         cout << "Que souhaitez vous faire ?" << endl;

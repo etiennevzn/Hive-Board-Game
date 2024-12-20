@@ -190,7 +190,77 @@ bool Joueur::poserPiece(char pieceType, Position pos, Plateau& plateau,int tourA
 }
 
 
+bool Joueur::isPieceTypeAvailable(const string& pieceType) const{
+    int nb = nb_pieces.at(pieceType);
+    if (pieceType == "R" && nb < 1) {
+        return true;
+    } else if (pieceType == "A" && nb < 2) {
+        return true;
+    } else if (pieceType == "S" && nb < 2) {
+        return true;
+    } else if (pieceType == "F" && nb < 3) {
+        return true;
+    } else if (pieceType == "H" && nb < 3) {
+        return true;
+    } else if (pieceType == "C" && nb < 1) {
+        return true;
+    } else if (pieceType == "M" && nb < 1) {
+        return true;
+    }
+}
 
+bool Joueur::playTurnIA(Plateau& plateau, int tourActuel) {
+    vector<string> pieceOrder = {"R", "F", "S", "H", "C", "A", "M"};
+    //pas besoin de gérer les spécificités du tour 0, car l'IA ne commence jamais 
+    // L'ia essaye d'abord de placer une pièce
+    for (const auto& pieceType : pieceOrder) {
+        if (isPieceTypeAvailable(pieceType)) {
+            vector<Position> positions = get_liste_placements(plateau);
+            if(tourActuel == 1){
+                for (const auto& pair : plateau.getPlateau()) { 
+                    vector<Position> adjacents = pair.first.getAdjacentCoordinates();
+                    for(const auto& pos : adjacents){
+                        if(find(positions.begin(), positions.end(), pos) == positions.end()){
+                            positions.push_back(pos);
+                        }
+                    }
+                }     
+            }
+            if (!positions.empty()) {
+                if (poserPiece(pieceType[0], positions[0], plateau, tourActuel)) {
+                    std::cout << "IA a place une piece de type " << pieceType << " en position (" 
+                            << positions[0].getColonne() << ", " 
+                            << positions[0].getLigne() << ")." << endl;
+                    return true;
+                }
+            }
+        }
+    }
+    
+    // Si l'ia ne peut pas placer de pièce, elle déplace une pièce
+    for (Piece* piece : pieces) {
+        vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
+        for(const auto& pos : validMoves){
+            if(plateau.wouldSplitHive(piece->getPosition(), pos)){
+                validMoves.erase(remove(validMoves.begin(), validMoves.end(), pos), validMoves.end());
+            }
+        }
+        if(validMoves.size() != 0) {
+            for (const Position& pos : validMoves) {
+                if (plateau.deplacerPiece(piece->getPosition(), pos, getCouleur())) {
+                    std::cout << "IA a déplacé une pièce en position (" 
+                            << piece->getPosition().getColonne() << ", " 
+                            << piece->getPosition().getLigne() << ") vers la position ("
+                            << pos.getColonne() << ", " << pos.getLigne() << ")." << endl;
+                    return true;
+                }
+            }
+        }
+    }
+    //si on arrive la, c'est que l'IA ne peut ni placer ni déplacer de pièce
+    cout<<"L'IA ne peut pas jouer."<<endl;
+    return false;
+}
 
 
 //Sauvegarde

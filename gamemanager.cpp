@@ -10,14 +10,30 @@ GameManager* GameManager::getInstance() {
 void GameManager::startGame() {
     delete partie;
     Plateau plateau;
-    Joueur j1(Noir);
-    Joueur j2(Blanc);
+    int choice = 0;
+    while(choice != 1 && choice != 2 && choice != 3){
+        cout<<"Voulez-vous creer une partie : Joueur VS Joueur (1) ou Joueur VS IA (2) ou IA VS IA (3)?"<<endl;
+        cout<<"Choix : "<<endl;
+        cin>>choice;
+    }
+    Joueur* j1 = nullptr;
+    Joueur* j2 = nullptr;
+    if(choice == 1){
+        j1 = new Joueur(Noir);
+        j2 = new Joueur(Blanc);
+    }else if(choice == 2){
+        j1 = new Joueur(Noir);
+        j2 = new Joueur(Blanc, true);
+    }else if(choice == 3){
+        j1 = new Joueur(Noir, true);
+        j2 = new Joueur(Blanc, true);
+    }
     int nbRetoursEnArriere = 4;
     while(nbRetoursEnArriere < 0 || nbRetoursEnArriere > 3){
         cout<<"Combien de retours en arriere souhaitez-vous ? (0 a 3) : ";
         cin>>nbRetoursEnArriere;
     }
-    partie = new Partie(j1, j2, plateau, 0, nbRetoursEnArriere);
+    partie = new Partie(*j1, *j2, plateau, 0, nbRetoursEnArriere);
     partie->play();
 }
 
