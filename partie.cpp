@@ -192,6 +192,28 @@ void Partie::playTurn() {
     if(!joueurCourant->getIsIa()) printPossiblePlays(joueurCourant);
     cout<<endl;
     while(!turnOver){
+        if((tourActuel == 6 || tourActuel == 7) && !plateau.isReinePlaced(joueurCourant->getCouleur())){
+            cout<<"Vous devez poser la reine avant ce tour"<<endl;
+            vector<Position> posPossible = joueurCourant->get_liste_placements(plateau);
+            cout<<"Positions possibles pour le placement : "<<endl;
+            for(const auto& pos : posPossible){
+                cout<<"("<<pos.getColonne()<<","<<pos.getLigne()<<")"<<endl;
+            }
+            cout << "Entrez la position (q r): ";
+            int q, r;
+            cin >> q >> r;
+            Position pos(q, r);
+
+            if (joueurCourant->poserPiece('R', pos, plateau, tourActuel)) {
+                turnOver = true;
+                break;
+            }
+            else {
+                cout << "Impossible de poser la Reine." << endl;
+                turnOver = true;
+            }
+            break;
+        }
         cout << "Que souhaitez vous faire ?" << endl;
         cout << "1. Poser une piece" << endl;
         cout << "2. Deplacer une piece" << endl;
@@ -250,6 +272,10 @@ void Partie::playTurn() {
             }
             case 2:{
                 // Déplacer une pièce
+                if(!plateau.isReinePlaced(joueurCourant->getCouleur())){
+                    cout<<"Vous devez d'abord placer la reine avant de pouvoir deplacer une piece."<<endl;
+                    break;
+                }
                 cout << "Entrez la position de depart (q r): ";
                 int qFrom, rFrom;
                 cin >> qFrom >> rFrom;
