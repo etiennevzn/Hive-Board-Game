@@ -211,8 +211,7 @@ bool Joueur::isPieceTypeAvailable(const string& pieceType) const{
 
 bool Joueur::playTurnIA(Plateau& plateau, int tourActuel) {
     vector<string> pieceOrder = {"R", "F", "S", "H", "C", "A", "M"};
-    //pas besoin de gérer les spécificités du tour 0, car l'IA ne commence jamais 
-    // L'ia essaye d'abord de placer une pièce
+    if(tourActuel == 0) if(poserPiece('R', Position(0, 0), plateau, tourActuel)) return true;
     for (const auto& pieceType : pieceOrder) {
         if (isPieceTypeAvailable(pieceType)) {
             vector<Position> positions = get_liste_placements(plateau);

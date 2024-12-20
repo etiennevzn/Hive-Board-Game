@@ -11,8 +11,8 @@ void GameManager::startGame() {
     delete partie;
     Plateau plateau;
     int choice = 0;
-    while(choice != 1 && choice != 2 && choice != 3){
-        cout<<"Voulez-vous creer une partie : Joueur VS Joueur (1) ou Joueur VS IA (2) ou IA VS IA (3)?"<<endl;
+    while(choice != 1 && choice != 2){
+        cout<<"Voulez-vous creer une partie : Joueur VS Joueur (1) ou Joueur VS IA (2) ?"<<endl;
         cout<<"Choix : "<<endl;
         cin>>choice;
     }
@@ -23,9 +23,6 @@ void GameManager::startGame() {
         j2 = new Joueur(Blanc);
     }else if(choice == 2){
         j1 = new Joueur(Noir);
-        j2 = new Joueur(Blanc, true);
-    }else if(choice == 3){
-        j1 = new Joueur(Noir, true);
         j2 = new Joueur(Blanc, true);
     }
     int nbRetoursEnArriere = 4;
