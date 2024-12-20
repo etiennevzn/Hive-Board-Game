@@ -267,6 +267,7 @@ bool Joueur::playTurnIA(Plateau& plateau, int tourActuel) {
 
 void Joueur::save(ofstream& out) const {
     out << couleur << endl;
+    out << isIa << endl;
     for (const auto& pair : nb_pieces) {
         out << pair.first << " " << pair.second <<"\n";
     }
@@ -282,6 +283,7 @@ istream& operator>>(istream& in, Couleur& couleur) {
 
 void Joueur::load(ifstream& in, const Plateau& plateau) {
     in >> couleur;
+    in >> isIa;
     pieces.clear();
     for(const auto& pair : plateau.getPlateau()){
         for(Piece* piece : pair.second){

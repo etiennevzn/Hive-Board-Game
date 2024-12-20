@@ -1,21 +1,23 @@
-0 1 Sauterelle Blanc
-0 0 Reine Noir
+-1 0 Reine Blanc
+0 0 Scarabee Noir
 END_PIECES
 0
+0
 M 0
-R 1
+R 0
 F 0
-S 0
+S 1
 H 0
 A 0
 C 0
 END_J
 1
+1
 M 0
-R 0
+R 1
 F 0
 S 0
-H 1
+H 0
 A 0
 C 0
 END_J
