@@ -19,7 +19,7 @@ Couleur stringToCouleur(const std::string& str) {
 }
 
 
-void Joueur::print_piece_left(){
+void Joueur::print_piece_left()const{
     cout<< "La liste des pieces restantes est : "<<endl;
     for (const auto& pair : nb_pieces) {
         if(pair.first == "R"){
@@ -41,7 +41,7 @@ void Joueur::print_piece_left(){
     cout << "\n";
 };
 
-vector<Position> Joueur::get_liste_placements(const Plateau& plateau) {
+vector<Position> Joueur::get_liste_placements(const Plateau& plateau)const {
     unordered_set<Position> valid_positions; // Ensemble pour éviter les doublons
 
     for (Piece* piece : pieces) {

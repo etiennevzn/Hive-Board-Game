@@ -27,7 +27,7 @@ class Position{
 public:
     // Constructeur
     Position(int q, int r) : q(q), r(r) {}
-    Position(int x, int y, int z); // à faire, constructeur à partir des coordonnées cubiques
+    Position(int x, int y, int z); 
     //getters pour les attributs
     int getColonne() const {return q;}
     int getLigne() const {return r;}
