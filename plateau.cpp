@@ -2,6 +2,54 @@
 #include <iomanip>
 #include <sstream>
 
+Plateau& Plateau::operator=(const Plateau& p) {
+    plateau.clear();
+    if(this != &p){
+        //Pour chaque position du plateau, on créé des pointeurs vers des pièces identiques, mais pas les mêmes pointeurs. 
+        for(auto& pair : p.plateau){
+            Position posTraitee = pair.first;
+            if(pair.second.size() > 0){
+                for(auto& piece : pair.second){
+                    Piece* newPiece = nullptr;
+                    char pieceType = piece->getInitial();
+                    Couleur pieceCouleur = piece->getCouleur();
+                    switch(pieceType){ //on créé la pièce avec position temporaire l'origine, qui sera changée en fonction des cas
+                        case 'R':
+                            newPiece = new Reine(posTraitee, pieceCouleur);
+                            break;
+                        case 'A':
+                            newPiece = new Araignee(posTraitee, pieceCouleur);
+                            break;
+                        case 'S':
+                            newPiece = new Scarabee(posTraitee, pieceCouleur);
+                            break;
+                        case 'F':
+                            newPiece = new Fourmi(posTraitee, pieceCouleur);
+                            break;
+                        case 'H':
+                            newPiece = new Sauterelle(posTraitee, pieceCouleur);
+                            break;
+                        case 'C':
+                            newPiece = new Coccinelle(posTraitee, pieceCouleur);
+                            break;
+                        case 'M':
+                            newPiece = new Moustique(posTraitee, pieceCouleur);
+                            break;
+                        default:
+                            cout << "Type de piece invalide." << endl;
+                            delete piece;
+                    }
+                    plateau[posTraitee].push_back(newPiece);
+                }
+            }else{
+                //plateau[posTraitee] = vector<Piece*>();
+            }
+        }
+
+    }
+    return *this;
+}
+
 
 bool Plateau::isPositionOccupied(Position pos) const {
     auto it = plateau.find(pos);

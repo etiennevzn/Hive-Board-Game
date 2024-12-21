@@ -1,13 +1,9 @@
-0 0 Reine Blanc
-1 -2 Fourmi Noir
--1 0 Fourmi Blanc
-1 0 Reine Noir
 END_PIECES
 0
 0
 M 0
-R 1
-F 1
+R 0
+F 0
 S 0
 H 0
 A 0
@@ -16,12 +12,12 @@ END_J
 1
 0
 M 0
-R 1
-F 1
+R 0
+F 0
 S 0
 H 0
 A 0
 C 0
 END_J
 1
-4
+0
