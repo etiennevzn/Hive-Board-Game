@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>hive_logo_web.png</file>
+    </qresource>
+</RCC>
