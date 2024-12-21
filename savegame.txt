@@ -1,0 +1,25 @@
+0 0 Fourmi Noir
+-1 0 Reine Blanc
+END_PIECES
+0
+0
+M 0
+R 0
+F 1
+S 0
+H 0
+A 0
+C 0
+END_J
+1
+1
+M 0
+R 1
+F 0
+S 0
+H 0
+A 0
+C 0
+END_J
+0
+2
