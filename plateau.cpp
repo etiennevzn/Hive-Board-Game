@@ -9,6 +9,7 @@ bool Plateau::isPositionOccupied(Position pos) const {
 }
 
 
+
 void Plateau::dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position>& visited) {
     visited.insert(pos);
     vector<Position> adjacents = pos.getAdjacentCoordinates();

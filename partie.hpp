@@ -56,7 +56,7 @@ public:
     void restaurerEtat(); // Restaure l'état précédent
     void restaurerDeuxDerniersEtats(); // Restaure les deux derniers états
     void play();
-
+    ~Partie() = default; //le GameManager s'occuper de la libération de la mémoire des joueurs
 
     void saveToFile(ofstream& outFile) const;
     void loadFromFile(ifstream& inFile);

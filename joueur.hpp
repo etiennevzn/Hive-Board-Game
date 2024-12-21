@@ -29,7 +29,8 @@ public :
     void save(ofstream& out) const;
     void load(ifstream& in, const Plateau& plateau); 
 
-    ~Joueur() = default;
+    ~Joueur() = default; //le joueur ne s'occupe pas de la destruction des pieces
+
 };
 
 

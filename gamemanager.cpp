@@ -32,6 +32,13 @@ void GameManager::startGame() {
     }
     partie = new Partie(*j1, *j2, plateau, 0, nbRetoursEnArriere);
     partie->play();
+    delete j1;
+    delete j2; // On libère la mémoire allouée pour les joueurs de la partie
+    for (auto& pair : plateau.getPlateau()) {
+        for (Piece* piece : pair.second) {
+            delete piece; //on libère les pièces de la mémoire
+        }
+    }
 }
 
 void GameManager::loadGame() {
@@ -58,6 +65,11 @@ void GameManager::loadGame() {
 
     // Commencer la partie chargée
     partie->play();
+    for (auto& pair : plateau.getPlateau()) {
+        for (Piece* piece : pair.second) {
+            delete piece; //on libère les pièces de la mémoire
+        }
+    }
 }
 
 void GameManager::printHiveArt() const{
