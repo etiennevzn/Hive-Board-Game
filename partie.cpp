@@ -41,7 +41,7 @@ void Partie::afficherMouvementsPossibles(Position pos, Couleur couleur){
         }
     }
     else {
-        cout << "Aucune pièce à cette position." << endl;
+        cout << "Aucune piece a cette position." << endl;
     }
 }
 
@@ -333,7 +333,7 @@ void Partie::playTurn() {
                     break;
                 }
                 else {
-                    cout << "Mouvement invalide. Réessayez." << endl;
+                    cout << "Mouvement invalide. Reessayez." << endl;
                 }
                 cin.clear(); 
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -371,7 +371,7 @@ void Partie::playTurn() {
                     break;
                 }
                 else {
-                    cout << "Aucun mouvement à annuler." << endl;
+                    cout << "Aucun mouvement a annuler." << endl;
                 }
                 cin.clear(); 
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -389,6 +389,7 @@ void Partie::playTurn() {
                     saveToFile(saveFile);
                     saveFile.close();
                     cout << "Partie sauvegardee." << endl;
+                    cout << "Merci d'avoir joue a HIVE ! " << endl;
                     exit(0);
                 }else if (choix == 0){
                     cout << "Sauvegarde annulee." << endl;

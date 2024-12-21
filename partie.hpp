@@ -17,7 +17,7 @@ class Partie {
         Joueur joueur2;
         Joueur* joueurCourant;
         int tourActuel;
-        
+
         PartieMemento(const Plateau& p, const Joueur& j1, const Joueur& j2, Joueur* jc, int ta) : joueur1(j1), joueur2(j2), tourActuel(ta) {
             plateau = p;  
             if (jc == &j1) {
@@ -26,17 +26,6 @@ class Partie {
                 joueurCourant = &joueur2;
             }
         }
-        /*
-        PartieMemento& operator=(const PartieMemento& autre) {
-            if (this != &autre) { // Vérification d'auto-affectation
-                plateau = autre.plateau;  // Copie du plateau
-                joueur1 = autre.joueur1;   // Copie du joueur1
-                joueur2 = autre.joueur2;   // Copie du joueur2
-                joueurCourant = autre.joueurCourant; // Copie du pointeur vers le joueur courant
-                tourActuel = autre.tourActuel;  // Copie du tour actuel
-            }
-            return *this;  // Retourne l'objet courant
-        }*/
     };
 
     Plateau plateau;
@@ -47,6 +36,7 @@ class Partie {
     int maxRetoursEnArriere; 
 public:
     Partie(const Joueur& j1, const Joueur& j2, const Plateau& p, int t = 0, int maxRetours = 3);
+    const Plateau& getPlateau() const{return plateau;}
     void afficherMouvementsPossibles(Position pos, Couleur couleur); //pas const car on utilise wouldSplitHive dedans qui n'est pas const
     void printPossiblePlays(Joueur* joueurCourant); //pareil que la méthode au dessus
     bool isGameOver();
