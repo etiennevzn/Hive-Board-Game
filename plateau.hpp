@@ -11,10 +11,10 @@
 
 class Plateau{
     unordered_map<Position, vector<Piece*>> plateau;
-    //à voir si l'on peut recopier un objet de la classe Plateau pour les constructeurs de recopie 
-    
 public:
     Plateau()=default;
+    ~Plateau() = default; //le GameManager s'occupe de la libération de la mémoire des pièces
+
 
     bool isPositionOccupied(Position pos) const;
     void dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position, hash<Position>>& visited);

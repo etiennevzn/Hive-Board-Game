@@ -16,6 +16,7 @@ public:
     void loadGame();
     void printHiveArt()const;
     void startApp();
+    ~GameManager() {delete partie;}
 };
 
 // Initialisation du pointeur statique
