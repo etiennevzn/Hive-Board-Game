@@ -23,8 +23,8 @@ public :
     void addPiece(Piece* piece) { pieces.push_back(piece); }
     void clearPieces() { pieces.clear(); }
     bool poserPiece(char pieceType, Position pos, Plateau& plateau,int tourActuel);
-    void print_piece_left();
-    vector<Position> get_liste_placements(const Plateau& plateau);
+    void print_piece_left()const;
+    vector<Position> get_liste_placements(const Plateau& plateau)const;
     bool getIsIa() const {return isIa;}
     void setIsIa(bool ia) {isIa = ia;}
     bool isPieceTypeAvailable(const string& pieceType) const;

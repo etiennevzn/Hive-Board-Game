@@ -19,9 +19,9 @@ public:
     Plateau& operator=(const Plateau& p);
 
     bool isPositionOccupied(Position pos) const;
-    void dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position, hash<Position>>& visited);
-    bool isHiveConnected(const unordered_map<Position, vector<Piece*>>& tempPlateau);
-    bool wouldSplitHive(Position from, Position to);
+    void dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position, hash<Position>>& visited)const;
+    bool isHiveConnected(const unordered_map<Position, vector<Piece*>>& tempPlateau)const;
+    bool wouldSplitHive(Position from, Position to); //pas const car on accède à plateau
 
     unordered_map<Position, vector<Piece*>> getPlateau()const{return plateau;}
     void addPiece(Piece* piece, Position pos);

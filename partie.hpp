@@ -39,7 +39,7 @@ public:
     const Plateau& getPlateau() const{return plateau;}
     void afficherMouvementsPossibles(Position pos, Couleur couleur); //pas const car on utilise wouldSplitHive dedans qui n'est pas const
     void printPossiblePlays(Joueur* joueurCourant); //pareil que la méthode au dessus
-    bool isGameOver();
+    bool isGameOver();//pareil que la méthode au dessus
     void playTurn();
     void sauvegarderEtat(); // Sauvegarde l'état actuel
     void restaurerEtat(); // Restaure l'état précédent

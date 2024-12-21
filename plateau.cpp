@@ -58,7 +58,7 @@ bool Plateau::isPositionOccupied(Position pos) const {
 
 
 
-void Plateau::dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position>& visited) {
+void Plateau::dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position>& visited)const {
     visited.insert(pos);
     vector<Position> adjacents = pos.getAdjacentCoordinates();
     for (const Position& adj : adjacents) {
@@ -70,7 +70,7 @@ void Plateau::dfs(Position pos, const unordered_map<Position, vector<Piece*>>& t
 }
 
 
-bool Plateau::isHiveConnected(const unordered_map<Position, vector<Piece*>>& tempPlateau){
+bool Plateau::isHiveConnected(const unordered_map<Position, vector<Piece*>>& tempPlateau)const{
     unordered_set<Position> visited;
     Position start(0,0); 
     bool foundStart = false;
