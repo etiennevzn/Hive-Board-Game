@@ -13,8 +13,10 @@ class Plateau{
     unordered_map<Position, vector<Piece*>> plateau;
 public:
     Plateau()=default;
-    ~Plateau() = default; //le GameManager s'occupe de la libération de la mémoire des pièces
+    ~Plateau()=default; //le GameManager s'occupe de la destruction des pièces
 
+    //Opérateur d'affectation de plateau pour restaurer un état précédent
+    Plateau& operator=(const Plateau& p);
 
     bool isPositionOccupied(Position pos) const;
     void dfs(Position pos, const unordered_map<Position, vector<Piece*>>& tempPlateau, unordered_set<Position, hash<Position>>& visited);

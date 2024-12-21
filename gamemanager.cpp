@@ -34,7 +34,7 @@ void GameManager::startGame() {
     partie->play();
     delete j1;
     delete j2; // On libère la mémoire allouée pour les joueurs de la partie
-    for (auto& pair : plateau.getPlateau()) {
+    for (auto& pair : partie->getPlateau().getPlateau()) {
         for (Piece* piece : pair.second) {
             delete piece; //on libère les pièces de la mémoire
         }
@@ -65,7 +65,7 @@ void GameManager::loadGame() {
 
     // Commencer la partie chargée
     partie->play();
-    for (auto& pair : plateau.getPlateau()) {
+    for (auto& pair : partie->getPlateau().getPlateau()) {
         for (Piece* piece : pair.second) {
             delete piece; //on libère les pièces de la mémoire
         }

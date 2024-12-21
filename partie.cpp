@@ -41,7 +41,7 @@ void Partie::afficherMouvementsPossibles(Position pos, Couleur couleur){
         }
     }
     else {
-        cout << "Aucune pièce à cette position." << endl;
+        cout << "Aucune piece a cette position." << endl;
     }
 }
 
@@ -81,15 +81,38 @@ void Partie::restaurerEtat() {
     if (!historique.empty()) {
         PartieMemento m = historique.top();
         historique.pop();
-        plateau = m.plateau;
-        joueurs[0] = m.joueur1;
-        joueurs[1] = m.joueur2;
+        plateau = m.plateau; ///utilisation de l'opérateur d'affectation de plateau
+        //Puis on recopie les joueurs et on leur attribue les pièces à partir du plateau
+        joueurs[0].setCouleur(m.joueur1.getCouleur());
+        joueurs[0].setIsIa(m.joueur1.getIsIa());
+        for(const auto& pair : m.joueur1.getNbPieces()){
+            joueurs[0].setNbPieces(pair.first, pair.second);
+        }
+
+        joueurs[1].setCouleur(m.joueur2.getCouleur());
+        joueurs[1].setIsIa(m.joueur2.getIsIa());
+        for(const auto& pair : m.joueur2.getNbPieces()){
+            joueurs[1].setNbPieces(pair.first, pair.second);
+        }
+
+        joueurs[0].clearPieces();
+        joueurs[1].clearPieces();
+        for(const auto& pair : plateau.getPlateau()){
+            for(Piece* piece : pair.second){
+                if(piece->getCouleur() == joueurs[0].getCouleur()){
+                    joueurs[0].addPiece(piece);
+                }else if(piece->getCouleur() == joueurs[1].getCouleur()){
+                    joueurs[1].addPiece(piece);
+                }
+            }
+        }
+
         if(m.joueurCourant == &m.joueur1){
             joueurCourant = &joueurs[0];
         }else if(m.joueurCourant == &m.joueur2){
             joueurCourant = &joueurs[1];
         }
-        tourActuel = m.tourActuel; // Affiche l'état du plateau après la restauration
+        tourActuel = m.tourActuel; 
     }
 }
 
@@ -310,7 +333,7 @@ void Partie::playTurn() {
                     break;
                 }
                 else {
-                    cout << "Mouvement invalide. Réessayez." << endl;
+                    cout << "Mouvement invalide. Reessayez." << endl;
                 }
                 cin.clear(); 
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -348,7 +371,7 @@ void Partie::playTurn() {
                     break;
                 }
                 else {
-                    cout << "Aucun mouvement à annuler." << endl;
+                    cout << "Aucun mouvement a annuler." << endl;
                 }
                 cin.clear(); 
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -366,6 +389,7 @@ void Partie::playTurn() {
                     saveToFile(saveFile);
                     saveFile.close();
                     cout << "Partie sauvegardee." << endl;
+                    cout << "Merci d'avoir joue a HIVE ! " << endl;
                     exit(0);
                 }else if (choix == 0){
                     cout << "Sauvegarde annulee." << endl;
@@ -389,7 +413,7 @@ void Partie::playTurn() {
 void Partie::play(){
     //variable running : méchanisme de sortie ajouté pour sortir du programme (temporaire)
     int running = 1;
-    cout<<"************Bienvenue dans HIVE************\n"<<endl;
+    cout<<"************Debut de la partie************\n"<<endl;
     while((tourActuel<6 || !isGameOver())&&running == 1){
         playTurn();
         joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];

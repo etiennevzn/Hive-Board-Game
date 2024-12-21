@@ -1,27 +1,30 @@
-0 0 Reine Blanc
-1 -2 Fourmi Noir
+-2 -1 Reine Blanc
+0 1 Araignee Noir
+0 -1 Fourmi Blanc
 -1 0 Fourmi Blanc
-1 0 Reine Noir
+-1 3 Fourmi Noir
+0 0 Scarabee Blanc
+0 2 Fourmi Noir
 END_PIECES
 0
 0
 M 0
-R 1
-F 1
+R 0
+F 2
 S 0
 H 0
-A 0
+A 1
 C 0
 END_J
 1
 0
 M 0
 R 1
-F 1
-S 0
+F 2
+S 1
 H 0
 A 0
 C 0
 END_J
 1
-4
+8
