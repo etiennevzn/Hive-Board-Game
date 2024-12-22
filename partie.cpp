@@ -178,7 +178,7 @@ void Partie::playTurn() {
     cout<<"************Etat actuel du plateau*************"<<endl;
     plateau.print_board();
     cout<<endl;
-    cout << "Tour du joueur "<< (joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") << endl;
+    cout << "Tour du joueur "<< joueurCourant->getNom() << " ("<<(joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") <<")"<< endl;
     if(tourActuel > 2){
         bool canPlay = false;
 
@@ -203,7 +203,7 @@ void Partie::playTurn() {
             canPlay = true;
         }
         if(!canPlay){
-            cout<<"Aucun coup possible pour le joueur "<<(joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc")<<endl;
+            cout<<"Aucun coup possible pour le joueur "<< joueurCourant->getNom() << " ("<<(joueurCourant->getCouleur() == Noir ? "Noir" : "Blanc") <<") "<<endl;
             cout<<"Vous devez passer votre tour."<<endl;
             return;
         }
@@ -411,15 +411,11 @@ void Partie::playTurn() {
 }
 
 void Partie::play(){
-    //variable running : méchanisme de sortie ajouté pour sortir du programme (temporaire)
-    int running = 1;
     cout<<"************Debut de la partie************\n"<<endl;
-    while((tourActuel<6 || !isGameOver())&&running == 1){
+    while(tourActuel<6 || !isGameOver()){
         playTurn();
         joueurCourant = (joueurCourant == &joueurs[0]) ? &joueurs[1] : &joueurs[0];
         ++tourActuel;
-        cout<<"Entrez 0 pour sortir du programme, 1 pour continuer :"<<endl;
-        cin>>running;
     }
     bool draw = true;
     for(auto& joueur : joueurs){
@@ -452,9 +448,9 @@ void Partie::play(){
                 if(piece->getType() == "Reine"){
                     if(dynamic_cast<Reine*>(piece)->isSurrounded(plateau.getPlateau())){
                         if(piece->getCouleur() == Noir){
-                            cout<<"Blanc a gagne."<<endl;
+                            cout<<"Le joueur Blanc a gagne."<<endl;
                         }else{
-                            cout<<"Noir a gagne."<<endl;
+                            cout<<"Le joueur Noir a gagne."<<endl;
                         }
                         cout<<"Merci d'avoir joue a HIVE ! "<<endl;
                         return;

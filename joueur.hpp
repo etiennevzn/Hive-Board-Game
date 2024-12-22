@@ -13,10 +13,12 @@ class Joueur{
     vector<Piece*> pieces;
     unordered_map<string, int> nb_pieces;
     bool isIa;
+    string nom;
 public :
-    Joueur(const Couleur& c, bool ia = false) : couleur(c), pieces(), nb_pieces{{"R", 0}, {"F", 0}, {"S", 0}, {"H", 0}, {"C", 0}, {"A", 0}, {"M", 0}}, isIa(ia){};
+    Joueur(const Couleur& c, string n = "", bool ia = false) : couleur(c), nom(n), pieces(), nb_pieces{{"R", 0}, {"F", 0}, {"S", 0}, {"H", 0}, {"C", 0}, {"A", 0}, {"M", 0}}, isIa(ia){};
     Couleur getCouleur() const { return couleur; }
     void setCouleur(const Couleur& c) { couleur = c; }
+    const string& getNom()const{return nom;}
     const vector<Piece*>& getPieces() const { return pieces; }
     const unordered_map<string, int> getNbPieces() const { return nb_pieces; }
     void setNbPieces(const string& pieceType, int nb) { nb_pieces[pieceType] = nb; }

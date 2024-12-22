@@ -16,14 +16,20 @@ void GameManager::startGame() {
         cout<<"Choix : "<<endl;
         cin>>choice;
     }
+    string pseudo1;
+    string pseudo2;
+    cout<<"Entrez le pseudo du joueur 1 : ";
+    cin>>pseudo1;
+    cout<<"Entrez le pseudo du joueur 2 : ";
+    cin>>pseudo2;
     Joueur* j1 = nullptr;
     Joueur* j2 = nullptr;
     if(choice == 1){
-        j1 = new Joueur(Noir);
-        j2 = new Joueur(Blanc);
+        j1 = new Joueur(Noir, pseudo1);
+        j2 = new Joueur(Blanc, pseudo2);
     }else if(choice == 2){
-        j1 = new Joueur(Noir);
-        j2 = new Joueur(Blanc, true);
+        j1 = new Joueur(Noir, pseudo1);
+        j2 = new Joueur(Blanc, pseudo2,true);
     }
     int nbRetoursEnArriere = 4;
     while(nbRetoursEnArriere < 0 || nbRetoursEnArriere > 3){
