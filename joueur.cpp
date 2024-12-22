@@ -2,7 +2,7 @@
 #include "partie.hpp"
 #include <algorithm> //pour std::find
 #include <sstream> //pour std::istringstream
-
+#include <random>
 
 string toString(Couleur couleur) {
     switch (couleur) {
@@ -212,6 +212,10 @@ bool Joueur::isPieceTypeAvailable(const string& pieceType) const{
 bool Joueur::playTurnIA(Plateau& plateau, int tourActuel) {
     vector<string> pieceOrder = {"R", "F", "S", "H", "C", "A", "M"};
     if(tourActuel == 0) if(poserPiece('R', Position(0, 0), plateau, tourActuel)) return true;
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+    
     for (const auto& pieceType : pieceOrder) {
         if (isPieceTypeAvailable(pieceType)) {
             vector<Position> positions = get_liste_placements(plateau);
@@ -226,37 +230,41 @@ bool Joueur::playTurnIA(Plateau& plateau, int tourActuel) {
                 }     
             }
             if (!positions.empty()) {
-                if (poserPiece(pieceType[0], positions[0], plateau, tourActuel)) {
+                std::uniform_int_distribution<> dis(0, positions.size() - 1);
+                int randomIndex = dis(g);
+
+                // Place the piece at the random position
+                if (poserPiece(pieceType[0], positions[randomIndex], plateau, tourActuel)) {
                     std::cout << "IA a place une piece de type " << pieceType << " en position (" 
-                            << positions[0].getColonne() << ", " 
-                            << positions[0].getLigne() << ")." << endl;
+                            << positions[randomIndex].getColonne() << ", " 
+                            << positions[randomIndex].getLigne() << ")." << endl;
                     return true;
                 }
             }
         }
     }
-    
     // Si l'ia ne peut pas placer de pièce, elle déplace une pièce
-    for (Piece* piece : pieces) {
+    vector<Piece*> shuffledPieces = pieces;
+    std::shuffle(shuffledPieces.begin(), shuffledPieces.end(), g);
+    for (Piece* piece : shuffledPieces) {
         vector<Position> validMoves = piece->getValidMoves(plateau.getPlateau());
         for(const auto& pos : validMoves){
             if(plateau.wouldSplitHive(piece->getPosition(), pos)){
                 validMoves.erase(remove(validMoves.begin(), validMoves.end(), pos), validMoves.end());
             }
         }
-        if(validMoves.size() != 0) {
-            for (const Position& pos : validMoves) {
-                if (plateau.deplacerPiece(piece->getPosition(), pos, getCouleur())) {
-                    std::cout << "IA a déplacé une pièce en position (" 
-                            << piece->getPosition().getColonne() << ", " 
-                            << piece->getPosition().getLigne() << ") vers la position ("
-                            << pos.getColonne() << ", " << pos.getLigne() << ")." << endl;
-                    return true;
-                }
+        if(!validMoves.empty()) {
+            // Randomize valid moves
+            std::shuffle(validMoves.begin(), validMoves.end(), g);
+            if (plateau.deplacerPiece(piece->getPosition(), validMoves[0], getCouleur())) {
+                std::cout << "IA a déplacé une pièce en position (" 
+                        << piece->getPosition().getColonne() << ", " 
+                        << piece->getPosition().getLigne() << ") vers la position ("
+                        << validMoves[0].getColonne() << ", " << validMoves[0].getLigne() << ")." << endl;
+                return true;
             }
         }
-    }
-    //si on arrive la, c'est que l'IA ne peut ni placer ni déplacer de pièce
+    }    //si on arrive la, c'est que l'IA ne peut ni placer ni déplacer de pièce
     cout<<"L'IA ne peut pas jouer."<<endl;
     return false;
 }
