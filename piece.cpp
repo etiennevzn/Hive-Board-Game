@@ -159,86 +159,67 @@ vector<Position> Scarabee::getValidMoves(const unordered_map<Position, vector<Pi
 }
 
 
-bool Araignee::isValidMoveRecursive(const Position& current, const Position& target, const unordered_map<Position, vector<Piece*>>& plateau, int stepsLeft, unordered_set<Position>& visited) const {
-    if (stepsLeft == 0) {
-        return current == target;
-    }
-    visited.insert(current);
-    vector<Position> adjacents = current.getAdjacentCoordinates();
-
-    for (const Position& neighbor : adjacents) {
-        if (plateau.find(neighbor) != plateau.end() && !plateau.at(neighbor).empty()) {
-            vector<Position> neighborAdjacents = neighbor.getAdjacentCoordinates();
-            for (const Position& candidate : neighborAdjacents) {
-                if (find(adjacents.begin(), adjacents.end(), candidate) != adjacents.end() && visited.find(candidate) == visited.end()) {
-                    //cout<<"("<<candidate.getColonne()<<","<<candidate.getLigne()<<")"<<endl; test
-                    if (isValidMoveRecursive(candidate, target, plateau, stepsLeft - 1, visited)) {
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    visited.erase(current);
-    return false;
-}
-
-bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
-    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
-        return false; 
-    }
-    unordered_set<Position> visited; // Suivi des cases déjà explorées
-    return isValidMoveRecursive(getPosition(), to, plateau, 3, visited);
-}
-
-vector<Position> Araignee::getValidMovesIntermediate(const Position& start, const unordered_map<Position, vector<Piece*>>& plateau) const {
-    vector<Position> validMoves;                 // Contiendra toutes les positions valides
-    unordered_set<Position> visited;            // Suivi des cases déjà explorées
+vector<Position> Araignee::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const {
+    vector<Position> validMoves; // Stocke les mouvements valides
+    unordered_set<Position> visited; // Pour éviter les boucles infinies
 
     // Fonction récursive interne
-    std::function<void(const Position&, const Position&, int)> findMoves = [&](const Position& current, const Position& previous, int depth) {
-        if (depth == 3) {                        // Si la profondeur est atteinte, ajoute la position actuelle
-            validMoves.push_back(current);
+    function<void(const Position&, int, vector<Position>)> explore = [&](const Position& current, int depth, vector<Position> path) {
+        if (depth == 3) {
+            if ((plateau.find(current) == plateau.end() || plateau.at(current).empty()) &&
+                !path.empty() &&
+                (plateau.find(path[0]) != plateau.end() && !plateau.at(path[0]).empty())) {
+                validMoves.push_back(current);
+            }
             return;
         }
 
-        visited.insert(current);                // Marque la position actuelle comme visitée
+        visited.insert(current);
+        path.push_back(current);
 
         vector<Position> adjacents = current.getAdjacentCoordinates();
         for (const Position& neighbor : adjacents) {
-            if (neighbor != previous &&          // Empêche de revenir en arrière
-                plateau.find(neighbor) != plateau.end() && 
-                !plateau.at(neighbor).empty()) {
-                vector<Position> neighborAdjacents = neighbor.getAdjacentCoordinates();
-                for (const Position& candidate : neighborAdjacents) {
-                    if (find(adjacents.begin(), adjacents.end(), candidate) != adjacents.end() && 
-                        visited.find(candidate) == visited.end()) {
-                        findMoves(candidate, current, depth + 1); // Appel récursif avec une profondeur augmentée
+            if (visited.find(neighbor) == visited.end()) {
+                bool isValid = false;
+                if (depth < 3) {
+                    // Les positions en profondeur <= 2 doivent être vides, adjacentes à une pièce et différentes de la position initiale
+                    isValid = (plateau.find(neighbor) == plateau.end() || plateau.at(neighbor).empty());
+                    if (isValid) {
+                        bool adjacentToPiece = false;
+                        for (const Position& adjNeighbor : neighbor.getAdjacentCoordinates()) {
+                            if (plateau.find(adjNeighbor) != plateau.end() && !plateau.at(adjNeighbor).empty() && adjNeighbor != getPosition()) {
+                                adjacentToPiece = true;
+                                break;
+                            }
+                        }
+                        isValid = isValid && adjacentToPiece;
                     }
+                }
+
+                if (isValid) {
+                    explore(neighbor, depth + 1, path);
                 }
             }
         }
 
-        visited.erase(current);// Backtrack pour permettre d'autres chemins
+        visited.erase(current);
     };
 
-    Position invalidPosition = Position(-70000, -7000); // Position invalide pour le premier appel (pas de précédent)
-    findMoves(start, invalidPosition, 0); 
-    for (auto it = validMoves.begin(); it != validMoves.end(); ) {
-        if (!isValidMove(*it, plateau)) {
-            it = validMoves.erase(it); 
-        } else {
-            ++it; 
-        }
-    }
-    return validMoves;
+    // Lancer la recherche depuis la position actuelle
+    explore(getPosition(), 0, {});
+    unordered_set<Position> validMovesSet(validMoves.begin(), validMoves.end());
+    vector<Position> sol;
+    for (auto elem : validMovesSet) sol.push_back(elem);
+    return sol;
 }
 
-vector<Position> Araignee::getValidMoves(const unordered_map<Position, vector<Piece*>>& plateau) const{
-    vector<Position> validMoves; // Contiendra les positions valides où la fourmi peut se déplacer
-    validMoves = getValidMovesIntermediate(getPosition(), plateau);
-    return validMoves;
+bool Araignee::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau)const{
+    if (plateau.find(to) != plateau.end() && !plateau.at(to).empty()) { //pièce sur la destination
+        return false;
+    }
+    return true;
 }
+
 
 
 bool Sauterelle::isValidMove(const Position& to, const unordered_map<Position, vector<Piece*>>& plateau) const {
